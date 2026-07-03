@@ -1,0 +1,19 @@
+{
+  "name": "@repo/database",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "generate": "dotenv -e ../../.env -- prisma generate --schema=./prisma/schema.prisma",
+    "migrate": "dotenv -e ../../.env -- prisma migrate dev --schema=./prisma/schema.prisma",
+    "migrate:deploy": "dotenv -e ../../.env -- prisma migrate deploy --schema=./prisma/schema.prisma",
+    "studio": "dotenv -e ../../.env -- prisma studio --schema=./prisma/schema.prisma"
+  },
+  "devDependencies": {
+    "@repo/typescript-config": "workspace:*",
+    "dotenv-cli": "^11.0.0",
+    "prisma": "^6.19.3"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.19.3"
+  }
+}
