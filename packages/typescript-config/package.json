@@ -10,6 +10,8 @@
     "./base": "./base.json",
     "./nextjs": "./nextjs.json",
     "./react-library": "./react-library.json",
-    "./node": "./node.json"
+    "./node-library": "./node-library.json",
+    "./node": "./node.json",
+    "./library": "./library.json"
   }
 }

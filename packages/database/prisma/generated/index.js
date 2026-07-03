@@ -133,7 +133,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "/home/ahmed/projects/next-nest-store/packages/database/src/generated",
+      "value": "/home/ahmed/projects/next-nest-store/packages/database/prisma/generated",
       "fromEnvVar": null
     },
     "config": {
@@ -153,13 +153,14 @@ const config = {
   "relativeEnvPaths": {
     "rootEnvPath": null
   },
-  "relativePath": "../../prisma",
+  "relativePath": "..",
   "clientVersion": "6.19.3",
   "engineVersion": "c2990dca591cba766e3b7ef5d9e8a84796e47ab7",
   "datasourceNames": [
     "db"
   ],
   "activeProvider": "postgresql",
+  "postinstall": false,
   "inlineDatasources": {
     "db": {
       "url": {
@@ -168,8 +169,8 @@ const config = {
       }
     }
   },
-  "inlineSchema": "generator client {\n  provider = \"prisma-client-js\"\n  output   = \"../src/generated\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n  url      = env(\"DATABASE_URL\")\n}\n\nenum UserRole {\n  USER\n  ADMIN\n}\n\nmodel User {\n  id           String @id @default(uuid())\n  email        String @unique\n  username     String @unique\n  passwordHash String\n\n  role UserRole @default(USER)\n\n  isVerified Boolean @default(false)\n\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n}\n",
-  "inlineSchemaHash": "b5910f01efe05bbb4539f94db544b017f037c05cdc4d7293cbb7d2c697185a61",
+  "inlineSchema": "generator client {\n  provider = \"prisma-client-js\"\n  output   = \"./generated\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n  url      = env(\"DATABASE_URL\")\n}\n\nenum UserRole {\n  USER\n  ADMIN\n}\n\nmodel User {\n  id           String @id @default(uuid())\n  email        String @unique\n  username     String @unique\n  passwordHash String\n\n  role UserRole @default(USER)\n\n  isVerified Boolean @default(false)\n\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n}\n",
+  "inlineSchemaHash": "d7022755bd97d6dd7b7addde64d84c1365345a8e7f572e1d85f555bce02cdf04",
   "copyEngine": true
 }
 
@@ -178,7 +179,7 @@ const fs = require('fs')
 config.dirname = __dirname
 if (!fs.existsSync(path.join(__dirname, 'schema.prisma'))) {
   const alternativePaths = [
-    "src/generated",
+    "prisma/generated",
     "generated",
   ]
   
@@ -209,7 +210,7 @@ Object.assign(exports, Prisma)
 
 // file annotations for bundling tools to include these files
 path.join(__dirname, "libquery_engine-debian-openssl-3.0.x.so.node");
-path.join(process.cwd(), "src/generated/libquery_engine-debian-openssl-3.0.x.so.node")
+path.join(process.cwd(), "prisma/generated/libquery_engine-debian-openssl-3.0.x.so.node")
 // file annotations for bundling tools to include these files
 path.join(__dirname, "schema.prisma");
-path.join(process.cwd(), "src/generated/schema.prisma")
+path.join(process.cwd(), "prisma/generated/schema.prisma")
