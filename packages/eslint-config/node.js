@@ -1,8 +1,8 @@
 import globals from "globals";
-import { config } from "./base.js";
+import baseConfig from "./base.js";
 
 export default [
-  ...config,
+  ...baseConfig,
   {
     languageOptions: {
       globals: globals.node,
