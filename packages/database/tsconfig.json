@@ -1,6 +1,10 @@
 {
   "extends": "@repo/typescript-config/node-library",
   "compilerOptions": {
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
     "rootDir": "./src",
     "outDir": "./dist"
   },
