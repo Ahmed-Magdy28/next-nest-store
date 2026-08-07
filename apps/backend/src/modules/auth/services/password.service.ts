@@ -1,15 +1,13 @@
 import { Injectable } from "@nestjs/common";
-import * as bcrypt from "bcrypt";
+import { hashPassword, verifyPassword } from "../../../common/security";
 
 @Injectable()
 export class PasswordService {
-  private readonly saltRounds = 12;
-
   hash(password: string): Promise<string> {
-    return bcrypt.hash(password, this.saltRounds);
+    return hashPassword(password);
   }
 
   compare(password: string, passwordHash: string): Promise<boolean> {
-    return bcrypt.compare(password, passwordHash);
+    return verifyPassword(password, passwordHash);
   }
 }

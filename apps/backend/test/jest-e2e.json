@@ -1,18 +1,27 @@
 {
-  "moduleFileExtensions": ["js", "json", "ts"],
-  "rootDir": ".",
+  "moduleFileExtensions": [
+    "js",
+    "json",
+    "ts"
+  ],
+  "rootDir": "..",
   "testEnvironment": "node",
-  "testRegex": ".e2e-spec.ts$",
+  "testMatch": [
+    "<rootDir>/test/**/*.e2e-spec.ts"
+  ],
   "transform": {
-    "^.+\\.(t|j)s$": ["ts-jest", {
-      "tsconfig": {
-        "module": "commonjs"
+    "^.+\\.(t|j)s$": [
+      "ts-jest",
+      {
+        "tsconfig": {
+          "module": "commonjs"
+        }
       }
-    }]
+    ]
   },
   "moduleNameMapper": {
-    "^@repo/database$": "<rootDir>/../../../packages/database/src/index.ts",
-    "^@repo/database/(.*)$": "<rootDir>/../../../packages/database/src/$1",
+    "^@repo/database$": "<rootDir>/../../packages/database/src/index.ts",
+    "^@repo/database/(.*)$": "<rootDir>/../../packages/database/src/$1",
     "^(\\.{1,2}/.*)\\.js$": "$1"
   }
 }

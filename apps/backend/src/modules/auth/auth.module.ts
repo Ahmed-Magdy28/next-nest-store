@@ -10,6 +10,8 @@ import { UsersModule } from "../users/users.module";
 
 import { PasswordService } from "./services/password.service";
 import { TokenService } from "./services/token.service";
+import { RefreshJwtStrategy } from "./strategies/refresh-jwt.strategy";
+import { ACCESS_TOKEN_EXPIRES_IN } from "../../common/security";
 
 @Module({
   imports: [
@@ -24,7 +26,7 @@ import { TokenService } from "./services/token.service";
         secret: config.getOrThrow<string>("jwtSecret"),
 
         signOptions: {
-          expiresIn: "15m",
+          expiresIn: ACCESS_TOKEN_EXPIRES_IN,
         },
       }),
     }),
@@ -32,6 +34,12 @@ import { TokenService } from "./services/token.service";
 
   controllers: [AuthController],
 
-  providers: [AuthService, PasswordService, TokenService, JwtStrategy],
+  providers: [
+    AuthService,
+    PasswordService,
+    TokenService,
+    JwtStrategy,
+    RefreshJwtStrategy,
+  ],
 })
 export class AuthModule {}
