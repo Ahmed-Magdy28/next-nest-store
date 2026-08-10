@@ -4,10 +4,11 @@
     "json",
     "ts"
   ],
-  "rootDir": "..",
+  "rootDir": ".",
   "testEnvironment": "node",
-  "testMatch": [
-    "<rootDir>/test/**/*.e2e-spec.ts"
+  "testRegex": ".*\\.e2e-spec.ts$",
+  "setupFilesAfterEnv": [
+    "./setup/jest.setup.ts"
   ],
   "transform": {
     "^.+\\.(t|j)s$": [
@@ -20,8 +21,8 @@
     ]
   },
   "moduleNameMapper": {
-    "^@repo/database$": "<rootDir>/../../packages/database/src/index.ts",
-    "^@repo/database/(.*)$": "<rootDir>/../../packages/database/src/$1",
+    "^@repo/database$": "<rootDir>/../../../packages/database/src/index.ts",
+    "^@repo/database/(.*)$": "<rootDir>/../../../packages/database/src/$1",
     "^(\\.{1,2}/.*)\\.js$": "$1"
   }
 }

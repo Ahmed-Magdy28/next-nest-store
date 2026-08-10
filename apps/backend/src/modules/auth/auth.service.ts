@@ -3,7 +3,8 @@ import {
   Injectable,
   UnauthorizedException,
 } from "@nestjs/common";
-import { sha256 } from "../../common/security";
+import type { Session } from "@repo/database";
+import { REFRESH_TOKEN_SESSION_TTL, sha256 } from "../../common/security";
 import { RegisterDto, LoginDto } from "./schemas";
 import { UsersService } from "../users/users.service";
 import { PasswordService } from "./services/password.service";
@@ -11,6 +12,8 @@ import { AuthMapper } from "./mappers/auth.mapper";
 import { TokenService } from "./services/token.service";
 import type { AuthResponseDto } from "./dto";
 import { RefreshUser } from "./types";
+import { SessionsService } from "../sessions/sessions.service";
+import { MAX_SESSIONS } from "../../common/constants";
 
 @Injectable()
 export class AuthService {
@@ -18,13 +21,30 @@ export class AuthService {
     private readonly usersService: UsersService,
     private readonly passwordService: PasswordService,
     private readonly tokenService: TokenService,
+    private readonly SessionsService: SessionsService,
   ) {}
+  private async createSession(userId: string): Promise<Session> {
+    const activeSessions =
+      await this.SessionsService.countActiveByUserId(userId);
 
-  private async saveRefreshToken(userId: string, refreshToken: string) {
+    const status = activeSessions < MAX_SESSIONS ? "ACTIVE" : "PENDING";
+
+    return this.SessionsService.create({
+      userId,
+      refreshTokenHash: null,
+      expiresAt: new Date(Date.now() + REFRESH_TOKEN_SESSION_TTL),
+      status,
+    });
+  }
+
+  private async saveRefreshToken(
+    sessionId: string,
+    refreshToken: string,
+  ): Promise<void> {
     const hashedToken = sha256(refreshToken);
     const hash = await this.passwordService.hash(hashedToken);
 
-    await this.usersService.updateRefreshTokenHash(userId, hash);
+    await this.SessionsService.updateRefreshTokenHash(sessionId, hash);
   }
 
   async register(data: RegisterDto): Promise<AuthResponseDto> {
@@ -49,10 +69,17 @@ export class AuthService {
       username: data.username,
       passwordHash,
     });
-    const authUser = AuthMapper.toAuthUserDto(user);
-    const tokens = await this.tokenService.generateAuthTokens(authUser);
 
-    await this.saveRefreshToken(user.id, tokens.refreshToken);
+    const authUser = AuthMapper.toAuthUserDto(user);
+
+    const session = await this.createSession(user.id);
+
+    const tokens = await this.tokenService.generateAuthTokens(
+      authUser,
+      session.id,
+    );
+
+    await this.saveRefreshToken(session.id, tokens.refreshToken);
 
     return {
       user: authUser,
@@ -76,9 +103,15 @@ export class AuthService {
       throw new UnauthorizedException("Invalid credentials");
     }
     const authUser = AuthMapper.toAuthUserDto(user);
-    const tokens = await this.tokenService.generateAuthTokens(authUser);
 
-    await this.saveRefreshToken(user.id, tokens.refreshToken);
+    const session = await this.createSession(user.id);
+
+    const tokens = await this.tokenService.generateAuthTokens(
+      authUser,
+      session.id,
+    );
+
+    await this.saveRefreshToken(session.id, tokens.refreshToken);
 
     return {
       user: authUser,
@@ -93,14 +126,33 @@ export class AuthService {
       throw new UnauthorizedException("Invalid refresh token");
     }
 
-    if (!dbUser.refreshTokenHash) {
+    const session = await this.SessionsService.findById(user.sessionId);
+
+    if (!session) {
+      throw new UnauthorizedException("Invalid session");
+    }
+
+    if (session.userId !== user.id) {
+      throw new UnauthorizedException("Invalid session");
+    }
+
+    if (session.revokedAt) {
+      throw new UnauthorizedException("Session revoked");
+    }
+
+    if (session.expiresAt <= new Date()) {
+      throw new UnauthorizedException("Session expired");
+    }
+
+    if (!session.refreshTokenHash) {
       throw new UnauthorizedException("Invalid refresh token");
     }
 
     const hashedToken = sha256(user.refreshToken);
+
     const isValid = await this.passwordService.compare(
       hashedToken,
-      dbUser.refreshTokenHash,
+      session.refreshTokenHash,
     );
 
     if (!isValid) {
@@ -109,13 +161,20 @@ export class AuthService {
 
     const authUser = AuthMapper.toAuthUserDto(dbUser);
 
-    const tokens = await this.tokenService.generateAuthTokens(authUser);
+    const tokens = await this.tokenService.generateAuthTokens(
+      authUser,
+      session.id,
+    );
 
-    await this.saveRefreshToken(dbUser.id, tokens.refreshToken);
+    await this.saveRefreshToken(session.id, tokens.refreshToken);
 
     return {
       user: authUser,
       ...tokens,
     };
+  }
+
+  async logout(sessionId: string): Promise<void> {
+    await this.SessionsService.revoke(sessionId);
   }
 }

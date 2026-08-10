@@ -1,6 +1,7 @@
-import { INestApplication } from "@nestjs/common";
 import request from "supertest";
 
-export function api(app: INestApplication) {
-  return request(app.getHttpServer());
+import { testContext } from "./test-context";
+
+export function api() {
+  return request(testContext.app.getHttpServer());
 }

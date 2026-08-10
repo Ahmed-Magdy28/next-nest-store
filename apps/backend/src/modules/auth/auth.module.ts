@@ -12,10 +12,12 @@ import { PasswordService } from "./services/password.service";
 import { TokenService } from "./services/token.service";
 import { RefreshJwtStrategy } from "./strategies/refresh-jwt.strategy";
 import { ACCESS_TOKEN_EXPIRES_IN } from "../../common/security";
+import { SessionsModule } from "../sessions/sessions.module";
 
 @Module({
   imports: [
     UsersModule,
+    SessionsModule,
 
     JwtModule.registerAsync({
       imports: [ConfigModule],

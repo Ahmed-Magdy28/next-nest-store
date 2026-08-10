@@ -15,12 +15,13 @@ export class AuthMapper {
     };
   }
 
-  static toJwtUser(user: User): JwtUser {
+  static toJwtUser(user: User, sessionId: string): JwtUser {
     return {
       id: user.id,
       email: user.email,
       username: user.username,
       role: user.role,
+      sessionId,
     };
   }
 }

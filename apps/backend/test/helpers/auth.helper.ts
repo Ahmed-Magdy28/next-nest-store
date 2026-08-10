@@ -1,31 +1,31 @@
-import { INestApplication } from "@nestjs/common";
-
-import { api } from "./request.helper";
 import type { Test } from "supertest";
 
 import { TestUser } from "../factories/user.factory";
+import { api } from "./request.helper";
 
-export function register(app: INestApplication, user: TestUser): Test {
-  return api(app).post("/auth/register").send(user);
+export function register(user: TestUser): Test {
+  return api().post("/auth/register").send(user);
 }
 
-export function login(
-  app: INestApplication,
-  email: string,
-  password: string,
-): Test {
-  return api(app).post("/auth/login").send({
+export function login(email: string, password: string): Test {
+  return api().post("/auth/login").send({
     email,
     password,
   });
 }
 
-export function refresh(app: INestApplication, refreshToken: string): Test {
-  return api(app)
+export function refresh(refreshToken: string): Test {
+  return api()
     .post("/auth/refresh")
     .set("Authorization", `Bearer ${refreshToken}`);
 }
 
-export function me(app: INestApplication, accessToken: string): Test {
-  return api(app).get("/auth/me").set("Authorization", `Bearer ${accessToken}`);
+export function me(accessToken: string): Test {
+  return api().get("/auth/me").set("Authorization", `Bearer ${accessToken}`);
+}
+
+export function logout(accessToken: string): Test {
+  return api()
+    .post("/auth/logout")
+    .set("Authorization", `Bearer ${accessToken}`);
 }

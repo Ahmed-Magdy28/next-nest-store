@@ -4,6 +4,7 @@
   "globalEnv": [
     "PORT",
     "DATABASE_URL",
+    "DATABASE_TEST_URL",
     "JWT_SECRET",
     "NODE_ENV",
     "NEXT_PUBLIC_API_URL"

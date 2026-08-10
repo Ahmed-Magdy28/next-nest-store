@@ -23,15 +23,6 @@ export class UsersService {
   findById(id: string): Promise<User | null> {
     return this.usersRepository.findById(id);
   }
-  updateRefreshTokenHash(
-    userId: string,
-    refreshTokenHash: string | null,
-  ): Promise<User> {
-    return this.usersRepository.updateRefreshTokenHash(
-      userId,
-      refreshTokenHash,
-    );
-  }
 
   updatePasswordHash(userId: string, passwordHash: string): Promise<User> {
     return this.usersRepository.updatePasswordHash(userId, passwordHash);

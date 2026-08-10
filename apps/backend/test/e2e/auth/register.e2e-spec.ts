@@ -1,10 +1,4 @@
-import { INestApplication } from "@nestjs/common";
-
-import { createTestingApp } from "../../helpers/app.helper";
-import { cleanDatabase } from "../../helpers/database.helper";
 import { register } from "../../helpers/auth.helper";
-
-import { TestContext } from "../../helpers/test-context";
 import { makeUser } from "../../factories/user.factory";
 import { AuthResponse } from "../../types/auth.types";
 import {
@@ -18,27 +12,11 @@ import {
 } from "../../../src/common/constants";
 
 describe("POST /auth/register", () => {
-  let app: INestApplication;
-  let ctx: TestContext;
-
-  beforeAll(async () => {
-    ctx = await createTestingApp();
-    app = ctx.app;
-  });
-
-  afterAll(async () => {
-    await app.close();
-  });
-
-  beforeEach(async () => {
-    await cleanDatabase(ctx.prisma);
-  });
-
   describe("Success", () => {
     it("should register a new user", async () => {
       const user = makeUser();
 
-      const response = await register(app, user).expect(201);
+      const response = await register(user).expect(201);
 
       const body = response.body as AuthResponse;
 
@@ -55,9 +33,9 @@ describe("POST /auth/register", () => {
     it("should reject duplicate email", async () => {
       const user = makeUser();
 
-      await register(app, user).expect(201);
+      await register(user).expect(201);
 
-      await register(app, {
+      await register({
         ...user,
         username: `${user.username}2`,
       }).expect(409);
@@ -66,9 +44,9 @@ describe("POST /auth/register", () => {
     it("should reject duplicate username", async () => {
       const user = makeUser();
 
-      await register(app, user).expect(201);
+      await register(user).expect(201);
 
-      await register(app, {
+      await register({
         ...user,
         email: `other-${user.email}`,
       }).expect(409);
@@ -77,7 +55,7 @@ describe("POST /auth/register", () => {
     it("should reject invalid email", async () => {
       const user = makeUser();
 
-      await register(app, {
+      await register({
         ...user,
         email: "bad-email",
       }).expect(400);
@@ -86,7 +64,7 @@ describe("POST /auth/register", () => {
     it("should reject short password", async () => {
       const user = makeUser();
 
-      await register(app, {
+      await register({
         ...user,
         password: "Aa1!",
       }).expect(400);
@@ -94,7 +72,7 @@ describe("POST /auth/register", () => {
 
     it("should reject missing fields", async () => {
       // @ts-expect-error - Testing invalid input
-      await register(app, {}).expect(400);
+      await register({}).expect(400);
     });
   });
 
@@ -105,14 +83,14 @@ describe("POST /auth/register", () => {
         password: "Ahmed123",
       });
 
-      await register(app, user).expect(400);
+      await register(user).expect(400);
     });
     it("should reject username shorter than minimum length", async () => {
       const user = makeUser({
         username: "Ab1",
       });
 
-      await register(app, user).expect(400);
+      await register(user).expect(400);
     });
 
     it("should accept username with minimum length", async () => {
@@ -120,7 +98,7 @@ describe("POST /auth/register", () => {
         username: "Abc1",
       });
 
-      await register(app, user).expect(201);
+      await register(user).expect(201);
     });
 
     it("should accept username with maximum length", async () => {
@@ -128,7 +106,7 @@ describe("POST /auth/register", () => {
         username: "A" + "a".repeat(29),
       });
 
-      await register(app, user).expect(201);
+      await register(user).expect(201);
     });
 
     it("should reject username longer than maximum length", async () => {
@@ -136,7 +114,7 @@ describe("POST /auth/register", () => {
         username: "A" + "a".repeat(30),
       });
 
-      await register(app, user).expect(400);
+      await register(user).expect(400);
     });
 
     it("should reject username that starts with a number", async () => {
@@ -144,7 +122,7 @@ describe("POST /auth/register", () => {
         username: "1Ahmed",
       });
 
-      await register(app, user).expect(400);
+      await register(user).expect(400);
     });
 
     it("should reject username with invalid characters", async () => {
@@ -152,7 +130,7 @@ describe("POST /auth/register", () => {
         username: "Ahmed@123",
       });
 
-      await register(app, user).expect(400);
+      await register(user).expect(400);
     });
 
     it("should accept username with underscores and dots", async () => {
@@ -160,7 +138,7 @@ describe("POST /auth/register", () => {
         username: "Ahmed_123.test",
       });
 
-      await register(app, user).expect(201);
+      await register(user).expect(201);
     });
   });
 
@@ -170,7 +148,7 @@ describe("POST /auth/register", () => {
         password: "Aa1!",
       });
 
-      await register(app, user).expect(400);
+      await register(user).expect(400);
     });
 
     it("should accept password with minimum length", async () => {
@@ -178,7 +156,7 @@ describe("POST /auth/register", () => {
         password: "Aa1!xxxx",
       });
 
-      await register(app, user).expect(201);
+      await register(user).expect(201);
     });
 
     it("should accept password with maximum length", async () => {
@@ -186,7 +164,7 @@ describe("POST /auth/register", () => {
         password: "Aa1!" + "x".repeat(60),
       });
 
-      await register(app, user).expect(201);
+      await register(user).expect(201);
     });
 
     it("should reject password longer than maximum length", async () => {
@@ -194,7 +172,7 @@ describe("POST /auth/register", () => {
         password: "Aa1!" + "x".repeat(61),
       });
 
-      await register(app, user).expect(400);
+      await register(user).expect(400);
     });
 
     it("should reject password without uppercase letter", async () => {
@@ -202,7 +180,7 @@ describe("POST /auth/register", () => {
         password: "aa1!aaaa",
       });
 
-      await register(app, user).expect(400);
+      await register(user).expect(400);
     });
 
     it("should reject password without lowercase letter", async () => {
@@ -210,7 +188,7 @@ describe("POST /auth/register", () => {
         password: "AA1!AAAA",
       });
 
-      await register(app, user).expect(400);
+      await register(user).expect(400);
     });
 
     it("should reject password without digit", async () => {
@@ -218,7 +196,7 @@ describe("POST /auth/register", () => {
         password: "Aa!aaaaa",
       });
 
-      await register(app, user).expect(400);
+      await register(user).expect(400);
     });
 
     it("should reject password without special character", async () => {
@@ -226,7 +204,7 @@ describe("POST /auth/register", () => {
         password: "Aa1aaaaa",
       });
 
-      await register(app, user).expect(400);
+      await register(user).expect(400);
     });
   });
 
@@ -234,7 +212,7 @@ describe("POST /auth/register", () => {
     it("should not return password", async () => {
       const user = makeUser();
 
-      const response = await register(app, user).expect(201);
+      const response = await register(user).expect(201);
 
       expect(response.body.user).not.toHaveProperty("password");
       expect(response.body.user).not.toHaveProperty("passwordHash");
@@ -247,7 +225,7 @@ describe("POST /auth/register", () => {
         password: "Aa1!",
       });
 
-      const response = await register(app, user).expect(400);
+      const response = await register(user).expect(400);
 
       expect(response.body.message).toContain(PASSWORD_LENGTH_MESSAGE);
     });
@@ -257,7 +235,7 @@ describe("POST /auth/register", () => {
         password: "aa1!aaaa",
       });
 
-      const response = await register(app, user).expect(400);
+      const response = await register(user).expect(400);
 
       expect(response.body.message).toContain(PASSWORD_UPPERCASE_MESSAGE);
     });
@@ -267,7 +245,7 @@ describe("POST /auth/register", () => {
         password: "AA1!AAAA",
       });
 
-      const response = await register(app, user).expect(400);
+      const response = await register(user).expect(400);
 
       expect(response.body.message).toContain(PASSWORD_LOWERCASE_MESSAGE);
     });
@@ -277,7 +255,7 @@ describe("POST /auth/register", () => {
         password: "Aa!aaaaa",
       });
 
-      const response = await register(app, user).expect(400);
+      const response = await register(user).expect(400);
 
       expect(response.body.message).toContain(PASSWORD_DIGIT_MESSAGE);
     });
@@ -287,7 +265,7 @@ describe("POST /auth/register", () => {
         password: "Aa1aaaaa",
       });
 
-      const response = await register(app, user).expect(400);
+      const response = await register(user).expect(400);
 
       expect(response.body.message).toContain(PASSWORD_SPECIAL_CHAR_MESSAGE);
     });
@@ -297,7 +275,7 @@ describe("POST /auth/register", () => {
         username: "Ab1",
       });
 
-      const response = await register(app, user).expect(400);
+      const response = await register(user).expect(400);
 
       expect(response.body.message).toContain(USERNAME_LENGTH_MESSAGE);
     });
@@ -307,7 +285,7 @@ describe("POST /auth/register", () => {
         username: "Ahmed@123",
       });
 
-      const response = await register(app, user).expect(400);
+      const response = await register(user).expect(400);
 
       expect(response.body.message).toContain(USERNAME_MESSAGE);
     });

@@ -5,3 +5,5 @@ export interface TestContext {
   app: INestApplication;
   prisma: PrismaService;
 }
+
+export const testContext = {} as TestContext;

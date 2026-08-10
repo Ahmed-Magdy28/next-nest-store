@@ -5,4 +5,5 @@ export interface JwtUser {
   email: string;
   username: string;
   role: UserRole;
+  sessionId: string;
 }

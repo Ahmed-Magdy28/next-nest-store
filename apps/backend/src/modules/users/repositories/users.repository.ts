@@ -32,16 +32,6 @@ export class UsersRepository {
     });
   }
 
-  async updateRefreshTokenHash(
-    userId: string,
-    refreshTokenHash: string | null,
-  ): Promise<User> {
-    return this.prisma.user.update({
-      where: { id: userId },
-      data: { refreshTokenHash },
-    });
-  }
-
   async updatePasswordHash(
     userId: string,
     passwordHash: string,

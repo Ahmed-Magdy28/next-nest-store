@@ -15,8 +15,10 @@
     "build": "tsc -p tsconfig.json",
     "generate": "dotenv -e ../../.env -- prisma generate --schema=./prisma/schema.prisma",
     "migrate": "dotenv -e ../../.env -- prisma migrate dev --schema=./prisma/schema.prisma",
+    "migrate:test": "dotenv -e ../../.env -- sh -c 'DATABASE_URL=\"$DATABASE_TEST_URL\" prisma migrate deploy --schema=./prisma/schema.prisma'",
     "migrate:deploy": "dotenv -e ../../.env -- prisma migrate deploy --schema=./prisma/schema.prisma",
-    "studio": "dotenv -e ../../.env -- prisma studio --schema=./prisma/schema.prisma"
+    "studio": "dotenv -e ../../.env -- prisma studio --schema=./prisma/schema.prisma",
+    "migrate:status": "dotenv -e ../../.env -- prisma migrate status --schema=./prisma/schema.prisma"
   },
   "dependencies": {
     "@nestjs/common": "^11.x",
