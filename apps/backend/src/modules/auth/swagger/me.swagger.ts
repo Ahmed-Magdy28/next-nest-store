@@ -1,10 +1,17 @@
 import { applyDecorators } from "@nestjs/common";
-import { ApiBearerAuth, ApiResponse } from "@nestjs/swagger";
+import {
+  ApiBearerAuth,
+  ApiOkResponse,
+  ApiOperation,
+  ApiResponse,
+} from "@nestjs/swagger";
 
 export const meSwagger = applyDecorators(
+  ApiOperation({
+    summary: "Return the current authenticated user",
+  }),
   ApiBearerAuth("access-token"),
-  ApiResponse({
-    status: 200,
+  ApiOkResponse({
     description: "Current authenticated user.",
   }),
   ApiResponse({

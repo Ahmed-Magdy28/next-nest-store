@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { PrismaService } from "@repo/database";
-import type { User } from "@repo/database";
+import type { Prisma, User } from "@repo/database";
 
 import { CreateUserInput } from "../types";
 
@@ -32,15 +32,35 @@ export class UsersRepository {
     });
   }
 
+  findByPasswordResetTokenHash(tokenHash: string): Promise<User | null> {
+    return this.prisma.user.findFirst({
+      where: {
+        passwordResetTokenHash: tokenHash,
+      },
+    });
+  }
+
+  findByEmailVerificationTokenHash(tokenHash: string): Promise<User | null> {
+    return this.prisma.user.findFirst({
+      where: {
+        emailVerificationTokenHash: tokenHash,
+      },
+    });
+  }
+
+  updateById(userId: string, data: Prisma.UserUpdateInput): Promise<User> {
+    return this.prisma.user.update({
+      where: { id: userId },
+      data,
+    });
+  }
+
   async updatePasswordHash(
     userId: string,
     passwordHash: string,
   ): Promise<User> {
-    return this.prisma.user.update({
-      where: { id: userId },
-      data: {
-        passwordHash,
-      },
+    return this.updateById(userId, {
+      passwordHash,
     });
   }
 }

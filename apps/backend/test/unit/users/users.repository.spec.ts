@@ -21,9 +21,15 @@ describe("UsersRepository", () => {
     email: "ahmed@example.com",
     username: "Ahmed",
     passwordHash: "hashed-password",
-    refreshTokenHash: "hashed-refresh-token",
     role: "USER",
     isVerified: true,
+    pendingEmail: null,
+    passwordResetTokenHash: null,
+    passwordResetTokenExpiresAt: null,
+    passwordResetTokenUsedAt: null,
+    emailVerificationTokenHash: null,
+    emailVerificationTokenExpiresAt: null,
+    emailVerificationTokenUsedAt: null,
     createdAt: new Date(),
     updatedAt: new Date(),
   };
@@ -129,45 +135,6 @@ describe("UsersRepository", () => {
       const result = await repository.findById(user.id);
 
       expect(result).toBeNull();
-    });
-  });
-
-  describe("updateRefreshTokenHash", () => {
-    it("should update the refresh token hash", async () => {
-      prisma.user.update.mockResolvedValue(user);
-
-      const result = await repository.updateRefreshTokenHash(
-        user.id,
-        "new-refresh-hash",
-      );
-
-      expect(prisma.user.update).toHaveBeenCalledWith({
-        where: {
-          id: user.id,
-        },
-        data: {
-          refreshTokenHash: "new-refresh-hash",
-        },
-      });
-
-      expect(result).toBe(user);
-    });
-
-    it("should clear the refresh token hash", async () => {
-      prisma.user.update.mockResolvedValue(user);
-
-      const result = await repository.updateRefreshTokenHash(user.id, null);
-
-      expect(prisma.user.update).toHaveBeenCalledWith({
-        where: {
-          id: user.id,
-        },
-        data: {
-          refreshTokenHash: null,
-        },
-      });
-
-      expect(result).toBe(user);
     });
   });
 

@@ -13,6 +13,7 @@
   },
   "scripts": {
     "build": "tsc -p tsconfig.json",
+    "check-types": "tsc --noEmit -p tsconfig.json",
     "generate": "dotenv -e ../../.env -- prisma generate --schema=./prisma/schema.prisma",
     "migrate": "dotenv -e ../../.env -- prisma migrate dev --schema=./prisma/schema.prisma",
     "migrate:test": "dotenv -e ../../.env -- sh -c 'DATABASE_URL=\"$DATABASE_TEST_URL\" prisma migrate deploy --schema=./prisma/schema.prisma'",

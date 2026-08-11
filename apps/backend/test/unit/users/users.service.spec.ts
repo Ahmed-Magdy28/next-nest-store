@@ -10,9 +10,15 @@ describe("UsersService", () => {
     email: "ahmed@example.com",
     username: "Ahmed",
     passwordHash: "hashed-password",
-    refreshTokenHash: "hashed-refresh-token",
     role: "USER" as const,
     isVerified: true,
+    pendingEmail: null,
+    passwordResetTokenHash: null,
+    passwordResetTokenExpiresAt: null,
+    passwordResetTokenUsedAt: null,
+    emailVerificationTokenHash: null,
+    emailVerificationTokenExpiresAt: null,
+    emailVerificationTokenUsedAt: null,
     createdAt: new Date(),
     updatedAt: new Date(),
   };
@@ -23,7 +29,6 @@ describe("UsersService", () => {
       findByEmail: jest.fn(),
       findByUsername: jest.fn(),
       findById: jest.fn(),
-      updateRefreshTokenHash: jest.fn(),
       updatePasswordHash: jest.fn(),
     } as unknown as jest.Mocked<UsersRepository>;
 
@@ -103,37 +108,6 @@ describe("UsersService", () => {
       const result = await service.findById(user.id);
 
       expect(result).toBeNull();
-    });
-  });
-
-  describe("updateRefreshTokenHash", () => {
-    it("should update the refresh token hash", async () => {
-      usersRepository.updateRefreshTokenHash.mockResolvedValue(user);
-
-      const result = await service.updateRefreshTokenHash(
-        user.id,
-        "new-refresh-hash",
-      );
-
-      expect(usersRepository.updateRefreshTokenHash).toHaveBeenCalledWith(
-        user.id,
-        "new-refresh-hash",
-      );
-
-      expect(result).toBe(user);
-    });
-
-    it("should clear the refresh token hash", async () => {
-      usersRepository.updateRefreshTokenHash.mockResolvedValue(user);
-
-      const result = await service.updateRefreshTokenHash(user.id, null);
-
-      expect(usersRepository.updateRefreshTokenHash).toHaveBeenCalledWith(
-        user.id,
-        null,
-      );
-
-      expect(result).toBe(user);
     });
   });
 

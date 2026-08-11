@@ -27,14 +27,26 @@ model User {
   role         UserRole @default(USER)
 
   isVerified Boolean @default(false)
-  sessions   Session[]
+  pendingEmail String?
+
+  passwordResetTokenHash      String?
+  passwordResetTokenExpiresAt  DateTime?
+  passwordResetTokenUsedAt     DateTime?
+  emailVerificationTokenHash      String?
+  emailVerificationTokenExpiresAt  DateTime?
+  emailVerificationTokenUsedAt     DateTime?
+
+  sessions Session[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([passwordResetTokenHash])
+  @@index([emailVerificationTokenHash])
 }
 
 model Session {
-  id               String    @id @default(uuid())
+  id               String        @id @default(uuid())
   userId           String
   refreshTokenHash String?
   expiresAt        DateTime

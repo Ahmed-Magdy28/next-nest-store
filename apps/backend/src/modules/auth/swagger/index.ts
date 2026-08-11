@@ -1,6 +1,12 @@
-export * from "./auth.swagger";
 export * from "./register.swagger";
 export * from "./login.swagger";
 export * from "./me.swagger";
-// export * from "./refresh.swagger";
-// export * from "./logout.swagger";
+export * from "./refresh.swagger";
+export * from "./logout.swagger";
+export * from "./forgot-password.swagger";
+export * from "./reset-password.swagger";
+// export * from "./verify-email.swagger";
+// export * from "./change-password.swagger";
+export * from "./revoke-session.swagger";
+export * from "./revoke-all-sessions.swagger";
+export * from "./sessions.swagger";

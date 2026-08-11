@@ -4,6 +4,7 @@ import { AuthService } from "../../../src/modules/auth/auth.service";
 import { UsersService } from "../../../src/modules/users/users.service";
 import { PasswordService } from "../../../src/modules/auth/services/password.service";
 import { TokenService } from "../../../src/modules/auth/services/token.service";
+import { SessionsService } from "../../../src/modules/sessions/sessions.service";
 import type { User } from "@repo/database";
 
 describe("AuthService", () => {
@@ -11,17 +12,36 @@ describe("AuthService", () => {
   let usersService: jest.Mocked<UsersService>;
   let passwordService: jest.Mocked<PasswordService>;
   let tokenService: jest.Mocked<TokenService>;
+  let sessionsService: jest.Mocked<SessionsService>;
 
   const user: User = {
     id: "user-id",
     email: "ahmed@example.com",
     username: "Ahmed",
     passwordHash: "hashed-password",
-    refreshTokenHash: "hashed-refresh-token",
     role: "USER" as const,
     createdAt: new Date(),
     updatedAt: new Date(),
     isVerified: true,
+    pendingEmail: null,
+    passwordResetTokenHash: null,
+    passwordResetTokenExpiresAt: null,
+    passwordResetTokenUsedAt: null,
+    emailVerificationTokenHash: null,
+    emailVerificationTokenExpiresAt: null,
+    emailVerificationTokenUsedAt: null,
+  };
+
+  const session = {
+    id: "session-id",
+    userId: user.id,
+    refreshTokenHash: "hashed-refresh-token",
+    expiresAt: new Date(Date.now() + 60_000),
+    status: "ACTIVE" as const,
+    revokedAt: null,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    lastUsedAt: null,
   };
 
   const tokens = {
@@ -35,7 +55,6 @@ describe("AuthService", () => {
       findByUsername: jest.fn(),
       findById: jest.fn(),
       create: jest.fn(),
-      updateRefreshTokenHash: jest.fn(),
       updatePasswordHash: jest.fn(),
     } as unknown as jest.Mocked<UsersService>;
 
@@ -50,7 +69,22 @@ describe("AuthService", () => {
       generateAuthTokens: jest.fn(),
     } as unknown as jest.Mocked<TokenService>;
 
-    service = new AuthService(usersService, passwordService, tokenService);
+    sessionsService = {
+      create: jest.fn(),
+      findById: jest.fn(),
+      findActiveByUserId: jest.fn(),
+      countActiveByUserId: jest.fn(),
+      activate: jest.fn(),
+      updateRefreshTokenHash: jest.fn(),
+      revoke: jest.fn(),
+    } as unknown as jest.Mocked<SessionsService>;
+
+    service = new AuthService(
+      usersService,
+      passwordService,
+      tokenService,
+      sessionsService,
+    );
   });
 
   describe("login", () => {
@@ -87,7 +121,7 @@ describe("AuthService", () => {
       );
 
       expect(tokenService.generateAuthTokens).not.toHaveBeenCalled();
-      expect(usersService.updateRefreshTokenHash).not.toHaveBeenCalled();
+      expect(sessionsService.updateRefreshTokenHash).not.toHaveBeenCalled();
     });
 
     it("should login successfully with valid credentials", async () => {
@@ -95,7 +129,11 @@ describe("AuthService", () => {
       passwordService.compare.mockResolvedValue(true);
       tokenService.generateAuthTokens.mockResolvedValue(tokens);
       passwordService.hash.mockResolvedValue("hashed-refresh-token");
-      usersService.updateRefreshTokenHash.mockResolvedValue(user);
+      sessionsService.countActiveByUserId.mockResolvedValue(0);
+      sessionsService.create.mockResolvedValue(session as never);
+      sessionsService.updateRefreshTokenHash.mockResolvedValue(
+        session as never,
+      );
 
       const result = await service.login({
         email: user.email,
@@ -113,6 +151,22 @@ describe("AuthService", () => {
         },
         ...tokens,
       });
+
+      expect(tokenService.generateAuthTokens).toHaveBeenCalledWith(
+        {
+          id: user.id,
+          email: user.email,
+          username: user.username,
+          role: user.role,
+          createdAt: user.createdAt,
+          updatedAt: user.updatedAt,
+        },
+        session.id,
+      );
+      expect(sessionsService.updateRefreshTokenHash).toHaveBeenCalledWith(
+        session.id,
+        "hashed-refresh-token",
+      );
     });
 
     it("should generate auth tokens for the authenticated user", async () => {
@@ -120,20 +174,28 @@ describe("AuthService", () => {
       passwordService.compare.mockResolvedValue(true);
       tokenService.generateAuthTokens.mockResolvedValue(tokens);
       passwordService.hash.mockResolvedValue("hashed-refresh-token");
+      sessionsService.countActiveByUserId.mockResolvedValue(0);
+      sessionsService.create.mockResolvedValue(session as never);
+      sessionsService.updateRefreshTokenHash.mockResolvedValue(
+        session as never,
+      );
 
       await service.login({
         email: user.email,
         password: "Password123!",
       });
 
-      expect(tokenService.generateAuthTokens).toHaveBeenCalledWith({
-        id: user.id,
-        email: user.email,
-        username: user.username,
-        role: user.role,
-        createdAt: user.createdAt,
-        updatedAt: user.updatedAt,
-      });
+      expect(tokenService.generateAuthTokens).toHaveBeenCalledWith(
+        {
+          id: user.id,
+          email: user.email,
+          username: user.username,
+          role: user.role,
+          createdAt: user.createdAt,
+          updatedAt: user.updatedAt,
+        },
+        session.id,
+      );
     });
 
     it("should store the hashed refresh token", async () => {
@@ -141,6 +203,11 @@ describe("AuthService", () => {
       passwordService.compare.mockResolvedValue(true);
       tokenService.generateAuthTokens.mockResolvedValue(tokens);
       passwordService.hash.mockResolvedValue("hashed-refresh-token");
+      sessionsService.countActiveByUserId.mockResolvedValue(0);
+      sessionsService.create.mockResolvedValue(session as never);
+      sessionsService.updateRefreshTokenHash.mockResolvedValue(
+        session as never,
+      );
 
       await service.login({
         email: user.email,
@@ -148,8 +215,8 @@ describe("AuthService", () => {
       });
 
       expect(passwordService.hash).toHaveBeenCalled();
-      expect(usersService.updateRefreshTokenHash).toHaveBeenCalledWith(
-        user.id,
+      expect(sessionsService.updateRefreshTokenHash).toHaveBeenCalledWith(
+        session.id,
         "hashed-refresh-token",
       );
     });
@@ -159,14 +226,19 @@ describe("AuthService", () => {
       passwordService.compare.mockResolvedValue(true);
       tokenService.generateAuthTokens.mockResolvedValue(tokens);
       passwordService.hash.mockResolvedValue("hashed-refresh-token");
+      sessionsService.countActiveByUserId.mockResolvedValue(0);
+      sessionsService.create.mockResolvedValue(session as never);
+      sessionsService.updateRefreshTokenHash.mockResolvedValue(
+        session as never,
+      );
 
       await service.login({
         email: user.email,
         password: "Password123!",
       });
 
-      expect(usersService.updateRefreshTokenHash).not.toHaveBeenCalledWith(
-        user.id,
+      expect(sessionsService.updateRefreshTokenHash).not.toHaveBeenCalledWith(
+        session.id,
         tokens.refreshToken,
       );
     });
@@ -218,6 +290,11 @@ describe("AuthService", () => {
       passwordService.hash.mockResolvedValue("hashed-password");
       usersService.create.mockResolvedValue(user);
       tokenService.generateAuthTokens.mockResolvedValue(tokens);
+      sessionsService.countActiveByUserId.mockResolvedValue(0);
+      sessionsService.create.mockResolvedValue(session as never);
+      sessionsService.updateRefreshTokenHash.mockResolvedValue(
+        session as never,
+      );
 
       await service.register({
         email: user.email,
@@ -240,6 +317,11 @@ describe("AuthService", () => {
       passwordService.hash.mockResolvedValue("hashed-password");
       usersService.create.mockResolvedValue(user);
       tokenService.generateAuthTokens.mockResolvedValue(tokens);
+      sessionsService.countActiveByUserId.mockResolvedValue(0);
+      sessionsService.create.mockResolvedValue(session as never);
+      sessionsService.updateRefreshTokenHash.mockResolvedValue(
+        session as never,
+      );
 
       await service.register({
         email: user.email,
@@ -260,6 +342,11 @@ describe("AuthService", () => {
       passwordService.hash.mockResolvedValue("hashed-password");
       usersService.create.mockResolvedValue(user);
       tokenService.generateAuthTokens.mockResolvedValue(tokens);
+      sessionsService.countActiveByUserId.mockResolvedValue(0);
+      sessionsService.create.mockResolvedValue(session as never);
+      sessionsService.updateRefreshTokenHash.mockResolvedValue(
+        session as never,
+      );
 
       await service.register({
         email: user.email,
@@ -267,14 +354,17 @@ describe("AuthService", () => {
         password: "Password123!",
       });
 
-      expect(tokenService.generateAuthTokens).toHaveBeenCalledWith({
-        id: user.id,
-        email: user.email,
-        username: user.username,
-        role: user.role,
-        createdAt: user.createdAt,
-        updatedAt: user.updatedAt,
-      });
+      expect(tokenService.generateAuthTokens).toHaveBeenCalledWith(
+        {
+          id: user.id,
+          email: user.email,
+          username: user.username,
+          role: user.role,
+          createdAt: user.createdAt,
+          updatedAt: user.updatedAt,
+        },
+        session.id,
+      );
     });
 
     it("should store the hashed refresh token", async () => {
@@ -283,7 +373,11 @@ describe("AuthService", () => {
       passwordService.hash.mockResolvedValue("hashed-password");
       usersService.create.mockResolvedValue(user);
       tokenService.generateAuthTokens.mockResolvedValue(tokens);
-      usersService.updateRefreshTokenHash.mockResolvedValue(user);
+      sessionsService.countActiveByUserId.mockResolvedValue(0);
+      sessionsService.create.mockResolvedValue(session as never);
+      sessionsService.updateRefreshTokenHash.mockResolvedValue(
+        session as never,
+      );
 
       await service.register({
         email: user.email,
@@ -291,8 +385,8 @@ describe("AuthService", () => {
         password: "Password123!",
       });
 
-      expect(usersService.updateRefreshTokenHash).toHaveBeenCalledWith(
-        user.id,
+      expect(sessionsService.updateRefreshTokenHash).toHaveBeenCalledWith(
+        session.id,
         expect.any(String),
       );
     });
@@ -303,6 +397,11 @@ describe("AuthService", () => {
       passwordService.hash.mockResolvedValue("hashed-password");
       usersService.create.mockResolvedValue(user);
       tokenService.generateAuthTokens.mockResolvedValue(tokens);
+      sessionsService.countActiveByUserId.mockResolvedValue(0);
+      sessionsService.create.mockResolvedValue(session as never);
+      sessionsService.updateRefreshTokenHash.mockResolvedValue(
+        session as never,
+      );
 
       const result = await service.register({
         email: user.email,
@@ -327,6 +426,7 @@ describe("AuthService", () => {
   describe("refresh", () => {
     it("should reject when user does not exist", async () => {
       usersService.findById.mockResolvedValue(null);
+      sessionsService.findById.mockResolvedValue(session as never);
 
       await expect(
         service.refresh({
@@ -334,6 +434,7 @@ describe("AuthService", () => {
           email: user.email,
           username: user.username,
           role: user.role,
+          sessionId: session.id,
           refreshToken: tokens.refreshToken,
         }),
       ).rejects.toThrow(new UnauthorizedException("Invalid refresh token"));
@@ -346,8 +447,11 @@ describe("AuthService", () => {
     it("should reject when refresh token hash is missing", async () => {
       usersService.findById.mockResolvedValue({
         ...user,
-        refreshTokenHash: null,
       });
+      sessionsService.findById.mockResolvedValue({
+        ...session,
+        refreshTokenHash: null,
+      } as never);
 
       await expect(
         service.refresh({
@@ -355,6 +459,7 @@ describe("AuthService", () => {
           email: user.email,
           username: user.username,
           role: user.role,
+          sessionId: session.id,
           refreshToken: tokens.refreshToken,
         }),
       ).rejects.toThrow(new UnauthorizedException("Invalid refresh token"));
@@ -366,6 +471,7 @@ describe("AuthService", () => {
     it("should reject when refresh token is invalid", async () => {
       usersService.findById.mockResolvedValue(user);
       passwordService.compare.mockResolvedValue(false);
+      sessionsService.findById.mockResolvedValue(session as never);
 
       await expect(
         service.refresh({
@@ -373,13 +479,14 @@ describe("AuthService", () => {
           email: user.email,
           username: user.username,
           role: user.role,
+          sessionId: session.id,
           refreshToken: tokens.refreshToken,
         }),
       ).rejects.toThrow(new UnauthorizedException("Invalid refresh token"));
 
       expect(passwordService.compare).toHaveBeenCalled();
       expect(tokenService.generateAuthTokens).not.toHaveBeenCalled();
-      expect(usersService.updateRefreshTokenHash).not.toHaveBeenCalled();
+      expect(sessionsService.updateRefreshTokenHash).not.toHaveBeenCalled();
     });
 
     it("should refresh tokens with a valid refresh token", async () => {
@@ -387,13 +494,17 @@ describe("AuthService", () => {
       passwordService.compare.mockResolvedValue(true);
       tokenService.generateAuthTokens.mockResolvedValue(tokens);
       passwordService.hash.mockResolvedValue("new-refresh-token-hash");
-      usersService.updateRefreshTokenHash.mockResolvedValue(user);
+      sessionsService.findById.mockResolvedValue(session as never);
+      sessionsService.updateRefreshTokenHash.mockResolvedValue(
+        session as never,
+      );
 
       const result = await service.refresh({
         id: user.id,
         email: user.email,
         username: user.username,
         role: user.role,
+        sessionId: session.id,
         refreshToken: tokens.refreshToken,
       });
 
@@ -415,23 +526,28 @@ describe("AuthService", () => {
       passwordService.compare.mockResolvedValue(true);
       tokenService.generateAuthTokens.mockResolvedValue(tokens);
       passwordService.hash.mockResolvedValue("new-refresh-token-hash");
+      sessionsService.findById.mockResolvedValue(session as never);
 
       await service.refresh({
         id: user.id,
         email: user.email,
         username: user.username,
         role: user.role,
+        sessionId: session.id,
         refreshToken: tokens.refreshToken,
       });
 
-      expect(tokenService.generateAuthTokens).toHaveBeenCalledWith({
-        id: user.id,
-        email: user.email,
-        username: user.username,
-        role: user.role,
-        createdAt: user.createdAt,
-        updatedAt: user.updatedAt,
-      });
+      expect(tokenService.generateAuthTokens).toHaveBeenCalledWith(
+        {
+          id: user.id,
+          email: user.email,
+          username: user.username,
+          role: user.role,
+          createdAt: user.createdAt,
+          updatedAt: user.updatedAt,
+        },
+        session.id,
+      );
     });
 
     it("should rotate the refresh token hash", async () => {
@@ -442,18 +558,20 @@ describe("AuthService", () => {
         refreshToken: "new-refresh-token",
       });
       passwordService.hash.mockResolvedValue("new-refresh-token-hash");
+      sessionsService.findById.mockResolvedValue(session as never);
 
       await service.refresh({
         id: user.id,
         email: user.email,
         username: user.username,
         role: user.role,
+        sessionId: session.id,
         refreshToken: tokens.refreshToken,
       });
 
       expect(passwordService.hash).toHaveBeenCalled();
-      expect(usersService.updateRefreshTokenHash).toHaveBeenCalledWith(
-        user.id,
+      expect(sessionsService.updateRefreshTokenHash).toHaveBeenCalledWith(
+        session.id,
         "new-refresh-token-hash",
       );
     });

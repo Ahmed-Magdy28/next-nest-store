@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import type { User } from "@repo/database";
+import type { Prisma, User } from "@repo/database";
 
 import { UsersRepository } from "./repositories/users.repository";
 import { CreateUserInput } from "./types";
@@ -22,6 +22,18 @@ export class UsersService {
 
   findById(id: string): Promise<User | null> {
     return this.usersRepository.findById(id);
+  }
+
+  findByPasswordResetTokenHash(tokenHash: string): Promise<User | null> {
+    return this.usersRepository.findByPasswordResetTokenHash(tokenHash);
+  }
+
+  findByEmailVerificationTokenHash(tokenHash: string): Promise<User | null> {
+    return this.usersRepository.findByEmailVerificationTokenHash(tokenHash);
+  }
+
+  updateById(userId: string, data: Prisma.UserUpdateInput): Promise<User> {
+    return this.usersRepository.updateById(userId, data);
   }
 
   updatePasswordHash(userId: string, passwordHash: string): Promise<User> {

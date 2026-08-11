@@ -3,6 +3,7 @@ import { ConfigService } from "@nestjs/config";
 
 import { PassportStrategy } from "@nestjs/passport";
 import { ExtractJwt, Strategy } from "passport-jwt";
+import { SessionStatus } from "@repo/database";
 
 import { UsersService } from "../../users/users.service";
 
@@ -34,6 +35,10 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     const session = await this.sessionsService.findById(payload.sessionId);
 
     if (!session) {
+      throw new UnauthorizedException("Invalid session");
+    }
+
+    if (session.status !== SessionStatus.ACTIVE) {
       throw new UnauthorizedException("Invalid session");
     }
 

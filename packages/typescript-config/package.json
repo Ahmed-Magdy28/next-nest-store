@@ -13,5 +13,8 @@
     "./node-library": "./node-library.json",
     "./node": "./node.json",
     "./library": "./library.json"
+  },
+  "scripts": {
+    "check-types": "node -e \"const fs = require('node:fs'); ['base.json', 'nextjs.json', 'react-library.json', 'node-library.json', 'node.json', 'library.json'].forEach((file) => JSON.parse(fs.readFileSync(file, 'utf8')));\""
   }
 }

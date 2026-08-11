@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import type { Session, SessionStatus } from "@repo/database";
+import { type Session, SessionStatus } from "@repo/database";
 
 import { SessionsRepository } from "./repositories/sessions.repository";
 
@@ -20,8 +20,16 @@ export class SessionsService {
     return this.sessionsRepository.findById(id);
   }
 
+  findByUserId(userId: string): Promise<Session[]> {
+    return this.sessionsRepository.findByUserId(userId);
+  }
+
   findActiveByUserId(userId: string): Promise<Session[]> {
     return this.sessionsRepository.findActiveByUserId(userId);
+  }
+
+  findPendingByUserId(userId: string): Promise<Session[]> {
+    return this.sessionsRepository.findPendingByUserId(userId);
   }
 
   countActiveByUserId(userId: string): Promise<number> {
@@ -41,5 +49,16 @@ export class SessionsService {
 
   revoke(id: string): Promise<Session> {
     return this.sessionsRepository.revoke(id);
+  }
+
+  revokeAndActivatePending(
+    userId: string,
+    sessionId: string,
+  ): Promise<Session | null> {
+    return this.sessionsRepository.revokeAndActivatePending(userId, sessionId);
+  }
+
+  revokeAllByUserId(userId: string): Promise<{ count: number }> {
+    return this.sessionsRepository.revokeAllByUserId(userId);
   }
 }

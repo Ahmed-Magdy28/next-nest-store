@@ -5,3 +5,5 @@ export const REFRESH_TOKEN_TYPE = "refresh";
 export const ACCESS_TOKEN_EXPIRES_IN = "15m";
 export const REFRESH_TOKEN_EXPIRES_IN = "7d";
 export const REFRESH_TOKEN_SESSION_TTL = 7 * 24 * 60 * 60 * 1000;
+export const PASSWORD_RESET_TOKEN_TTL = 15 * 60 * 1000;
+export const EMAIL_VERIFICATION_TOKEN_TTL = 60 * 60 * 1000;

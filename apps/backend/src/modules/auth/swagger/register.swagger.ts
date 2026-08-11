@@ -1,7 +1,10 @@
 import { applyDecorators } from "@nestjs/common";
-import { ApiBody, ApiResponse } from "@nestjs/swagger";
+import { ApiBody, ApiOperation, ApiResponse } from "@nestjs/swagger";
 
 export const registerSwagger = applyDecorators(
+  ApiOperation({
+    summary: "Register",
+  }),
   ApiBody({
     schema: {
       example: {
