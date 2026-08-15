@@ -84,6 +84,7 @@ export class AuthController {
 
   @Delete("sessions/:id")
   @Swagger("revoke-session")
+  @HttpCode(HttpStatus.NO_CONTENT)
   async revokeSession(
     @CurrentUser() user: JwtUser,
     @Param("id") id: string,
@@ -93,12 +94,14 @@ export class AuthController {
 
   @Delete("sessions")
   @Swagger("revoke-all-sessions")
+  @HttpCode(HttpStatus.NO_CONTENT)
   async revokeAllSessions(@CurrentUser() user: JwtUser): Promise<void> {
     await this.authService.revokeAllSessions(user.id);
   }
 
   @Public()
   @Post("forgot-password")
+  @HttpCode(HttpStatus.OK)
   @UseZodValidation(forgotPasswordSchema)
   @Swagger("forgot-password")
   async forgotPassword(
@@ -114,6 +117,7 @@ export class AuthController {
 
   @Public()
   @Post("reset-password")
+  @HttpCode(HttpStatus.OK)
   @UseZodValidation(resetPasswordSchema)
   @Swagger("reset-password")
   async resetPassword(

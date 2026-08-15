@@ -4,7 +4,7 @@ import { createTestingApp } from "../../helpers/app.helper";
 import { cleanDatabase } from "../../helpers/database.helper";
 import { testContext, type TestContext } from "../../helpers/test-context";
 import { makeUser } from "../../factories/user.factory";
-import { register, login } from "../../helpers/auth.helper";
+import { register, login, refresh } from "../../helpers/auth.helper";
 import {
   changeMyPassword,
   getMyUser,
@@ -13,6 +13,7 @@ import {
   updateMyUsername,
   verifyMyEmail,
 } from "../../helpers/users.helper";
+import type { AuthResponse } from "../../types/auth.types";
 
 describe("Users me endpoints", () => {
   let app: INestApplication;
@@ -101,15 +102,37 @@ describe("Users me endpoints", () => {
     const user = makeUser();
 
     const registerResponse = await register(user).expect(201);
-    const registerBody = registerResponse.body as { accessToken: string };
+    const secondLoginResponse = await login(user.email, user.password).expect(
+      200,
+    );
+    const registerBody = registerResponse.body as AuthResponse;
+    const secondLoginBody = secondLoginResponse.body as AuthResponse;
 
     await changeMyPassword(
-      registerBody.accessToken,
+      registerBody.accessToken!,
       user.password,
       "NewPassword123!",
     ).expect(204);
 
-    await getMyUser(registerBody.accessToken).expect(401);
+    const activeCount = await ctx.prisma.session.count({
+      where: {
+        userId: registerBody.user.id,
+        status: "ACTIVE",
+      },
+    });
+    const revokedCount = await ctx.prisma.session.count({
+      where: {
+        userId: registerBody.user.id,
+        status: "REVOKED",
+      },
+    });
+
+    expect(activeCount).toBe(0);
+    expect(revokedCount).toBe(2);
+
+    await getMyUser(registerBody.accessToken!).expect(401);
+    await refresh(registerBody.refreshToken).expect(401);
+    await refresh(secondLoginBody.refreshToken).expect(401);
 
     await login(user.email, user.password).expect(401);
     const loginResponse = await login(user.email, "NewPassword123!").expect(

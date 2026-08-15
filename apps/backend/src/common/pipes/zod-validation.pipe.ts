@@ -10,7 +10,11 @@ import { flattenError, type ZodType } from "zod";
 export class ZodValidationPipe implements PipeTransform {
   constructor(private readonly schema: ZodType) {}
 
-  transform(value: unknown, _: ArgumentMetadata) {
+  transform(value: unknown, metadata: ArgumentMetadata) {
+    if (metadata.type !== "body") {
+      return value;
+    }
+
     const result = this.schema.safeParse(value);
 
     if (!result.success) {

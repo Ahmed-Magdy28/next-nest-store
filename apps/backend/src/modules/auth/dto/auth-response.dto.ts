@@ -2,7 +2,7 @@ import type { AuthUserDto } from "./auth-user.dto";
 import type { SessionSummaryDto } from "../../sessions/dto";
 
 export interface AuthTokensDto {
-  accessToken: string;
+  accessToken?: string;
   refreshToken: string;
 }
 

@@ -4,6 +4,7 @@ import {
   ApiNoContentResponse,
   ApiOperation,
   ApiParam,
+  ApiResponse,
 } from "@nestjs/swagger";
 
 export const revokeSessionSwagger = applyDecorators(
@@ -15,4 +16,10 @@ export const revokeSessionSwagger = applyDecorators(
   }),
   ApiNoContentResponse({ description: "Session revoked." }),
   ApiBearerAuth("access-token"),
+  ApiResponse({ status: 401, description: "Invalid or missing access token." }),
+  ApiResponse({
+    status: 403,
+    description: "Session belongs to another user.",
+  }),
+  ApiResponse({ status: 404, description: "Session not found." }),
 );

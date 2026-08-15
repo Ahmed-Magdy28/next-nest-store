@@ -104,12 +104,7 @@ export class AuthService {
 
     const session = await this.createSession(user.id);
 
-    const tokens = await this.tokenService.generateAuthTokens(
-      authUser,
-      session.id,
-    );
-
-    await this.saveRefreshToken(session.id, tokens.refreshToken);
+    const tokens = await this.generateSessionTokens(authUser, session);
 
     return {
       user: authUser,
@@ -137,12 +132,7 @@ export class AuthService {
 
     const session = await this.createSession(user.id);
 
-    const tokens = await this.tokenService.generateAuthTokens(
-      authUser,
-      session.id,
-    );
-
-    await this.saveRefreshToken(session.id, tokens.refreshToken);
+    const tokens = await this.generateSessionTokens(authUser, session);
 
     return {
       user: authUser,

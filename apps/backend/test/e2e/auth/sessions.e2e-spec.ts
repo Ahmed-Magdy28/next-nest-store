@@ -14,6 +14,11 @@ import { makeUser } from "../../factories/user.factory";
 import type { AuthResponse } from "../../types/auth.types";
 import { me as authMe, refresh } from "../../helpers/auth.helper";
 
+function expectAccessToken(body: AuthResponse): string {
+  expect(body.accessToken).toEqual(expect.any(String));
+  return body.accessToken!;
+}
+
 describe("Auth sessions", () => {
   let app: INestApplication;
   let ctx: TestContext;
@@ -50,11 +55,17 @@ describe("Auth sessions", () => {
     const pendingBody = pendingResponse.body as AuthResponse;
 
     expect(registerBody.session.status).toBe("ACTIVE");
+    expect(registerBody.accessToken).toEqual(expect.any(String));
+    expect(registerBody.refreshToken).toEqual(expect.any(String));
     expect(activeLogins).toHaveLength(4);
-    expect(activeLogins.every((item) => item.session.status === "ACTIVE")).toBe(
-      true,
-    );
+    for (const activeLogin of activeLogins) {
+      expect(activeLogin.session.status).toBe("ACTIVE");
+      expect(activeLogin.accessToken).toEqual(expect.any(String));
+      expect(activeLogin.refreshToken).toEqual(expect.any(String));
+    }
     expect(pendingBody.session.status).toBe("PENDING");
+    expect(pendingBody).not.toHaveProperty("accessToken");
+    expect(pendingBody.refreshToken).toEqual(expect.any(String));
 
     const activeCount = await ctx.prisma.session.count({
       where: {
@@ -65,9 +76,9 @@ describe("Auth sessions", () => {
 
     expect(activeCount).toBe(5);
 
-    const sessionsResponse = await sessions(registerBody.accessToken).expect(
-      200,
-    );
+    const sessionsResponse = await sessions(
+      expectAccessToken(registerBody),
+    ).expect(200);
 
     expect(sessionsResponse.body).toHaveLength(6);
     expect(
@@ -81,20 +92,21 @@ describe("Auth sessions", () => {
       ),
     ).toHaveLength(1);
 
-    await authMe(pendingBody.accessToken).expect(401);
     await refresh(pendingBody.refreshToken).expect(401);
 
     const revokeTarget = registerBody.session.id;
     const revokeActor = activeLogins[0];
 
     const revokeResponse = await revokeSession(
-      revokeActor!.accessToken,
+      expectAccessToken(revokeActor!),
       revokeTarget,
     ).expect(204);
 
     expect(revokeResponse.text).toBe("");
 
-    const afterRevoke = await sessions(revokeActor!.accessToken).expect(200);
+    const afterRevoke = await sessions(expectAccessToken(revokeActor!)).expect(
+      200,
+    );
 
     const activeAfterRevoke = afterRevoke.body.filter(
       (session: { status: string }) => session.status === "ACTIVE",
@@ -111,6 +123,15 @@ describe("Auth sessions", () => {
         (session: { id: string }) => session.id === pendingBody.session.id,
       ).status,
     ).toBe("ACTIVE");
+
+    const activatedRefreshResponse = await refresh(
+      pendingBody.refreshToken,
+    ).expect(201);
+    const activatedRefreshBody = activatedRefreshResponse.body as AuthResponse;
+
+    expect(activatedRefreshBody.session.id).toBe(pendingBody.session.id);
+    expect(activatedRefreshBody.accessToken).toEqual(expect.any(String));
+    expect(activatedRefreshBody.refreshToken).toEqual(expect.any(String));
   });
 
   it("should not allow revoking another user's session", async () => {
@@ -123,9 +144,10 @@ describe("Auth sessions", () => {
     const firstBody = firstResponse.body as AuthResponse;
     const secondBody = secondResponse.body as AuthResponse;
 
-    await revokeSession(firstBody.accessToken, secondBody.session.id).expect(
-      403,
-    );
+    await revokeSession(
+      expectAccessToken(firstBody),
+      secondBody.session.id,
+    ).expect(403);
   });
 
   it("should revoke all sessions for the authenticated user", async () => {
@@ -136,7 +158,7 @@ describe("Auth sessions", () => {
 
     await login(user.email, user.password).expect(200);
 
-    await revokeAllSessions(registerBody.accessToken).expect(204);
+    await revokeAllSessions(expectAccessToken(registerBody)).expect(204);
 
     const activeCount = await ctx.prisma.session.count({
       where: {
@@ -145,8 +167,16 @@ describe("Auth sessions", () => {
       },
     });
 
-    expect(activeCount).toBe(0);
+    const revokedCount = await ctx.prisma.session.count({
+      where: {
+        userId: registerBody.user.id,
+        status: "REVOKED",
+      },
+    });
 
-    await authMe(registerBody.accessToken).expect(401);
+    expect(activeCount).toBe(0);
+    expect(revokedCount).toBe(2);
+
+    await authMe(expectAccessToken(registerBody)).expect(401);
   });
 });

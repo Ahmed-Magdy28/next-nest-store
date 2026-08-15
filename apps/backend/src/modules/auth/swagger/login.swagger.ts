@@ -15,7 +15,8 @@ export const loginSwagger = applyDecorators(
   }),
   ApiResponse({
     status: 200,
-    description: "User logged in successfully.",
+    description:
+      "User logged in successfully. Pending sessions receive only a refresh token.",
     schema: {
       example: {
         user: {
@@ -26,9 +27,22 @@ export const loginSwagger = applyDecorators(
           createdAt: "2026-08-10T18:00:00.000Z",
           updatedAt: "2026-08-10T18:00:00.000Z",
         },
+        session: {
+          id: "550e8400-e29b-41d4-a716-446655440001",
+          status: "ACTIVE",
+          isCurrent: true,
+        },
         accessToken: "eyJhbGciOiJIUzI1NiIs...",
         refreshToken: "eyJhbGciOiJIUzI1NiIs...",
       },
     },
+  }),
+  ApiResponse({
+    status: 400,
+    description: "Invalid login payload.",
+  }),
+  ApiResponse({
+    status: 401,
+    description: "Invalid credentials.",
   }),
 );

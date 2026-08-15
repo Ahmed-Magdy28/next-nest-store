@@ -13,7 +13,9 @@ describe("GET /auth/me", () => {
 
       const body = registerResponse.body as AuthResponse;
 
-      const response = await me(body.accessToken).expect(200);
+      expect(body.accessToken).toEqual(expect.any(String));
+
+      const response = await me(body.accessToken!).expect(200);
 
       expect(response.body.email).toBe(user.email);
       expect(response.body.username).toBe(user.username);
@@ -49,10 +51,11 @@ describe("GET /auth/me", () => {
       const registerResponse = await register(user).expect(201);
 
       const body = registerResponse.body as AuthResponse;
+      expect(body.accessToken).toEqual(expect.any(String));
 
       const tamperedToken =
-        body.accessToken.slice(0, -1) +
-        (body.accessToken.endsWith("a") ? "b" : "a");
+        body.accessToken!.slice(0, -1) +
+        (body.accessToken!.endsWith("a") ? "b" : "a");
 
       await me(tamperedToken).expect(401);
     });
@@ -70,7 +73,9 @@ describe("GET /auth/me", () => {
         },
       });
 
-      await me(body.accessToken).expect(401);
+      expect(body.accessToken).toEqual(expect.any(String));
+
+      await me(body.accessToken!).expect(401);
     });
   });
 });

@@ -8,7 +8,10 @@ import {
   forgotPassword,
   resetPassword,
   login,
+  register,
+  refresh,
 } from "../../helpers/auth.helper";
+import type { AuthResponse } from "../../types/auth.types";
 
 describe("Password reset", () => {
   let app: INestApplication;
@@ -110,5 +113,39 @@ describe("Password reset", () => {
     const resetToken = response.body.resetToken as string;
 
     await resetPassword(resetToken, "short").expect(400);
+  });
+
+  it("should revoke all existing sessions after a successful reset", async () => {
+    const user = makeUser();
+
+    const registerResponse = await register(user).expect(201);
+    const loginResponse = await login(user.email, user.password).expect(200);
+
+    const registerBody = registerResponse.body as AuthResponse;
+    const loginBody = loginResponse.body as AuthResponse;
+
+    const resetRequestResponse = await forgotPassword(user.email).expect(200);
+    const resetToken = resetRequestResponse.body.resetToken as string;
+
+    await resetPassword(resetToken, "NewPassword123!").expect(200);
+
+    const activeCount = await ctx.prisma.session.count({
+      where: {
+        userId: registerBody.user.id,
+        status: "ACTIVE",
+      },
+    });
+    const revokedCount = await ctx.prisma.session.count({
+      where: {
+        userId: registerBody.user.id,
+        status: "REVOKED",
+      },
+    });
+
+    expect(activeCount).toBe(0);
+    expect(revokedCount).toBe(2);
+
+    await refresh(registerBody.refreshToken).expect(401);
+    await refresh(loginBody.refreshToken).expect(401);
   });
 });

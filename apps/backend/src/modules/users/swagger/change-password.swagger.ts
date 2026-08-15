@@ -4,6 +4,7 @@ import {
   ApiBody,
   ApiNoContentResponse,
   ApiOperation,
+  ApiResponse,
 } from "@nestjs/swagger";
 
 export const changePasswordSwagger = applyDecorators(
@@ -17,5 +18,12 @@ export const changePasswordSwagger = applyDecorators(
       },
     },
   }),
-  ApiNoContentResponse({ description: "Password changed." }),
+  ApiNoContentResponse({
+    description: "Password changed and all sessions revoked.",
+  }),
+  ApiResponse({ status: 400, description: "Invalid password payload." }),
+  ApiResponse({
+    status: 401,
+    description: "Invalid access token or current password.",
+  }),
 );

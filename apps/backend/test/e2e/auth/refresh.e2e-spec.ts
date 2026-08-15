@@ -2,11 +2,11 @@ import { INestApplication } from "@nestjs/common";
 
 import { createTestingApp } from "../../helpers/app.helper";
 import { cleanDatabase } from "../../helpers/database.helper";
-// import { register, refresh } from "../../helpers/auth.helper";
+import { register, refresh } from "../../helpers/auth.helper";
 
 import { TestContext } from "../../helpers/test-context";
-// import { makeUser } from "../../factories/user.factory";
-// import { AuthResponse } from "../../types/auth.types";
+import { makeUser } from "../../factories/user.factory";
+import { AuthResponse } from "../../types/auth.types";
 
 describe("POST /auth/refresh", () => {
   let app: INestApplication;
@@ -25,111 +25,144 @@ describe("POST /auth/refresh", () => {
     await cleanDatabase(ctx.prisma);
   });
 
-  it.skip("placeHolder", () => {});
-  // describe("Success", () => {
-  //   it("should refresh tokens", async () => {
-  //     const user = makeUser();
+  describe("Success", () => {
+    it("should refresh tokens", async () => {
+      const user = makeUser();
 
-  //     const registerResponse = await register(user).expect(201);
+      const registerResponse = await register(user).expect(201);
 
-  //     const registerBody = registerResponse.body as AuthResponse;
+      const registerBody = registerResponse.body as AuthResponse;
 
-  //     const response = await refresh(registerBody.refreshToken).expect(201);
+      const response = await refresh(registerBody.refreshToken).expect(201);
 
-  //     const body = response.body as AuthResponse;
+      const body = response.body as AuthResponse;
 
-  //     expect(body.user.email).toBe(user.email);
-  //     expect(body.user.username).toBe(user.username);
-  //     expect(body.user.role).toBe("USER");
+      expect(body.user.email).toBe(user.email);
+      expect(body.user.username).toBe(user.username);
+      expect(body.user.role).toBe("USER");
 
-  //     expect(body.accessToken).toEqual(expect.any(String));
-  //     expect(body.refreshToken).toEqual(expect.any(String));
+      expect(body.accessToken).toEqual(expect.any(String));
+      expect(body.refreshToken).toEqual(expect.any(String));
 
-  //     expect(body.accessToken).not.toBe(registerBody.accessToken);
-  //     expect(body.refreshToken).not.toBe(registerBody.refreshToken);
-  //   });
-  // });
+      expect(body.accessToken).not.toBe(registerBody.accessToken);
+      expect(body.refreshToken).not.toBe(registerBody.refreshToken);
+    });
+  });
 
-  // describe("Security", () => {
-  //   it("should reject refresh token when stored hash is missing", async () => {
-  //     const user = makeUser();
+  describe("Security", () => {
+    it("should reject refresh token when stored hash is missing", async () => {
+      const user = makeUser();
 
-  //     const registerResponse = await register(user).expect(201);
+      const registerResponse = await register(user).expect(201);
 
-  //     const registerBody = registerResponse.body as AuthResponse;
+      const registerBody = registerResponse.body as AuthResponse;
 
-  //     await ctx.prisma.user.update({
-  //       where: {
-  //         email: user.email,
-  //       },
-  //       data: {
-  //         refreshTokenHash: null,
-  //       },
-  //     });
+      await ctx.prisma.session.update({
+        where: {
+          id: registerBody.session.id,
+        },
+        data: {
+          refreshTokenHash: null,
+        },
+      });
 
-  //     await refresh(registerBody.refreshToken).expect(401);
-  //   });
-  //   it("should reject refresh token when user no longer exists", async () => {
-  //     const user = makeUser();
+      await refresh(registerBody.refreshToken).expect(401);
+    });
+    it("should reject refresh token when user no longer exists", async () => {
+      const user = makeUser();
 
-  //     const registerResponse = await register(user).expect(201);
+      const registerResponse = await register(user).expect(201);
 
-  //     const registerBody = registerResponse.body as AuthResponse;
+      const registerBody = registerResponse.body as AuthResponse;
 
-  //     await ctx.prisma.user.delete({
-  //       where: {
-  //         email: user.email,
-  //       },
-  //     });
+      await ctx.prisma.user.delete({
+        where: {
+          email: user.email,
+        },
+      });
 
-  //     await refresh(registerBody.refreshToken).expect(401);
-  //   });
-  //   it("should reject a tampered refresh token", async () => {
-  //     const user = makeUser();
+      await refresh(registerBody.refreshToken).expect(401);
+    });
+    it("should reject a tampered refresh token", async () => {
+      const user = makeUser();
 
-  //     const registerResponse = await register(user).expect(201);
+      const registerResponse = await register(user).expect(201);
 
-  //     const registerBody = registerResponse.body as AuthResponse;
+      const registerBody = registerResponse.body as AuthResponse;
 
-  //     const tamperedToken =
-  //       registerBody.refreshToken.slice(0, -1) +
-  //       (registerBody.refreshToken.endsWith("a") ? "b" : "a");
+      const tamperedToken =
+        registerBody.refreshToken.slice(0, -1) +
+        (registerBody.refreshToken.endsWith("a") ? "b" : "a");
 
-  //     await refresh(tamperedToken).expect(401);
-  //   });
+      await refresh(tamperedToken).expect(401);
+    });
 
-  //   it("should reject an invalid refresh token", async () => {
-  //     const response = await refresh("invalid-refresh-token").expect(401);
+    it("should reject an invalid refresh token", async () => {
+      const response = await refresh("invalid-refresh-token").expect(401);
 
-  //     expect(response.body.message).toBe("Unauthorized");
-  //   });
+      expect(response.body.message).toBe("Unauthorized");
+    });
 
-  //   it("should reject an access token as a refresh token", async () => {
-  //     const user = makeUser();
+    it("should reject an access token as a refresh token", async () => {
+      const user = makeUser();
 
-  //     const registerResponse = await register(user).expect(201);
+      const registerResponse = await register(user).expect(201);
 
-  //     const registerBody = registerResponse.body as AuthResponse;
+      const registerBody = registerResponse.body as AuthResponse;
+      expect(registerBody.accessToken).toEqual(expect.any(String));
 
-  //     await refresh(registerBody.accessToken).expect(401);
-  //   });
+      await refresh(registerBody.accessToken!).expect(401);
+    });
 
-  //   it("should reject the old refresh token after rotation", async () => {
-  //     const user = makeUser();
+    it("should reject the old refresh token after rotation", async () => {
+      const user = makeUser();
 
-  //     const registerResponse = await register(user).expect(201);
+      const registerResponse = await register(user).expect(201);
 
-  //     const registerBody = registerResponse.body as AuthResponse;
+      const registerBody = registerResponse.body as AuthResponse;
 
-  //     const refreshResponse = await refresh(registerBody.refreshToken).expect(
-  //       201,
-  //     );
+      const refreshResponse = await refresh(registerBody.refreshToken).expect(
+        201,
+      );
 
-  //     const refreshBody = refreshResponse.body as AuthResponse;
+      const refreshBody = refreshResponse.body as AuthResponse;
 
-  //     expect(refreshBody.refreshToken).not.toBe(registerBody.refreshToken);
+      expect(refreshBody.refreshToken).not.toBe(registerBody.refreshToken);
 
-  //     await refresh(registerBody.refreshToken).expect(401);
-  //   });
-  // });
+      await refresh(registerBody.refreshToken).expect(401);
+    });
+
+    it("should reject refresh tokens for revoked and expired sessions", async () => {
+      const revokedUser = makeUser();
+      const expiredUser = makeUser();
+
+      const revokedRegisterResponse = await register(revokedUser).expect(201);
+      const expiredRegisterResponse = await register(expiredUser).expect(201);
+
+      const revokedBody = revokedRegisterResponse.body as AuthResponse;
+      const expiredBody = expiredRegisterResponse.body as AuthResponse;
+
+      await ctx.prisma.session.update({
+        where: {
+          id: revokedBody.session.id,
+        },
+        data: {
+          status: "REVOKED",
+          revokedAt: new Date(),
+        },
+      });
+
+      await ctx.prisma.session.update({
+        where: {
+          id: expiredBody.session.id,
+        },
+        data: {
+          expiresAt: new Date(Date.now() - 60_000),
+        },
+      });
+
+      await refresh(revokedBody.refreshToken).expect(401);
+      await refresh(expiredBody.refreshToken).expect(401);
+    });
+  });
 });

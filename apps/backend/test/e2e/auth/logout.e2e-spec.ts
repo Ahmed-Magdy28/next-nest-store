@@ -3,34 +3,37 @@ import { makeUser } from "../../factories/user.factory";
 import { AuthResponse } from "../../types/auth.types";
 
 describe("POST /auth/logout", () => {
-  it.skip("placeHolder", () => {});
-  // it("should logout successfully", async () => {
-  //   const user = makeUser();
+  it("should logout successfully", async () => {
+    const user = makeUser();
 
-  //   const registerResponse = await register(user).expect(201);
-  //   const body = registerResponse.body as AuthResponse;
+    const registerResponse = await register(user).expect(201);
+    const body = registerResponse.body as AuthResponse;
 
-  //   await logout(body.accessToken).expect(204);
+    expect(body.accessToken).toEqual(expect.any(String));
 
-  //   await refresh(body.refreshToken).expect(401);
-  // });
+    await logout(body.accessToken!).expect(204);
 
-  // it("should reject logout without access token", async () => {
-  //   await logout("").expect(401);
-  // });
+    await refresh(body.refreshToken).expect(401);
+  });
 
-  // it("should reject logout with invalid access token", async () => {
-  //   await logout("invalid-access-token").expect(401);
-  // });
+  it("should reject logout without access token", async () => {
+    await logout("").expect(401);
+  });
 
-  // it("should keep the access token valid after logout", async () => {
-  //   const user = makeUser();
+  it("should reject logout with invalid access token", async () => {
+    await logout("invalid-access-token").expect(401);
+  });
 
-  //   const registerResponse = await register(user).expect(201);
-  //   const body = registerResponse.body as AuthResponse;
+  it("should invalidate the access token after logout", async () => {
+    const user = makeUser();
 
-  //   await logout(body.accessToken).expect(204);
+    const registerResponse = await register(user).expect(201);
+    const body = registerResponse.body as AuthResponse;
 
-  //   await me(body.accessToken).expect(200);
-  // });
+    expect(body.accessToken).toEqual(expect.any(String));
+
+    await logout(body.accessToken!).expect(204);
+
+    await me(body.accessToken!).expect(401);
+  });
 });

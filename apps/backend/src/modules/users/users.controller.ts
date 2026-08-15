@@ -12,13 +12,6 @@ import {
   Post,
   UnauthorizedException,
 } from "@nestjs/common";
-import {
-  ApiBearerAuth,
-  ApiBody,
-  ApiNoContentResponse,
-  ApiOkResponse,
-  ApiOperation,
-} from "@nestjs/swagger";
 
 import {
   CurrentUser,
@@ -101,6 +94,7 @@ export class UsersController {
 
   @Public()
   @Post("me/email/verify")
+  @HttpCode(HttpStatus.OK)
   @Swagger("verify-email")
   @UseZodValidation(verifyEmailSchema)
   verifyEmail(
