@@ -1,0 +1,21 @@
+{
+  "extends": "@repo/typescript-config/node",
+  "compilerOptions": {
+    "module": "CommonJS",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "removeComments": true,
+    "sourceMap": true,
+    "rootDir": "./src",
+    "outDir": "./dist",
+    "incremental": true,
+    "strictNullChecks": true,
+    "noImplicitAny": false,
+    "strictBindCallApply": false,
+    "noFallthroughCasesInSwitch": false,
+    "types": ["node"],
+    "allowJs": true
+  },
+  "include": ["src"],
+  "exclude": ["node_modules", "dist"]
+}

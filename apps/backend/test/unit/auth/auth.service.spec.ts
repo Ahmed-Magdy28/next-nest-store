@@ -5,7 +5,7 @@ import { UsersService } from "../../../src/modules/users/users.service";
 import { PasswordService } from "../../../src/modules/auth/services/password.service";
 import { TokenService } from "../../../src/modules/auth/services/token.service";
 import { SessionsService } from "../../../src/modules/sessions/sessions.service";
-import type { User } from "@repo/database";
+import { SessionStatus, type User } from "@repo/database";
 
 describe("AuthService", () => {
   let service: AuthService;
@@ -148,6 +148,19 @@ describe("AuthService", () => {
           role: user.role,
           createdAt: user.createdAt,
           updatedAt: user.updatedAt,
+        },
+        session: {
+          id: session.id,
+          createdAt: session.createdAt,
+          updatedAt: session.updatedAt,
+          expiresAt: session.expiresAt,
+          lastUsedAt: session.lastUsedAt,
+          revokedAt: session.revokedAt,
+          status: session.status,
+          deviceName: undefined,
+          userAgent: undefined,
+          ipAddress: undefined,
+          isCurrent: true,
         },
         ...tokens,
       });
@@ -418,6 +431,19 @@ describe("AuthService", () => {
           createdAt: user.createdAt,
           updatedAt: user.updatedAt,
         },
+        session: {
+          id: session.id,
+          createdAt: session.createdAt,
+          updatedAt: session.updatedAt,
+          expiresAt: session.expiresAt,
+          lastUsedAt: session.lastUsedAt,
+          revokedAt: session.revokedAt,
+          status: session.status,
+          deviceName: undefined,
+          userAgent: undefined,
+          ipAddress: undefined,
+          isCurrent: true,
+        },
         ...tokens,
       });
     });
@@ -516,6 +542,19 @@ describe("AuthService", () => {
           role: user.role,
           createdAt: user.createdAt,
           updatedAt: user.updatedAt,
+        },
+        session: {
+          id: session.id,
+          createdAt: session.createdAt,
+          updatedAt: session.updatedAt,
+          expiresAt: session.expiresAt,
+          lastUsedAt: session.lastUsedAt,
+          revokedAt: session.revokedAt,
+          status: session.status,
+          deviceName: undefined,
+          userAgent: undefined,
+          ipAddress: undefined,
+          isCurrent: true,
         },
         ...tokens,
       });

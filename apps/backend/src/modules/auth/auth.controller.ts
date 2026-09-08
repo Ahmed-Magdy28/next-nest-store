@@ -24,7 +24,7 @@ import type {
   LoginDto,
   RegisterDto,
   ResetPasswordDto,
-} from "./schemas";
+} from "./dto";
 
 import { CurrentUser } from "../../common/decorators/current-user.decorator";
 import { Public, Swagger } from "../../common/decorators";

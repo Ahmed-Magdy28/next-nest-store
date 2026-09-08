@@ -13,7 +13,7 @@ import {
   REFRESH_TOKEN_SESSION_TTL,
   sha256,
 } from "../../common/security";
-import { RegisterDto, LoginDto } from "./schemas";
+import { RegisterDto, LoginDto } from "./dto";
 import { UsersService } from "../users/users.service";
 import { PasswordService } from "./services/password.service";
 import { AuthMapper } from "./mappers/auth.mapper";

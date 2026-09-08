@@ -27,6 +27,7 @@ import { SessionsService } from "../sessions/sessions.service";
 
 import { UsersService } from "./users.service";
 import { EMAIL_VERIFICATION_TOKEN_TTL } from "../../common/security";
+
 import {
   changePasswordSchema,
   updateEmailSchema,
@@ -34,13 +35,13 @@ import {
   updateUsernameSchema,
   verifyEmailSchema,
 } from "./schemas";
-import type {
-  ChangePasswordDto,
-  UpdateEmailDto,
-  UpdateMeDto,
+
+import {
   UpdateUsernameDto,
-  VerifyEmailDto,
-} from "./schemas";
+  UpdateMeDto,
+  UpdateEmailDto,
+} from "@repo/shared/dtos/users";
+import { VerifyEmailDto, ChangePasswordDto } from "@repo/shared/dtos/auth";
 
 @Controller("users")
 export class UsersController {

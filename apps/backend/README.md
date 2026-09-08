@@ -1,98 +1,982 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Next Nest Store — Backend Progress Documentation
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+## 1. Project Overview
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+The project is a Turborepo monorepo containing:
 
-## Description
+- `apps/backend` — NestJS backend API
+- `apps/frontend` — Next.js frontend
+- `packages/database` — Prisma database package
+- `packages/typescript-config` — shared TypeScript configurations
+- `packages/eslint-config` — shared ESLint configurations
+- `packages/ui` — shared React UI components
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+The backend uses:
 
-## Project setup
+- NestJS
+- Prisma
+- PostgreSQL
+- JWT authentication
+- Zod validation
+- Swagger / OpenAPI
+- Jest / E2E testing
+- Turborepo + pnpm
 
-```bash
-$ pnpm install
+---
+
+# 2. Current Development Status
+
+The current implementation is centered around the authentication system.
+
+### Completed
+
+- User registration
+- User login
+- Access JWT
+- Refresh JWT
+- Current authenticated user
+- Refresh-token validation
+- Logout
+- Database sessions
+- Session limits
+- `ACTIVE` / `PENDING` / `REVOKED` session states
+- Session listing
+- Revoke one session
+- Revoke all sessions
+- Automatic activation of a pending session
+- Password reset request
+- Password reset
+- Password reset token hashing and expiration
+- Password reset invalidates all sessions
+- Swagger documentation for the implemented authentication APIs
+- Zod request validation
+- Unit/E2E test infrastructure
+- TypeScript validation
+- Shared Prisma package exports
+
+### Currently Being Refined
+
+- Swagger consistency between old and newly added endpoints
+- Session behavior for `PENDING` sessions
+- Complete session E2E coverage
+- Remaining user/account APIs
+- Password change API
+- Username update
+- Email update and verification
+- Final authentication hardening
+
+---
+
+# 3. Authentication APIs
+
+The planned authentication API is:
+
+| Method | Endpoint         | Status         |
+| ------ | ---------------- | -------------- |
+| POST   | `/auth/register` | ✅ Implemented |
+| POST   | `/auth/login`    | ✅ Implemented |
+| GET    | `/auth/me`       | ✅ Implemented |
+| POST   | `/auth/refresh`  | ✅ Implemented |
+| POST   | `/auth/logout`   | ✅ Implemented |
+
+Additional authentication endpoints:
+
+| Method | Endpoint                | Status         |
+| ------ | ----------------------- | -------------- |
+| POST   | `/auth/forgot-password` | ✅ Implemented |
+| POST   | `/auth/reset-password`  | ✅ Implemented |
+
+---
+
+# 4. Registration
+
+## Endpoint
+
+```text
+POST /auth/register
 ```
 
-## Compile and run the project
+The registration flow:
 
-```bash
-# development
-$ pnpm run start
+1. Validate request using Zod.
+2. Check whether the email already exists.
+3. Check whether the username already exists.
+4. Hash the password.
+5. Create the user.
+6. Create a database session.
+7. Determine whether the session is `ACTIVE` or `PENDING`.
+8. Generate authentication tokens.
+9. Hash and store the refresh token.
+10. Return the authenticated user, session information and tokens.
 
-# watch mode
-$ pnpm run start:dev
+The response now includes session information in addition to the user and tokens.
 
-# production mode
-$ pnpm run start:prod
+---
+
+# 5. Login
+
+## Endpoint
+
+```text
+POST /auth/login
 ```
 
-## Run tests
+The login flow:
 
-```bash
-# unit tests
-$ pnpm run test
+1. Validate credentials.
+2. Find the user by email.
+3. Verify the password.
+4. Create a new session.
+5. Determine the session status.
+6. Generate authentication tokens.
+7. Hash and store the refresh token.
+8. Return the user, session and tokens.
 
-# e2e tests
-$ pnpm run test:e2e
+Invalid credentials result in:
 
-# test coverage
-$ pnpm run test:cov
+```text
+401 Unauthorized
 ```
 
-## Deployment
+---
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+# 6. Current User
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+## Endpoint
 
-```bash
-$ pnpm install -g @nestjs/mau
-$ mau deploy
+```text
+GET /auth/me
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+The endpoint is protected by the access-token authentication mechanism.
 
-## Resources
+The authenticated JWT user is obtained through:
 
-Check out a few resources that may come in handy when working with NestJS:
+```ts
+@CurrentUser()
+```
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+The endpoint returns the current authenticated user information.
 
-## Support
+Swagger includes the access-token authentication requirement and unauthorized response.
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+---
 
-## Stay in touch
+# 7. Refresh Token
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+## Endpoint
 
-## License
+```text
+POST /auth/refresh
+```
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+The refresh endpoint uses a dedicated:
+
+```text
+RefreshJwtGuard
+```
+
+The refresh flow validates:
+
+- User existence
+- Session existence
+- Session ownership
+- Session status
+- Session revocation
+- Session expiration
+- Refresh-token hash existence
+- Refresh-token validity
+
+A session must now explicitly be:
+
+```text
+ACTIVE
+```
+
+Otherwise the refresh request is rejected.
+
+This prevents a `PENDING` or `REVOKED` session from generating new authentication tokens.
+
+---
+
+# 8. Logout
+
+## Endpoint
+
+```text
+POST /auth/logout
+```
+
+Logout revokes the current session.
+
+The session receives:
+
+```text
+status = REVOKED
+```
+
+and:
+
+```text
+revokedAt = current time
+```
+
+The endpoint returns:
+
+```text
+204 No Content
+```
+
+---
+
+# 9. Session Management
+
+Sessions are stored in the database through Prisma.
+
+The current session states are:
+
+```text
+ACTIVE
+PENDING
+REVOKED
+```
+
+## Meaning of each state
+
+### ACTIVE
+
+The session is currently allowed to authenticate.
+
+An active session can:
+
+- use the access token
+- refresh authentication
+- remain an active device/session
+
+### PENDING
+
+The session exists but is not currently active.
+
+Pending sessions are used when the user reaches the maximum number of active sessions.
+
+A pending session cannot refresh because `/auth/refresh` requires:
+
+```text
+status === ACTIVE
+```
+
+### REVOKED
+
+The session has been invalidated and cannot be used anymore.
+
+---
+
+# 10. Maximum Active Sessions
+
+The system uses:
+
+```ts
+MAX_SESSIONS;
+```
+
+When a user creates a new session:
+
+```text
+active sessions < MAX_SESSIONS
+        ↓
+     ACTIVE
+```
+
+Otherwise:
+
+```text
+active sessions >= MAX_SESSIONS
+        ↓
+     PENDING
+```
+
+This allows the system to keep additional login sessions without immediately deleting them.
+
+---
+
+# 11. Session Listing
+
+## Endpoint
+
+```text
+GET /auth/sessions
+```
+
+The endpoint returns all sessions belonging to the authenticated user.
+
+Sessions are mapped through:
+
+```text
+SessionMapper
+```
+
+The response uses:
+
+```text
+SessionSummaryDto
+```
+
+The mapper can also identify the current session.
+
+---
+
+# 12. Revoke One Session
+
+## Endpoint
+
+```text
+DELETE /auth/sessions/:id
+```
+
+The service verifies:
+
+1. The session exists.
+2. The session belongs to the authenticated user.
+3. The session is not already revoked.
+
+If the session belongs to another user:
+
+```text
+403 Forbidden
+```
+
+If the session does not exist:
+
+```text
+404 Not Found
+```
+
+---
+
+# 13. Pending Session Activation
+
+When an `ACTIVE` session is revoked, the system attempts to activate the oldest pending session.
+
+The operation is implemented through a Prisma transaction:
+
+```text
+revoke ACTIVE session
+        ↓
+find oldest PENDING session
+        ↓
+activate PENDING session
+```
+
+This is implemented in:
+
+```text
+SessionsRepository.revokeAndActivatePending()
+```
+
+Using a transaction prevents the two database operations from becoming inconsistent.
+
+---
+
+# 14. Revoke All Sessions
+
+## Endpoint
+
+```text
+DELETE /auth/sessions
+```
+
+All sessions belonging to the authenticated user are revoked.
+
+This is implemented using:
+
+```text
+revokeAllByUserId()
+```
+
+The operation changes every session to:
+
+```text
+REVOKED
+```
+
+and sets:
+
+```text
+revokedAt
+```
+
+---
+
+# 15. Password Reset
+
+Two password recovery endpoints are implemented.
+
+## Request Reset
+
+```text
+POST /auth/forgot-password
+```
+
+The server:
+
+1. Finds the user by email.
+2. Generates a cryptographically random reset token.
+3. Hashes the token.
+4. Stores the hash.
+5. Stores the expiration time.
+6. Clears previous token usage state.
+
+The raw token is not stored in the database.
+
+During non-production environments, the token can be returned to facilitate testing.
+
+---
+
+# 16. Reset Password
+
+## Endpoint
+
+```text
+POST /auth/reset-password
+```
+
+The reset token is:
+
+1. Hashed.
+2. Looked up in the database.
+3. Checked for expiration.
+4. Checked for previous use.
+5. Used to identify the user.
+6. Replaced by a newly hashed password.
+
+After successful password reset:
+
+```text
+passwordResetTokenHash = null
+passwordResetTokenExpiresAt = null
+passwordResetTokenUsedAt = current time
+```
+
+Most importantly, the password reset also revokes all existing sessions.
+
+Therefore:
+
+```text
+Password Reset
+      ↓
+All existing sessions
+      ↓
+REVOKED
+```
+
+This prevents previously authenticated devices from remaining logged in after a password compromise.
+
+---
+
+# 17. Session Architecture
+
+The current architecture separates responsibilities between:
+
+```text
+AuthController
+      ↓
+AuthService
+      ↓
+SessionsService
+      ↓
+SessionsRepository
+      ↓
+PrismaService
+      ↓
+PostgreSQL
+```
+
+### AuthController
+
+Responsible for:
+
+- HTTP endpoints
+- authentication decorators
+- guards
+- request/response handling
+- Swagger metadata
+
+### AuthService
+
+Responsible for authentication business logic:
+
+- register
+- login
+- refresh
+- logout
+- password reset
+- session operations
+
+### SessionsService
+
+Acts as the session business/service layer.
+
+It provides methods such as:
+
+```text
+create()
+findById()
+findByUserId()
+findActiveByUserId()
+findPendingByUserId()
+countActiveByUserId()
+activate()
+revoke()
+revokeAndActivatePending()
+revokeAllByUserId()
+updateRefreshTokenHash()
+```
+
+### SessionsRepository
+
+Responsible for Prisma/database operations.
+
+This keeps database access away from the authentication controller and most of the business logic.
+
+---
+
+# 18. Security Decisions
+
+The current implementation includes several important security decisions.
+
+### Passwords
+
+Passwords are never stored directly.
+
+They are hashed using:
+
+```text
+PasswordService
+```
+
+### Refresh Tokens
+
+The raw refresh token is not stored.
+
+The flow is:
+
+```text
+refresh token
+      ↓
+SHA-256
+      ↓
+password hashing
+      ↓
+database
+```
+
+During refresh, the supplied token goes through the same process and is compared against the stored hash.
+
+### Password Reset Tokens
+
+The reset token is also hashed before being stored.
+
+The raw reset token exists only temporarily.
+
+### Session Ownership
+
+A user cannot revoke another user's session.
+
+### Password Reset Session Invalidation
+
+Changing the password through the reset mechanism revokes every existing session.
+
+---
+
+# 19. Validation
+
+Authentication request bodies use Zod schemas.
+
+Examples include:
+
+```text
+registerSchema
+loginSchema
+forgotPasswordSchema
+resetPasswordSchema
+```
+
+Validation is integrated through:
+
+```text
+UseZodValidation
+```
+
+This keeps request validation separate from the service layer.
+
+---
+
+# 20. Swagger
+
+Swagger documentation is being standardized across the API.
+
+The project currently has a custom:
+
+```text
+Swagger()
+```
+
+decorator system.
+
+Current endpoints use dedicated Swagger definitions such as:
+
+```text
+register.swagger.ts
+login.swagger.ts
+me.swagger.ts
+```
+
+The goal is to keep Swagger consistent instead of placing large amounts of Swagger metadata directly inside controllers.
+
+Newer endpoints should follow the same convention.
+
+Useful Swagger metadata includes:
+
+```ts
+@ApiOperation({
+  summary: "..."
+})
+```
+
+This was identified as an improvement that should be consistently applied to the existing endpoints as well.
+
+---
+
+# 21. Testing
+
+The project has an E2E testing setup using Jest.
+
+Authentication tests currently cover areas including:
+
+```text
+register
+login
+me
+```
+
+The project also has the general application E2E test suite.
+
+The latest test output previously shared showed successful authentication E2E execution with:
+
+```text
+47 passed
+2 skipped
+49 total
+```
+
+A later project snapshot also reached:
+
+```text
+72 E2E tests
+```
+
+The exact count should be rerun after the latest session/password changes so the documentation reflects the current repository state.
+
+---
+
+# 22. Type Checking
+
+The project currently passes the monorepo type-check pipeline.
+
+Command:
+
+```bash
+pnpm check-types
+```
+
+The latest successful run showed:
+
+```text
+Tasks:    6 successful, 6 total
+Cached:   5 cached, 6 total
+```
+
+The checked packages include:
+
+```text
+@repo/database
+@repo/eslint-config
+@repo/typescript-config
+@repo/ui
+backend
+web
+```
+
+---
+
+# 23. Database Package
+
+The Prisma database package exports generated Prisma types and enums through:
+
+```text
+@repo/database
+```
+
+For example:
+
+```ts
+import { PrismaService, SessionStatus, type Session } from "@repo/database";
+```
+
+The generated Prisma client contains:
+
+```text
+SessionStatus.PENDING
+SessionStatus.ACTIVE
+SessionStatus.REVOKED
+```
+
+The database package was also fixed so these generated types can be consumed through the workspace package instead of using deep relative imports.
+
+---
+
+# 24. API Roadmap
+
+The original planned API list is:
+
+## Auth
+
+```text
+POST   /auth/register       ✅
+POST   /auth/login          ✅
+GET    /auth/me             ✅
+POST   /auth/refresh        ✅
+POST   /auth/logout         ✅
+```
+
+## Sessions
+
+```text
+GET    /auth/sessions       ✅
+DELETE /auth/sessions/:id   ✅
+DELETE /auth/sessions       ✅
+```
+
+## Users
+
+```text
+GET    /users/me            ⏳
+PATCH  /users/me            ⏳
+```
+
+## Password
+
+```text
+PATCH  /users/me/password   ⏳
+POST   /auth/forgot-password ✅
+POST   /auth/reset-password  ✅
+```
+
+## Username
+
+```text
+PATCH  /users/me/username   ⏳
+```
+
+## Email
+
+```text
+PATCH  /users/me/email      ⏳
+POST   /users/me/email/verify ⏳
+```
+
+---
+
+# 25. What We Should Do Next
+
+The recommended implementation order is:
+
+## Phase 1 — Finish Sessions
+
+Before moving to account-management APIs:
+
+- [ ] Finalize `PENDING` session behavior.
+- [ ] Add complete E2E tests for session limits.
+- [ ] Test activation of the oldest pending session.
+- [ ] Test revoking another user's session.
+- [ ] Test revoking all sessions.
+- [ ] Test refresh rejection for `PENDING`.
+- [ ] Test refresh rejection for `REVOKED`.
+- [ ] Test expired sessions.
+- [ ] Review concurrent session creation / race conditions.
+
+## Phase 2 — Password Change
+
+Implement:
+
+```text
+PATCH /users/me/password
+```
+
+Expected behavior:
+
+```text
+Current password
+      ↓
+verify
+      ↓
+new password
+      ↓
+hash
+      ↓
+update database
+      ↓
+revoke all sessions
+```
+
+The decision already made is:
+
+> Changing the password logs the user out of all devices.
+
+This should be covered by E2E tests.
+
+## Phase 3 — User Profile
+
+Implement:
+
+```text
+GET /users/me
+PATCH /users/me
+```
+
+This should handle the user's editable profile fields without mixing password/email/username-specific business rules into the generic user endpoint.
+
+## Phase 4 — Username
+
+Implement:
+
+```text
+PATCH /users/me/username
+```
+
+Requirements should include:
+
+- authentication
+- validation
+- uniqueness
+- database update
+- Swagger
+- E2E tests
+
+## Phase 5 — Email
+
+Implement:
+
+```text
+PATCH /users/me/email
+POST /users/me/email/verify
+```
+
+This will require an email-verification token flow.
+
+The email should not be considered verified merely because it was changed.
+
+---
+
+# 26. Important Remaining Technical Improvements
+
+These are not necessarily blockers, but should be addressed before considering authentication production-ready.
+
+### Session creation race condition
+
+The current logic:
+
+```ts
+countActiveByUserId();
+```
+
+followed by:
+
+```ts
+create();
+```
+
+can theoretically allow two concurrent requests to both see an available slot.
+
+This should eventually be protected through an appropriate transactional/database strategy.
+
+### Pending session token behavior
+
+The system currently creates a `PENDING` session when the maximum number of active sessions has been reached.
+
+The exact client authentication behavior for a pending session should be finalized before calling the session system complete.
+
+### Swagger consistency
+
+All authentication endpoints should use a consistent documentation style.
+
+Existing endpoints should receive:
+
+```ts
+@ApiOperation({
+  summary: "...",
+})
+```
+
+where appropriate, while keeping reusable Swagger definitions in the module's `swagger/` directory.
+
+### Tests
+
+Every new API should follow the existing pattern:
+
+```text
+implementation
+    ↓
+Swagger
+    ↓
+unit tests where useful
+    ↓
+E2E tests
+    ↓
+pnpm check-types
+    ↓
+pnpm test:e2e
+```
+
+---
+
+# 27. Current Milestone
+
+The project has moved beyond the initial authentication implementation.
+
+The current milestone can be summarized as:
+
+```text
+                    AUTHENTICATION
+                         │
+          ┌──────────────┴──────────────┐
+          │                             │
+       JWT Auth                    Sessions
+          │                             │
+   ┌──────┼──────┐              ┌───────┼────────┐
+   │      │      │              │       │        │
+Register Login  Me           ACTIVE  PENDING  REVOKED
+   │      │      │              │       │        │
+   └──────┴──────┴──────────────┴───────┴────────┘
+                         │
+                  Password Reset
+                         │
+                 Revoke all sessions
+```
+
+The next major milestone is **Account Management**, starting with:
+
+```text
+PATCH /users/me/password
+```
+
+followed by:
+
+```text
+GET/PATCH /users/me
+PATCH /users/me/username
+PATCH /users/me/email
+POST /users/me/email/verify
+```
+
+At that point, the backend will have a complete first version of the authentication and account-management subsystem.

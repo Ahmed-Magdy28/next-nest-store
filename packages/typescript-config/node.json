@@ -1,6 +1,7 @@
 {
     "extends": "./base.json",
     "compilerOptions": {
+        "module": "CommonJS",
         "lib": [
             "ES2022"
         ],

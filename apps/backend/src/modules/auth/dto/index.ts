@@ -1,3 +1,2 @@
-export * from "./auth-user.dto";
-export * from "./auth-response.dto";
-export * from "./refresh-token.dto";
+// forward export all dtos from shared package
+export * from "@repo/shared/dtos/auth";
