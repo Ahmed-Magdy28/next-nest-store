@@ -12,6 +12,8 @@ export class SessionsService {
     refreshTokenHash: string | null;
     expiresAt: Date;
     status: SessionStatus;
+    userAgent?: string | null;
+    ipAddress?: string | null;
   }): Promise<Session> {
     return this.sessionsRepository.create(data);
   }
@@ -26,6 +28,18 @@ export class SessionsService {
 
   findActiveByUserId(userId: string): Promise<Session[]> {
     return this.sessionsRepository.findActiveByUserId(userId);
+  }
+
+  findActiveByDevice(
+    userId: string,
+    userAgent: string,
+    ipAddress?: string,
+  ): Promise<Session | null> {
+    return this.sessionsRepository.findActiveByDevice(
+      userId,
+      userAgent,
+      ipAddress,
+    );
   }
 
   findPendingByUserId(userId: string): Promise<Session[]> {

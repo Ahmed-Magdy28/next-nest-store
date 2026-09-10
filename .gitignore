@@ -6,6 +6,7 @@ node_modules
 .pnp.js
 .pnpm-store
 tsconfig.build.tsbuildinfo
+tsconfig.tsbuildinfo
 
 # Local env files
 .env

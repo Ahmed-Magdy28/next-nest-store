@@ -11,7 +11,7 @@ export const PASSWORD_MUST_CONTAIN_LOWERCASE = /[a-z]/;
 export const PASSWORD_MUST_CONTAIN_DIGITS = /\d/;
 export const PASSWORD_MUST_CONTAIN_SPECIAL_CHARS = /[^\w\s]/;
 export const PASSWORD_MUST_NOT_CONTAIN_WHITESPACE = /^\S*$/;
-export const PASSWORD_MUST_NOT_CONTAIN_EQUAL = /^(?!.*(.).*\1).*$/;
+export const PASSWORD_MUST_NOT_CONTAIN_EQUAL = /^[^=]*$/;
 
 export const PASSWORD_MUST_NOT_EQUAL_USERNAME_MSG =
   "Password must not be the same as username.";

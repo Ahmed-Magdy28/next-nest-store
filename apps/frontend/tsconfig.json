@@ -6,7 +6,12 @@
         "name": "next"
       }
     ],
-    "strictNullChecks": true
+    "strictNullChecks": true,
+    "paths": {
+      "@/*": ["./*"],
+      "@repo/shared": ["./node_modules/@repo/shared/dist/index.d.ts"],
+      "@repo/shared/*": ["./node_modules/@repo/shared/dist/*"]
+    }
   },
   "include": [
     "**/*.ts",

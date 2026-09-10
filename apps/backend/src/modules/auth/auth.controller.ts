@@ -8,7 +8,10 @@ import {
   UseGuards,
   HttpStatus,
   HttpCode,
+  Req,
 } from "@nestjs/common";
+
+import type { Request } from "express";
 
 import { AuthService } from "./auth.service";
 
@@ -51,8 +54,11 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @Swagger("login")
   @UseZodValidation(loginSchema)
-  login(@Body() body: LoginDto): Promise<AuthResponseDto> {
-    return this.authService.login(body);
+  login(@Body() body: LoginDto, @Req() req: Request): Promise<AuthResponseDto> {
+    const userAgent = req.headers["user-agent"] || "Unknown";
+    const ipAddress = req.ip || req.socket.remoteAddress || "Unknown";
+
+    return this.authService.login(body, { userAgent, ipAddress });
   }
 
   @Get("me")

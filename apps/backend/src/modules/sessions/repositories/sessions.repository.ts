@@ -10,9 +10,27 @@ export class SessionsRepository {
     refreshTokenHash: string | null;
     expiresAt: Date;
     status: SessionStatus;
+    userAgent?: string | null;
+    ipAddress?: string | null;
   }): Promise<Session> {
     return this.prisma.session.create({
       data,
+    });
+  }
+
+  async findActiveByDevice(
+    userId: string,
+    userAgent: string,
+    ipAddress?: string,
+  ): Promise<Session | null> {
+    return this.prisma.session.findFirst({
+      where: {
+        userId,
+        status: "ACTIVE",
+        userAgent,
+        expiresAt: { gt: new Date() },
+      },
+      orderBy: { createdAt: "desc" },
     });
   }
 

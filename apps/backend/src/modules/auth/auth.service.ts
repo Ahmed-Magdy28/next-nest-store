@@ -33,7 +33,10 @@ export class AuthService {
     private readonly tokenService: TokenService,
     private readonly SessionsService: SessionsService,
   ) {}
-  private async createSession(userId: string): Promise<Session> {
+  private async createSession(
+    userId: string,
+    deviceInfo?: { userAgent: string; ipAddress: string },
+  ): Promise<Session> {
     const activeSessions =
       await this.SessionsService.countActiveByUserId(userId);
 
@@ -44,6 +47,8 @@ export class AuthService {
       refreshTokenHash: null,
       expiresAt: new Date(Date.now() + REFRESH_TOKEN_SESSION_TTL),
       status,
+      userAgent: deviceInfo?.userAgent ?? null,
+      ipAddress: deviceInfo?.ipAddress ?? null,
     });
   }
 
@@ -113,7 +118,10 @@ export class AuthService {
     };
   }
 
-  async login(data: LoginDto): Promise<AuthResponseDto> {
+  async login(
+    data: LoginDto,
+    deviceInfo?: { userAgent: string; ipAddress: string },
+  ): Promise<AuthResponseDto> {
     const user = await this.usersService.findByEmail(data.email);
 
     if (!user) {
@@ -128,9 +136,26 @@ export class AuthService {
     if (!isPasswordValid) {
       throw new UnauthorizedException("Invalid credentials");
     }
+
+    // 1. التحقق مما إذا كان هذا الجهاز يمتلك جلسة نشطة بالفعل
+    if (deviceInfo?.userAgent) {
+      const existingSession = await this.SessionsService.findActiveByDevice(
+        user.id,
+        deviceInfo.userAgent,
+      );
+
+      if (existingSession) {
+        // منع الدخول المكرر بنفس الجهاز
+        throw new ConflictException(
+          "You are already signed in on this device/browser.",
+        );
+      }
+    }
+
     const authUser = AuthMapper.toAuthUserDto(user);
 
-    const session = await this.createSession(user.id);
+    // 2. إنشاء الجلسة وتمرير الـ Device Info
+    const session = await this.createSession(user.id, deviceInfo);
 
     const tokens = await this.generateSessionTokens(authUser, session);
 

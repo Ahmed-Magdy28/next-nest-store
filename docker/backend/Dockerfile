@@ -10,6 +10,12 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/*
 RUN corepack enable
 
+# Configure pnpm network resilience
+RUN pnpm config set fetch-retries 5 \
+    && pnpm config set fetch-retry-mintimeout 20000 \
+    && pnpm config set fetch-retry-maxtimeout 120000 \
+    && pnpm config set fetch-timeout 300000
+
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml turbo.json ./
 
 COPY apps/backend/package.json apps/backend/package.json
@@ -20,7 +26,9 @@ COPY packages/eslint-config/package.json packages/eslint-config/package.json
 COPY packages/typescript-config/package.json packages/typescript-config/package.json
 COPY packages/ui/package.json packages/ui/package.json
 
-RUN pnpm install --frozen-lockfile
+# Cache the pnpm virtual store across builds
+RUN --mount=type=cache,id=pnpm-store,target=/root/.local/share/pnpm/store \
+    pnpm install --frozen-lockfile
 
 COPY . .
 

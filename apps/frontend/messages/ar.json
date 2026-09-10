@@ -1,0 +1,25 @@
+{
+  "Header": {
+    "dashboard": "لوحة التحكم",
+    "myOrders": "طلباتي",
+    "accountSettings": "إعدادات الحساب",
+    "signOut": "تسجيل الخروج",
+    "signIn": "تسجيل الدخول",
+    "getStarted": "حساب جديد"
+  },
+  "Nav": {
+    "Products": "المنتجات",
+    "Categories": "الأقسام",
+    "Deals": "العروض",
+    "New Arrivals": "وصل حديثاً",
+    "Best Sellers": "الأكثر مبيعاً"
+  },
+  "Shop": {
+    "title": "منتجات المتجر",
+    "description": "تصفح تشكيلتنا المميزة من المنتجات.",
+    "addToCart": "أضف للسلة",
+    "outOfStock": "نفدت الكمية",
+    "noProducts": "لم يتم العثور على منتجات",
+    "noProductsDesc": "حاول تعديل خيارات البحث أو التصفية."
+  }
+}

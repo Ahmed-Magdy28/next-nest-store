@@ -1,0 +1,32 @@
+{
+  "Header": {
+    "myOrders": "My Orders",
+    "accountSettings": "Account Settings",
+    "signOut": "Sign Out",
+    "signIn": "Sign In",
+    "getStarted": "Get Started"
+  },
+  "Header1": {
+    "dashboard": "Dashboard",
+    "myOrders": "My Orders",
+    "accountSettings": "Account Settings",
+    "signOut": "Sign Out",
+    "signIn": "Sign In",
+    "getStarted": "Get Started"
+  },
+  "Nav": {
+    "Products": "Products",
+    "Categories": "Categories",
+    "Deals": "Deals",
+    "New Arrivals": "New Arrivals",
+    "Best Sellers": "Best Sellers"
+  },
+  "Shop": {
+    "title": "Shop Products",
+    "description": "Browse our catalog of items.",
+    "addToCart": "Add to Cart",
+    "outOfStock": "Out of Stock",
+    "noProducts": "No products found",
+    "noProductsDesc": "Try adjusting your search query or filters."
+  }
+}
