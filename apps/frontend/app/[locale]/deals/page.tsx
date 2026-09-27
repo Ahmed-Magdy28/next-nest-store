@@ -1,28 +1,12 @@
 "use client";
 
-import { useSearchParams, useRouter, usePathname } from "next/navigation";
-
 import { useDeals } from "../../../hooks/use-products";
-
 import { useLocalized } from "../../../i18n/use-localized";
 import { ProductGrid } from "../../../components/e-commerce/products/product-grid";
 
 export default function DealsPage() {
-  const searchParams = useSearchParams();
-  const router = useRouter();
-  const pathname = usePathname();
   const { t } = useLocalized();
-
-  const page = Number(searchParams.get("page") ?? 1);
-
-  // useDeals بياخد limit بس، فلو عايز pagination كاملة استخدم useProducts
   const { data, isLoading } = useDeals(12);
-
-  const updatePage = (newPage: number) => {
-    const params = new URLSearchParams(searchParams.toString());
-    params.set("page", String(newPage));
-    router.push(`${pathname}?${params.toString()}`);
-  };
 
   return (
     <div className="min-h-screen bg-gray-50 p-4 sm:p-8 dark:bg-gray-950">

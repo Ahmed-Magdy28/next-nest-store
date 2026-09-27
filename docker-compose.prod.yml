@@ -1,0 +1,71 @@
+services:
+  postgres:
+    image: postgres:17
+    container_name: store-prod-postgres
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-next_nest_store}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB:-next_nest_store}
+    volumes:
+      - postgres-prod-data:/var/lib/postgresql/data
+    healthcheck:
+      test:
+        ["CMD-SHELL", 'pg_isready -U "$${POSTGRES_USER}" -d "$${POSTGRES_DB}"']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks:
+      - store-network
+
+  backend:
+    build:
+      context: .
+      dockerfile: docker/backend/Dockerfile.prod
+    container_name: store-prod-backend
+    restart: always
+    depends_on:
+      postgres:
+        condition: service_healthy
+    env_file:
+      - .env
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}?schema=public
+      CORS_ORIGIN: ${CORS_ORIGIN}
+      JWT_SECRET: ${JWT_SECRET}
+      ADMIN_SECRET: ${ADMIN_SECRET}
+    command: sh -c "pnpm --filter @repo/database migrate:deploy && node dist/main.js"
+    ports:
+      - "${BACKEND_PORT:-3000}:3000"
+    networks:
+      - store-network
+
+  frontend:
+    build:
+      context: .
+      dockerfile: docker/frontend/Dockerfile.prod
+      args:
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL}
+        NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL}
+    container_name: store-prod-frontend
+    restart: always
+    depends_on:
+      - backend
+    env_file:
+      - .env
+    environment:
+      NODE_ENV: production
+      PORT: 4000
+    ports:
+      - "${FRONTEND_PORT:-4000}:4000"
+    networks:
+      - store-network
+
+volumes:
+  postgres-prod-data:
+
+networks:
+  store-network:
+    driver: bridge

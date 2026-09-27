@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { Suspense, useMemo, useState } from "react";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 
 import { useProducts } from "../../../hooks/use-products";
@@ -11,7 +11,7 @@ import { ProductGrid } from "../../../components/e-commerce/products/product-gri
 
 const DEFAULT_LIMIT = 12;
 
-export default function ProductsPage() {
+function ProductsContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
@@ -160,5 +160,29 @@ export default function ProductsPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function ProductsPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-gray-50 p-4 sm:p-8 dark:bg-gray-950">
+          <div className="mx-auto max-w-7xl animate-pulse space-y-8">
+            <div className="h-8 w-48 rounded-lg bg-gray-200 dark:bg-gray-800" />
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+              {Array.from({ length: 8 }).map((_, i) => (
+                <div
+                  key={i}
+                  className="aspect-square rounded-2xl bg-gray-200 dark:bg-gray-800"
+                />
+              ))}
+            </div>
+          </div>
+        </div>
+      }
+    >
+      <ProductsContent />
+    </Suspense>
   );
 }

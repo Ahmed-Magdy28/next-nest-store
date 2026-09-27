@@ -1,6 +1,6 @@
 "use client";
 
-import { use } from "react";
+import { Suspense, use } from "react";
 import Link from "next/link";
 import { ChevronLeft } from "lucide-react";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
@@ -15,7 +15,7 @@ interface PageProps {
   params: Promise<{ locale: string; slug: string }>;
 }
 
-export default function CategoryPage({ params }: PageProps) {
+function CategoryContent({ params }: PageProps) {
   const { slug } = use(params);
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -95,5 +95,29 @@ export default function CategoryPage({ params }: PageProps) {
         )}
       </div>
     </div>
+  );
+}
+
+export default function CategoryPage(props: PageProps) {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-gray-50 p-4 sm:p-8 dark:bg-gray-950">
+          <div className="mx-auto max-w-7xl animate-pulse space-y-8">
+            <div className="h-8 w-48 rounded-lg bg-gray-200 dark:bg-gray-800" />
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+              {Array.from({ length: 8 }).map((_, i) => (
+                <div
+                  key={i}
+                  className="aspect-square rounded-2xl bg-gray-200 dark:bg-gray-800"
+                />
+              ))}
+            </div>
+          </div>
+        </div>
+      }
+    >
+      <CategoryContent {...props} />
+    </Suspense>
   );
 }

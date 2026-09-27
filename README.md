@@ -1,159 +1,325 @@
-# Turborepo starter
+<div align="center">
 
-This Turborepo starter is maintained by the Turborepo core team.
+# 🛒 Next Nest Store
 
-## Using this example
+**A full-stack, enterprise-grade e-commerce monorepo built for high performance and scalability.**
 
-Run the following command:
+[![Turborepo](https://img.shields.io/badge/Monorepo-Turborepo-ef4444?style=flat-square&logo=turborepo)](https://turbo.build/)
+[![Next.js](https://img.shields.io/badge/Frontend-Next.js%2016-black?style=flat-square&logo=next.js)](https://nextjs.org/)
+[![NestJS](https://img.shields.io/badge/Backend-NestJS%2011-ea284e?style=flat-square&logo=nestjs)](https://nestjs.com/)
+[![Prisma](https://img.shields.io/badge/ORM-Prisma%206-2d3748?style=flat-square&logo=prisma)](https://www.prisma.io/)
+[![PostgreSQL](https://img.shields.io/badge/Database-PostgreSQL%2017-336791?style=flat-square&logo=postgresql)](https://www.postgresql.org/)
+[![TypeScript](https://img.shields.io/badge/Language-TypeScript%205-blue?style=flat-square&logo=typescript)](https://www.typescriptlang.org/)
+[![Docker](https://img.shields.io/badge/Container-Docker-2496ed?style=flat-square&logo=docker)](https://www.docker.com/)
 
-```sh
-npx create-turbo@latest
+</div>
+
+---
+
+## 🏛️ System Architecture
+
+```mermaid
+graph TD
+    subgraph Client ["Client Devices"]
+        Browser["Web Browser (Arabic RTL / English LTR)"]
+    end
+
+    subgraph Storefront ["Frontend Layer (Next.js 16)"]
+        NextApp["Next.js App Router & Turbopack"]
+        I18n["next-intl (ar / en)"]
+        Query["TanStack React Query v5"]
+    end
+
+    subgraph API ["Backend API Layer (NestJS 11)"]
+        NestApp["NestJS Modular Server"]
+        AuthModule["Auth & Multi-Device Sessions"]
+        CatalogModule["Products, Variants & Categories"]
+        CartModule["Cart & Guest Tokens"]
+        Swagger["Swagger UI (/docs)"]
+    end
+
+    subgraph Data ["Data & Persistence Layer"]
+        Prisma["Prisma ORM (@repo/database)"]
+        Postgres[(PostgreSQL 17 Database)]
+    end
+
+    Browser -->|HTTP / HTTPS| NextApp
+    NextApp -->|API Calls (CORS)| NestApp
+    NestApp --> Prisma
+    Prisma --> Postgres
 ```
 
-## What's inside?
+---
 
-This Turborepo includes the following packages/apps:
+## 📂 Monorepo Structure
 
-### Apps and Packages
-
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
-
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
-
-### Utilities
-
-This Turborepo has some additional tools already setup for you:
-
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
-
-### Build
-
-To build all apps and packages, run the following command:
-
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended):
-
-```sh
-cd my-turborepo
-turbo build
+```text
+.
+├── apps/
+│   ├── frontend/             # Next.js 16 App Router storefront (Port 4000)
+│   └── backend/              # NestJS 11 REST API with Swagger & JWT (Port 3000)
+├── packages/
+│   ├── database/             # Prisma schema, migrations, service & seeds
+│   ├── shared/               # Shared DTOs, Zod schemas, types & constants
+│   ├── ui/                   # Shared React UI components
+│   ├── eslint-config/        # Monorepo ESLint flat configs
+│   └── typescript-config/    # Monorepo tsconfig templates
+├── docker/
+│   ├── backend/              # Dockerfile (Dev & Prod)
+│   ├── frontend/             # Dockerfile (Dev & Prod)
+│   └── postgres/             # Database initialization scripts
+├── docker-compose.yml        # Development environment (Hot-reloading)
+└── docker-compose.prod.yml   # Production-ready stack
 ```
 
-Without global `turbo`, use your package manager:
+---
 
-```sh
-cd my-turborepo
-npx turbo build
-pnpm dlx turbo build
-pnpm exec turbo build
+## ⚡ Quickstart & Local Development
+
+### Prerequisites
+
+- **Node.js:** `>= 22.0.0`
+- **Package Manager:** `pnpm` (`v11+` or `corepack enable`)
+- **Docker & Docker Compose** (for database or containerized dev)
+
+---
+
+### Step 1: Clone & Install Dependencies
+
+```bash
+git clone https://github.com/your-username/next-nest-store.git
+cd next-nest-store
+pnpm install
 ```
 
-You can build a specific package by using a [filter](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters):
+### Step 2: Configure Environment Variables
 
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed:
+Copy `.env.example` to `.env`:
 
-```sh
-turbo build --filter=docs
+```bash
+cp .env.example .env
 ```
 
-Without global `turbo`:
+Ensure your `.env` contains:
 
-```sh
-npx turbo build --filter=docs
-pnpm exec turbo build --filter=docs
-pnpm exec turbo build --filter=docs
+```env
+NODE_ENV=development
+JWT_SECRET=your_super_secret_jwt_key_at_least_32_chars_long
+CORS_ORIGIN=http://localhost:4000,http://localhost:3000
+DATABASE_URL="postgresql://next_nest_store:Mango%40123@localhost:5432/next_nest_store?schema=public"
+DATABASE_TEST_URL="postgresql://next_nest_store:Mango%40123@localhost:5432/next_nest_store_test?schema=public&connection_limit=1"
+POSTGRES_USER=next_nest_store
+POSTGRES_PASSWORD=Mango@123
+POSTGRES_DB=next_nest_store
+NEXT_PUBLIC_API_URL=http://localhost:3000
+NEXT_PUBLIC_SITE_URL=http://localhost:4000
 ```
 
-### Develop
+---
 
-To develop all apps and packages, run the following command:
+### Step 3: Run the Database & Seed Data
 
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended):
+1. **Start the local PostgreSQL container:**
 
-```sh
-cd my-turborepo
-turbo dev
+   ```bash
+   pnpm db:up
+   ```
+
+2. **Apply migrations and seed initial data:**
+   ```bash
+   pnpm db:migrate
+   pnpm db:seed
+   ```
+
+> 🔑 **Pre-seeded Credentials:**
+>
+> - **Admin:** `admin@example.com` / `Password123!`
+> - **User:** `user@example.com` / `Password123!`
+
+---
+
+### Step 4: Start Development Servers
+
+You can run both apps concurrently or individually:
+
+```bash
+# Run both Frontend & Backend via Turbo
+pnpm dev
+
+# OR run individually:
+pnpm dev:backend     # Runs NestJS on http://localhost:3000
+pnpm dev:frontend    # Runs Next.js on http://localhost:4000
 ```
 
-Without global `turbo`, use your package manager:
+- **Frontend Storefront:** [http://localhost:4000](http://localhost:4000)
+- **Backend API:** [http://localhost:3000](http://localhost:3000)
+- **Interactive Swagger Docs:** [http://localhost:3000/docs](http://localhost:3000/docs)
+- **Prisma Studio (DB GUI):** `pnpm db:studio` -> [http://localhost:5555](http://localhost:5555)
 
-```sh
-cd my-turborepo
-npx turbo dev
-pnpm exec turbo dev
-pnpm exec turbo dev
+---
+
+## 🚢 Comprehensive Deployment Guide
+
+You can deploy the project using either **Cloud Managed Platforms (Serverless/PaaS)** or **A Single Linux VPS (Docker Compose)**.
+
+---
+
+### Method A: Cloud Managed Stack (Vercel + Railway / Render + Supabase / Neon)
+
+This is the recommended, zero-devops setup for scalability and low maintenance.
+
+```text
+┌────────────────┐      ┌────────────────┐      ┌────────────────┐
+│  Vercel        │ ───> │  Railway       │ ───> │  Supabase/Neon │
+│  (Next.js App) │      │  (NestJS API)  │      │  (Postgres DB) │
+└────────────────┘      └────────────────┘      └────────────────┘
 ```
 
-You can develop a specific package by using a [filter](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters):
+#### 1. Deploy the Database (Neon / Supabase / Railway Postgres)
 
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed:
+1. Create a PostgreSQL project on [Neon](https://neon.tech/) or [Supabase](https://supabase.com/).
+2. Copy your connection string (`DATABASE_URL`).
+3. Run the migrations and seed against your remote database from your machine:
+   ```bash
+   DATABASE_URL="your-remote-postgres-url" pnpm --filter @repo/database migrate:deploy
+   DATABASE_URL="your-remote-postgres-url" pnpm db:seed
+   ```
 
-```sh
-turbo dev --filter=web
+#### 2. Deploy the Backend API (Railway or Render)
+
+1. Link your GitHub repo to [Railway](https://railway.app/) or [Render](https://render.com/).
+2. Configure settings:
+   - **Root Directory:** Leave empty (root of repository) or `apps/backend`.
+   - **Build Command:**
+     ```bash
+     pnpm db:generate && pnpm --filter @repo/database build && pnpm --filter @repo/shared build && pnpm --filter backend build
+     ```
+   - **Start Command:**
+     ```bash
+     pnpm --filter @repo/database migrate:deploy && node apps/backend/dist/main.js
+     ```
+3. Set **Environment Variables**:
+   - `NODE_ENV`: `production`
+   - `PORT`: `3000` (or Railway provided port)
+   - `DATABASE_URL`: `your-remote-postgres-url`
+   - `JWT_SECRET`: Secure 32+ character random string
+   - `ADMIN_SECRET`: Secure 16+ character random string
+   - `CORS_ORIGIN`: Your frontend URL (e.g., `https://my-store.vercel.app`)
+   - `ENABLE_GUEST_CART`: `true`
+4. Copy your live backend public domain (e.g., `https://backend-production-xyz.up.railway.app`).
+
+#### 3. Deploy the Frontend Storefront (Vercel)
+
+1. Import your GitHub repository to [Vercel](https://vercel.com/).
+2. Set **Root Directory** to `apps/frontend`.
+3. Set **Framework Preset** to `Next.js`.
+4. Configure **Build & Development Settings**:
+   - **Build Command:** `pnpm --filter @repo/shared build && pnpm --filter frontend build`
+   - **Output Directory:** `.next`
+   - **Install Command:** `pnpm install`
+5. Configure **Environment Variables**:
+   - `NEXT_PUBLIC_API_URL`: Your live backend URL (e.g., `https://backend-production-xyz.up.railway.app`).
+   - `NEXT_PUBLIC_SITE_URL`: Your Vercel frontend URL (e.g., `https://my-store.vercel.app`).
+6. Click **Deploy**.
+
+---
+
+### Method B: Self-Hosted Production VPS (Docker Compose)
+
+Deploy everything (Postgres + NestJS + Next.js) on a single VPS (DigitalOcean Droplet, Hetzner, AWS EC2, or Ubuntu server).
+
+#### 1. Setup your Server & Clone Repo
+
+```bash
+git clone https://github.com/your-username/next-nest-store.git
+cd next-nest-store
+cp .env.example .env
 ```
 
-Without global `turbo`:
+#### 2. Edit `.env` for Production
 
-```sh
-npx turbo dev --filter=web
-pnpm exec turbo dev --filter=web
-pnpm exec turbo dev --filter=web
+```env
+NODE_ENV=production
+POSTGRES_PASSWORD=your_strong_postgres_password
+POSTGRES_USER=next_nest_store
+POSTGRES_DB=next_nest_store
+JWT_SECRET=generate_strong_secret_key_minimum_32_characters
+ADMIN_SECRET=generate_strong_admin_key_minimum_16_characters
+
+# Your production domains
+CORS_ORIGIN=https://store.yourdomain.com
+NEXT_PUBLIC_API_URL=https://api.yourdomain.com
+NEXT_PUBLIC_SITE_URL=https://store.yourdomain.com
 ```
 
-### Remote Caching
+#### 3. Launch Production Containers
 
-> [!TIP]
-> Vercel Remote Cache is free for all plans. Get started today at [vercel.com](https://vercel.com/signup?utm_source=remote-cache-sdk&utm_campaign=free_remote_cache).
-
-Turborepo can use a technique known as [Remote Caching](https://turborepo.dev/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
-
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup?utm_source=turborepo-examples), then enter the following commands:
-
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended):
-
-```sh
-cd my-turborepo
-turbo login
+```bash
+docker compose -f docker-compose.prod.yml up -d --build
 ```
 
-Without global `turbo`, use your package manager:
+This single command will:
 
-```sh
-cd my-turborepo
-npx turbo login
-pnpm exec turbo login
-pnpm exec turbo login
+1. Start PostgreSQL 17 with automated health monitoring.
+2. Build and start the production NestJS container with automated migration deployment.
+3. Build and start the standalone Next.js container on port 4000.
+
+#### 4. Seed Database Inside Container (Optional)
+
+```bash
+docker compose -f docker-compose.prod.yml exec backend pnpm db:seed
 ```
 
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
+#### 5. Configure Reverse Proxy & SSL (Caddy Example)
 
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
+Install Caddy for automated, zero-touch Let's Encrypt SSL:
 
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed:
+```caddy
+# /etc/caddy/Caddyfile
 
-```sh
-turbo link
+store.yourdomain.com {
+    reverse_proxy localhost:4000
+}
+
+api.yourdomain.com {
+    reverse_proxy localhost:3000
+}
 ```
 
-Without global `turbo`:
+Reload Caddy: `sudo systemctl reload caddy`.
 
-```sh
-npx turbo link
-pnpm exec turbo link
-pnpm exec turbo link
-```
+---
 
-## Useful Links
+## 🛠️ Monorepo Scripts Reference
 
-Learn more about the power of Turborepo:
+| Command             | Description                                                  |
+| :------------------ | :----------------------------------------------------------- |
+| `pnpm dev`          | Starts all apps in watch mode through Turborepo              |
+| `pnpm dev:frontend` | Starts Next.js app on port `4000`                            |
+| `pnpm dev:backend`  | Starts NestJS API on port `3000`                             |
+| `pnpm build`        | Builds all packages and applications                         |
+| `pnpm check-types`  | Type-checks all 7 workspace packages without emitting JS     |
+| `pnpm lint`         | Runs ESLint across all projects                              |
+| `pnpm test:unit`    | Executes backend unit tests                                  |
+| `pnpm test:e2e`     | Executes backend E2E tests against test database             |
+| `pnpm db:up`        | Starts local PostgreSQL container                            |
+| `pnpm db:down`      | Stops local PostgreSQL container                             |
+| `pnpm db:generate`  | Regenerates Prisma Client                                    |
+| `pnpm db:migrate`   | Runs Prisma development migrations                           |
+| `pnpm db:seed`      | Populates database with default products, categories & users |
+| `pnpm db:studio`    | Launches Prisma Studio GUI                                   |
 
-- [Tasks](https://turborepo.dev/docs/crafting-your-repository/running-tasks)
-- [Caching](https://turborepo.dev/docs/crafting-your-repository/caching)
-- [Remote Caching](https://turborepo.dev/docs/core-concepts/remote-caching)
-- [Filtering](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters)
-- [Configuration Options](https://turborepo.dev/docs/reference/configuration)
-- [CLI Usage](https://turborepo.dev/docs/reference/command-line-reference)
+---
+
+## 🔒 Security Best Practices
+
+- **Never commit secrets:** All credentials must live in `.env` (which is git-ignored).
+- **CORS enforcement:** In production (`NODE_ENV=production`), NestJS strictly requires and validates `CORS_ORIGIN`.
+- **JWT Protection:** Refresh tokens are hashed using SHA-256 and bcrypt before saving to the database to mitigate database breach exposure.
+- **Session Revocation:** Resetting a password automatically revokes all other active sessions across devices.
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License.
