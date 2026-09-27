@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { PrismaService } from "@repo/database";
 import type { Prisma, User } from "@repo/database";
 
-import { CreateUserInput } from "../types";
+import { CreateUserInput } from "@repo/shared/interfaces";
 
 @Injectable()
 export class UsersRepository {

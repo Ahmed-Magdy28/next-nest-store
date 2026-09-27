@@ -1,0 +1,14 @@
+{
+    "Cart": {
+        "title": "سلة التسوق",
+        "empty": "سلتك فارغة",
+        "emptyDesc": "أضف بعض المنتجات للبدء.",
+        "continueShopping": "تابع التسوق",
+        "clearAll": "إفراغ السلة",
+        "subtotal": "المجموع الفرعي",
+        "checkout": "إتمام الشراء",
+        "remove": "حذف",
+        "quantity": "الكمية",
+        "itemsCount": "{count, plural, =0 {فارغة} =1 {منتج واحد} other {# منتجات}}"
+    }
+}

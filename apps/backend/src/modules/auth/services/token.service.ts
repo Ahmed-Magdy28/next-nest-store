@@ -9,8 +9,11 @@ import {
   REFRESH_TOKEN_TYPE,
 } from "../../../common/security";
 
-import { AuthTokensDto, AuthUserDto } from "../dto";
-import type { AccessTokenPayload, RefreshTokenPayload } from "../types";
+import { AuthTokensDto, AuthUserDto } from "@repo/shared/dtos/auth";
+import type {
+  AccessTokenPayload,
+  RefreshTokenPayload,
+} from "@repo/shared/interfaces";
 
 @Injectable()
 export class TokenService {

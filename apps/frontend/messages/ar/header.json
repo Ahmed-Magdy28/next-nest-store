@@ -1,0 +1,19 @@
+{
+    "Header": {
+        "dashboard": "لوحة التحكم",
+        "myOrders": "طلباتي",
+        "accountSettings": "إعدادات الحساب",
+        "signOut": "تسجيل الخروج",
+        "signIn": "تسجيل الدخول",
+        "getStarted": "حساب جديد",
+        "cart": "السلة",
+        "wishlist": "المفضلة"
+    },
+    "Nav": {
+        "Products": "المنتجات",
+        "Categories": "الأقسام",
+        "Deals": "العروض",
+        "New Arrivals": "وصل حديثاً",
+        "Best Sellers": "الأكثر مبيعاً"
+    }
+}

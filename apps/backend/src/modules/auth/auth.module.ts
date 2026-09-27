@@ -8,16 +8,18 @@ import { JwtStrategy } from "./strategies/jwt.strategy";
 
 import { UsersModule } from "../users/users.module";
 
-import { PasswordService } from "./services/password.service";
+import { PasswordService } from "../../common/services/password.service";
 import { TokenService } from "./services/token.service";
 import { RefreshJwtStrategy } from "./strategies/refresh-jwt.strategy";
 import { ACCESS_TOKEN_EXPIRES_IN } from "../../common/security";
 import { SessionsModule } from "../sessions/sessions.module";
+import { PasswordModule } from "../../common/services/password.module";
 
 @Module({
   imports: [
     UsersModule,
     SessionsModule,
+    PasswordModule,
 
     JwtModule.registerAsync({
       imports: [ConfigModule],

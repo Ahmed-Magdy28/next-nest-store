@@ -7,8 +7,10 @@ import {
   Param,
   UseGuards,
   HttpStatus,
+  Headers,
   HttpCode,
   Req,
+  UnauthorizedException,
 } from "@nestjs/common";
 
 import type { Request } from "express";
@@ -27,15 +29,15 @@ import type {
   LoginDto,
   RegisterDto,
   ResetPasswordDto,
-} from "./dto";
+  AuthResponseDto,
+} from "@repo/shared/dtos/auth";
 
 import { CurrentUser } from "../../common/decorators/current-user.decorator";
 import { Public, Swagger } from "../../common/decorators";
 
-import type { JwtUser, RefreshUser } from "./types";
-import { AuthResponseDto } from "./dto";
+import type { JwtUser, RefreshUser } from "@repo/shared/interfaces";
 import { RefreshJwtGuard } from "../../common/guards";
-import { type SessionSummaryDto } from "../sessions/dto";
+import { type SessionSummaryDto } from "@repo/shared/dtos/sessions";
 
 @Controller("auth")
 export class AuthController {
@@ -45,8 +47,13 @@ export class AuthController {
   @Post("register")
   @Swagger("register")
   @UseZodValidation(registerSchema)
-  register(@Body() body: RegisterDto): Promise<AuthResponseDto> {
-    return this.authService.register(body);
+  register(
+    @Body() body: RegisterDto,
+    @Req() req: Request,
+  ): Promise<AuthResponseDto> {
+    const userAgent = req.headers["user-agent"] || "Unknown";
+    const ipAddress = req.ip || req.socket.remoteAddress || "Unknown";
+    return this.authService.register(body, { userAgent, ipAddress });
   }
 
   @Public()
@@ -59,6 +66,39 @@ export class AuthController {
     const ipAddress = req.ip || req.socket.remoteAddress || "Unknown";
 
     return this.authService.login(body, { userAgent, ipAddress });
+  }
+
+  @Public()
+  @Post("login-admin")
+  @HttpCode(HttpStatus.OK)
+  @Swagger("login-admin")
+  @UseZodValidation(loginSchema)
+  loginAdmin(
+    @Body() body: LoginDto,
+    @Req() req: Request,
+  ): Promise<AuthResponseDto> {
+    const userAgent = req.headers["user-agent"] || "Unknown";
+    const ipAddress = req.ip || req.socket.remoteAddress || "Unknown";
+
+    return this.authService.login(body, { userAgent, ipAddress });
+  }
+
+  @Public()
+  @Swagger("register-admin")
+  @Post("register-admin")
+  @HttpCode(HttpStatus.CREATED)
+  @UseZodValidation(registerSchema)
+  async registerAdmin(
+    @Body() body: RegisterDto,
+    @Headers("x-admin-secret") secret: string,
+  ): Promise<AuthResponseDto> {
+    const expectedSecret = process.env.ADMIN_SECRET;
+
+    if (!expectedSecret || secret !== expectedSecret) {
+      throw new UnauthorizedException("Invalid admin secret");
+    }
+
+    return this.authService.registerAdmin(body);
   }
 
   @Get("me")
@@ -79,6 +119,9 @@ export class AuthController {
   @Swagger("logout")
   @HttpCode(HttpStatus.NO_CONTENT)
   logout(@CurrentUser() user: JwtUser): Promise<void> {
+    if (!user?.sessionId) {
+      throw new UnauthorizedException("No active session");
+    }
     return this.authService.logout(user.sessionId);
   }
 
@@ -112,12 +155,11 @@ export class AuthController {
   @Swagger("forgot-password")
   async forgotPassword(
     @Body() body: ForgotPasswordDto,
-  ): Promise<{ message: string; resetToken?: string }> {
-    const result = await this.authService.requestPasswordReset(body.email);
+  ): Promise<{ message: string }> {
+    await this.authService.requestPasswordReset(body.email);
 
     return {
       message: "If the email exists, a reset link has been sent.",
-      ...result,
     };
   }
 

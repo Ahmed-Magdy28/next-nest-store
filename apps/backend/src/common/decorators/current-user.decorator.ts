@@ -1,6 +1,6 @@
 import { createParamDecorator, ExecutionContext } from "@nestjs/common";
 
-import type { JwtUser } from "../../modules/auth/types";
+import type { JwtUser } from "@repo/shared/interfaces";
 
 export const CurrentUser = createParamDecorator(
   (_: unknown, ctx: ExecutionContext): JwtUser => {

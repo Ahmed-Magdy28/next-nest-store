@@ -1,0 +1,17 @@
+{
+    "Common": {
+        "loading": "جاري التحميل...",
+        "error": "حدث خطأ",
+        "retry": "إعادة المحاولة",
+        "save": "حفظ",
+        "cancel": "إلغاء",
+        "delete": "حذف",
+        "edit": "تعديل",
+        "close": "إغلاق",
+        "yes": "نعم",
+        "no": "لا",
+        "previous": "السابق",
+        "next": "التالي",
+        "pageOf": "صفحة {page} من {totalPages}"
+    }
+}

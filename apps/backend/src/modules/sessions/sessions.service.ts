@@ -30,6 +30,18 @@ export class SessionsService {
     return this.sessionsRepository.findActiveByUserId(userId);
   }
 
+  countPendingByUserId(userId: string): Promise<number> {
+    return this.sessionsRepository.countPendingByUserId(userId);
+  }
+
+  countRevokedByUserId(userId: string): Promise<number> {
+    return this.sessionsRepository.countRevokedByUserId(userId);
+  }
+
+  deleteExpiredByUserId(userId: string): Promise<{ count: number }> {
+    return this.sessionsRepository.deleteExpiredByUserId(userId);
+  }
+
   findActiveByDevice(
     userId: string,
     userAgent: string,
@@ -46,8 +58,20 @@ export class SessionsService {
     return this.sessionsRepository.findPendingByUserId(userId);
   }
 
+  touchLastUsed(id: string): Promise<Session> {
+    return this.sessionsRepository.touchLastUsed(id);
+  }
+
   countActiveByUserId(userId: string): Promise<number> {
     return this.sessionsRepository.countActiveByUserId(userId);
+  }
+
+  countByUserId(userId: string): Promise<number> {
+    return this.sessionsRepository.countByUserId(userId);
+  }
+
+  deleteOldestRevoked(userId: string, count: number): Promise<void> {
+    return this.sessionsRepository.deleteOldestRevoked(userId, count);
   }
 
   activate(id: string): Promise<Session> {

@@ -2,13 +2,15 @@
   "$schema": "https://turborepo.dev/schema.json",
   "ui": "tui",
   "globalEnv": [
-    "PORT",
+    "BACKEND_PORT",
     "DATABASE_URL",
     "DATABASE_TEST_URL",
     "JWT_SECRET",
     "NODE_ENV",
     "CORS_ORIGIN",
-    "NEXT_PUBLIC_API_URL"
+    "NEXT_PUBLIC_API_URL",
+    "ADMIN_SECRET",
+    "ENABLE_GUEST_CART"
   ],
   "tasks": {
     "build": {

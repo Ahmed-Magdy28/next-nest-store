@@ -8,7 +8,6 @@
     ],
     "strictNullChecks": true,
     "paths": {
-      "@/*": ["./*"],
       "@repo/shared": ["./node_modules/@repo/shared/dist/index.d.ts"],
       "@repo/shared/*": ["./node_modules/@repo/shared/dist/*"]
     }

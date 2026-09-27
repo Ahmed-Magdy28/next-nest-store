@@ -1,0 +1,33 @@
+{
+    "Footer": {
+        "freeShipping": "شحن سريع مجاني",
+        "freeShippingDesc": "للطلبات فوق 100$",
+        "moneyBack": "استرداد خلال 30 يوم",
+        "moneyBackDesc": "إرجاع بدون متاعب",
+        "secureCheckout": "دفع آمن",
+        "secureCheckoutDesc": "تشفير SSL 256-bit",
+        "support": "دعم على مدار الساعة",
+        "supportDesc": "دائماً في خدمتك",
+        "brandDesc": "متجرك الحديث الشامل للمنتجات عالية الجودة. مبني على الأداء العالي والأمان وتجربة تسوق سلسة.",
+        "newsletterTitle": "اشترك في نشرتنا البريدية",
+        "newsletterPlaceholder": "أدخل بريدك الإلكتروني",
+        "newsletterJoin": "اشترك",
+        "newsletterSuccess": "✓ شكراً لاشتراكك!",
+        "shop": "المتجر",
+        "supportCol": "الدعم",
+        "company": "الشركة",
+        "allProducts": "كل المنتجات",
+        "categories": "الأقسام",
+        "featuredDeals": "أقوى العروض",
+        "newArrivals": "وصل حديثاً",
+        "helpCenter": "مركز المساعدة / الأسئلة الشائعة",
+        "trackOrders": "تتبع الطلبات",
+        "shippingPolicy": "سياسة الشحن",
+        "returns": "الإرجاع والاسترداد",
+        "aboutUs": "من نحن",
+        "contactUs": "تواصل معنا",
+        "privacyPolicy": "سياسة الخصوصية",
+        "termsOfService": "شروط الخدمة",
+        "rights": "جميع الحقوق محفوظة."
+    }
+}

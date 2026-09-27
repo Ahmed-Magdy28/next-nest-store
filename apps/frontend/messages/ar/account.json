@@ -1,0 +1,9 @@
+{
+    "Account": {
+        "title": "حسابي",
+        "myProfile": "ملفي",
+        "myOrders": "طلباتي",
+        "myWishlist": "مفضلتي",
+        "myReviews": "تقييماتي"
+    }
+}

@@ -8,7 +8,7 @@ import { SessionStatus } from "@repo/database";
 import { UsersService } from "../../users/users.service";
 
 import { AuthMapper } from "../mappers/auth.mapper";
-import type { JwtPayload, RefreshUser } from "../types";
+import type { JwtPayload, RefreshUser } from "@repo/shared/interfaces";
 import { Request } from "express";
 import { SessionsService } from "../../sessions/sessions.service";
 

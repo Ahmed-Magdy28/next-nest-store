@@ -1,0 +1,57 @@
+{
+    "Products": {
+        "title": "المنتجات",
+        "browseCatalog": "تصفح الكتالوج",
+        "productsFound": "{count, plural, =0 {لا توجد منتجات} =1 {منتج واحد} other {# منتجات}}",
+        "backToProducts": "العودة للمنتجات",
+        "notFound": "المنتج غير موجود",
+        "notFoundDesc": "المنتج الذي تبحث عنه غير متوفر."
+    },
+    "ProductCard": {
+        "new": "جديد",
+        "sale": "تخفيض",
+        "outOfStock": "نفدت الكمية",
+        "addToCart": "أضف للسلة",
+        "adding": "جاري الإضافة...",
+        "uncategorized": "غير مصنف"
+    },
+    "ProductInfo": {
+        "sku": "رمز المنتج",
+        "inStock": "متوفر",
+        "outOfStock": "غير متوفر",
+        "save": "وفر",
+        "addToCart": "أضف للسلة",
+        "adding": "جاري الإضافة...",
+        "chooseVariant": "اختر النوع",
+        "fastDelivery": "توصيل سريع",
+        "secureCheckout": "دفع آمن"
+    },
+    "ProductGrid": {
+        "noProducts": "لا توجد منتجات",
+        "adjustFilters": "حاول تعديل خيارات البحث أو التصفية."
+    },
+    "ProductFilters": {
+        "search": "بحث",
+        "searchPlaceholder": "ابحث عن منتجات...",
+        "category": "القسم",
+        "allCategories": "كل الأقسام",
+        "filters": "الفلاتر",
+        "onDiscount": "عليه خصم",
+        "newArrivals": "وصل حديثاً",
+        "sortBy": "ترتيب حسب",
+        "newest": "الأحدث",
+        "recentlyUpdated": "آخر تحديث",
+        "price": "السعر",
+        "name": "الاسم",
+        "order": "الترتيب",
+        "descending": "تنازلي",
+        "ascending": "تصاعدي",
+        "reset": "إعادة تعيين"
+    },
+    "Categories": {
+        "title": "الأقسام",
+        "subtitle": "تصفح المنتجات حسب القسم",
+        "backToCategories": "العودة للأقسام",
+        "productCount": "{count, plural, =0 {لا توجد منتجات} =1 {منتج واحد} other {# منتجات}}"
+    }
+}

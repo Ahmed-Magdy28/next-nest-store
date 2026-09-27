@@ -1,1 +1,110 @@
 @import "tailwindcss";
+
+/* ✅ Tailwind v4 — تعريف dark mode عبر الـ class مش media query */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* (اختياري) لو عايز تدعم media query كمان:
+@custom-variant dark (&:where(.dark, .dark *, @media (prefers-color-scheme: dark)));
+*/
+@custom-variant rtl (&:where([dir="rtl"], [dir="rtl"] *));
+@custom-variant ltr (&:where([dir="ltr"], [dir="ltr"] *));
+
+/* ============================================
+   🚚 Add to Cart — Truck Animation (v2)
+   ============================================ */
+
+/* اهتزاز الشاحنة (المحرك) */
+@keyframes truck-drive {
+  0%,
+  100% {
+    transform: translateX(0) rotate(0deg);
+  }
+  20% {
+    transform: translateX(-1px) rotate(-1.5deg);
+  }
+  40% {
+    transform: translateX(1px) rotate(1deg);
+  }
+  60% {
+    transform: translateX(-1px) rotate(-1deg);
+  }
+  80% {
+    transform: translateX(1px) rotate(1.5deg);
+  }
+}
+.animate-truck-drive {
+  animation: truck-drive 0.35s ease-in-out infinite;
+}
+
+/* المنتج الصغير (أيقونة) بيطير من الشمال ناحية العربية (اليمين) */
+@keyframes fly-to-truck {
+  0% {
+    opacity: 0;
+    transform: translate(-120%, -50%) scale(0.4);
+  }
+  20% {
+    opacity: 1;
+    transform: translate(-60%, -70%) scale(0.9);
+  }
+  60% {
+    opacity: 1;
+    transform: translate(10%, -50%) scale(0.7);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(40%, -30%) scale(0.2);
+  }
+}
+.animate-fly-to-truck {
+  animation: fly-to-truck 0.9s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+/* علامة الصح */
+@keyframes check-pop {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1.15);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+.animate-check-pop {
+  animation: check-pop 0.3s ease-out forwards;
+}
+
+/* دعم RTL — الأيقونة تطير من اليمين ناحية الشمال */
+[dir="rtl"] .animate-fly-to-truck {
+  animation-name: fly-to-truck-rtl;
+}
+@keyframes fly-to-truck-rtl {
+  0% {
+    opacity: 0;
+    transform: translate(120%, -50%) scale(0.4);
+  }
+  20% {
+    opacity: 1;
+    transform: translate(60%, -70%) scale(0.9);
+  }
+  60% {
+    opacity: 1;
+    transform: translate(-10%, -50%) scale(0.7);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-40%, -30%) scale(0.2);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-truck-drive,
+  .animate-fly-to-truck,
+  .animate-check-pop {
+    animation: none !important;
+  }
+}

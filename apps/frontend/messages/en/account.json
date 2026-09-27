@@ -1,0 +1,9 @@
+{
+    "Account": {
+        "title": "My Account",
+        "myProfile": "My Profile",
+        "myOrders": "My Orders",
+        "myWishlist": "My Wishlist",
+        "myReviews": "My Reviews"
+    }
+}

@@ -1,0 +1,37 @@
+/**
+ * Re-exports + helpers for frontend form validation.
+ *
+ * الـ schemas الفعلية في @repo/shared عشان الباك اند والفرونت يستخدموا نفس القواعد.
+ */
+
+export * from "@repo/shared/schemas/common";
+export * from "@repo/shared/schemas/auth";
+export * from "@repo/shared/schemas/users";
+
+export {
+  PASSWORD_MIN_LENGTH,
+  PASSWORD_MAX_LENGTH,
+  PASSWORD_MIN_UPPERCASE,
+  PASSWORD_MIN_LOWERCASE,
+  PASSWORD_MIN_DIGITS,
+  PASSWORD_MIN_SPECIAL_CHARS,
+  PASSWORD_MESSAGE,
+  PASSWORD_LENGTH_MSG,
+  PASSWORD_UPPERCASE_MSG,
+  PASSWORD_LOWERCASE_MSG,
+  PASSWORD_DIGIT_MSG,
+  PASSWORD_SPECIAL_CHAR_MSG,
+  PASSWORD_MUST_CONTAIN_UPPERCASE,
+  PASSWORD_MUST_CONTAIN_LOWERCASE,
+  PASSWORD_MUST_CONTAIN_DIGITS,
+  PASSWORD_MUST_CONTAIN_SPECIAL_CHARS,
+  PASSWORD_MUST_NOT_CONTAIN_WHITESPACE,
+  PASSWORD_MUST_NOT_CONTAIN_EQUAL,
+  USERNAME_MIN_LENGTH,
+  USERNAME_MAX_LENGTH,
+  USERNAME_REGEX,
+  USERNAME_MSG,
+  USERNAME_LENGTH_MSG,
+  USERNAME_MUST_NOT_CONTAIN_EQUAL,
+  USERNAME_MUST_NOT_CONTAIN_EQUAL_MSG,
+} from "@repo/shared/constants";

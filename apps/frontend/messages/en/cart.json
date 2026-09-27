@@ -1,0 +1,14 @@
+{
+    "Cart": {
+        "title": "Shopping Cart",
+        "empty": "Your cart is empty",
+        "emptyDesc": "Add some products to get started.",
+        "continueShopping": "Continue shopping",
+        "clearAll": "Clear all",
+        "subtotal": "Subtotal",
+        "checkout": "Checkout",
+        "remove": "Remove",
+        "quantity": "Quantity",
+        "itemsCount": "{count, plural, =0 {Empty} =1 {1 item} other {# items}}"
+    }
+}

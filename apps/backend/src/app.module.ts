@@ -14,6 +14,10 @@ import { AppService } from "./app.service";
 import { AuthModule } from "./modules/auth/auth.module";
 import { UsersModule } from "./modules/users/users.module";
 import { RolesGuard } from "./common/guards";
+import { CategoriesModule } from "./modules/categories/categories.module";
+import { ProductsModule } from "./modules/products/products.module";
+import { CartModule } from "./modules/cart/cart.module";
+import { WishlistModule } from "./modules/wishlist/wishlist.module";
 
 @Module({
   imports: [
@@ -23,7 +27,6 @@ import { RolesGuard } from "./common/guards";
       expandVariables: true,
       envFilePath: join(process.cwd(), "../../.env"),
       load: [configuration],
-
       validate: (config) => {
         return envSchema.parse(config);
       },
@@ -31,6 +34,10 @@ import { RolesGuard } from "./common/guards";
     DatabaseModule,
     AuthModule,
     UsersModule,
+    CategoriesModule,
+    ProductsModule,
+    CartModule,
+    WishlistModule,
   ],
   controllers: [AppController],
   providers: [

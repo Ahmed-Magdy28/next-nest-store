@@ -1,0 +1,19 @@
+{
+    "Header": {
+        "dashboard": "Dashboard",
+        "myOrders": "My Orders",
+        "accountSettings": "Account Settings",
+        "signOut": "Sign Out",
+        "signIn": "Sign In",
+        "getStarted": "Get Started",
+        "cart": "Cart",
+        "wishlist": "Wishlist"
+    },
+    "Nav": {
+        "Products": "Products",
+        "Categories": "Categories",
+        "Deals": "Deals",
+        "New Arrivals": "New Arrivals",
+        "Best Sellers": "Best Sellers"
+    }
+}

@@ -29,7 +29,9 @@ services:
     volumes:
       - ./apps/backend/src:/app/apps/backend/src
       - ./packages/shared/src:/app/packages/shared/src
+      - ./packages/database/src:/app/packages/database/src
       - ./packages/database/prisma:/app/packages/database/prisma
+      - ./packages/database/tsconfig.json:/app/packages/database/tsconfig.json
 
     command: sh -c "pnpm --filter @repo/database build &&
       pnpm --filter @repo/database migrate:deploy &&

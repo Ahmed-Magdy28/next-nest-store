@@ -28,9 +28,31 @@ export class SessionsRepository {
         userId,
         status: "ACTIVE",
         userAgent,
+        ...(ipAddress ? { ipAddress } : {}),
         expiresAt: { gt: new Date() },
       },
       orderBy: { createdAt: "desc" },
+    });
+  }
+
+  countPendingByUserId(userId: string): Promise<number> {
+    return this.prisma.session.count({
+      where: { userId, status: SessionStatus.PENDING },
+    });
+  }
+
+  countRevokedByUserId(userId: string): Promise<number> {
+    return this.prisma.session.count({
+      where: { userId, status: SessionStatus.REVOKED },
+    });
+  }
+
+  deleteExpiredByUserId(userId: string): Promise<{ count: number }> {
+    return this.prisma.session.deleteMany({
+      where: {
+        userId,
+        expiresAt: { lte: new Date() },
+      },
     });
   }
 
@@ -61,6 +83,13 @@ export class SessionsRepository {
       orderBy: {
         lastUsedAt: "desc",
       },
+    });
+  }
+
+  touchLastUsed(id: string): Promise<Session> {
+    return this.prisma.session.update({
+      where: { id },
+      data: { lastUsedAt: new Date() },
     });
   }
 
@@ -148,6 +177,29 @@ export class SessionsRepository {
           revokedAt: null,
         },
       });
+    });
+  }
+  countByUserId(userId: string): Promise<number> {
+    return this.prisma.session.count({
+      where: { userId },
+    });
+  }
+
+  async deleteOldestRevoked(userId: string, count: number): Promise<void> {
+    const oldest = await this.prisma.session.findMany({
+      where: {
+        userId,
+        status: SessionStatus.REVOKED,
+      },
+      orderBy: { createdAt: "asc" },
+      take: count,
+      select: { id: true },
+    });
+
+    if (oldest.length === 0) return;
+
+    await this.prisma.session.deleteMany({
+      where: { id: { in: oldest.map((s) => s.id) } },
     });
   }
 

@@ -126,9 +126,209 @@ exports.Prisma.SessionScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.AddressScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  label: 'label',
+  fullName: 'fullName',
+  phone: 'phone',
+  country: 'country',
+  city: 'city',
+  area: 'area',
+  street: 'street',
+  building: 'building',
+  apartment: 'apartment',
+  postalCode: 'postalCode',
+  isDefault: 'isDefault',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.CategoryScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  arName: 'arName',
+  slug: 'slug',
+  image: 'image',
+  parentId: 'parentId',
+  isActive: 'isActive',
+  sortOrder: 'sortOrder',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.ProductScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  arName: 'arName',
+  slug: 'slug',
+  sku: 'sku',
+  isNew: 'isNew',
+  isActive: 'isActive',
+  isAvailable: 'isAvailable',
+  regularPrice: 'regularPrice',
+  discountPrice: 'discountPrice',
+  onDiscount: 'onDiscount',
+  discountType: 'discountType',
+  discountValue: 'discountValue',
+  discountStartDate: 'discountStartDate',
+  discountEndDate: 'discountEndDate',
+  description: 'description',
+  arDescription: 'arDescription',
+  weight: 'weight',
+  dimensions: 'dimensions',
+  mainImage: 'mainImage',
+  imageGallery: 'imageGallery',
+  deletedAt: 'deletedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.ProductVariantScalarFieldEnum = {
+  id: 'id',
+  productId: 'productId',
+  sku: 'sku',
+  name: 'name',
+  arName: 'arName',
+  size: 'size',
+  attributes: 'attributes',
+  regularPrice: 'regularPrice',
+  discountPrice: 'discountPrice',
+  stockQuantity: 'stockQuantity',
+  isAvailable: 'isAvailable',
+  mainImage: 'mainImage',
+  imageGallery: 'imageGallery',
+  isActive: 'isActive',
+  sortOrder: 'sortOrder',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.ProductCategoryScalarFieldEnum = {
+  productId: 'productId',
+  categoryId: 'categoryId'
+};
+
+exports.Prisma.WishlistScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.WishlistItemScalarFieldEnum = {
+  id: 'id',
+  wishlistId: 'wishlistId',
+  productId: 'productId',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.CartScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  guestToken: 'guestToken',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.CartItemScalarFieldEnum = {
+  id: 'id',
+  cartId: 'cartId',
+  productId: 'productId',
+  variantId: 'variantId',
+  variantKey: 'variantKey',
+  quantity: 'quantity',
+  priceAtAdd: 'priceAtAdd',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.CouponScalarFieldEnum = {
+  id: 'id',
+  code: 'code',
+  type: 'type',
+  value: 'value',
+  minOrderAmount: 'minOrderAmount',
+  maxDiscount: 'maxDiscount',
+  usageLimit: 'usageLimit',
+  usageLimitPerUser: 'usageLimitPerUser',
+  usedCount: 'usedCount',
+  startDate: 'startDate',
+  endDate: 'endDate',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.CouponUsageScalarFieldEnum = {
+  id: 'id',
+  couponId: 'couponId',
+  userId: 'userId',
+  orderId: 'orderId',
+  discountAmount: 'discountAmount',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.OrderScalarFieldEnum = {
+  id: 'id',
+  orderNumber: 'orderNumber',
+  userId: 'userId',
+  customerName: 'customerName',
+  customerEmail: 'customerEmail',
+  customerPhone: 'customerPhone',
+  shippingAddress: 'shippingAddress',
+  subtotal: 'subtotal',
+  shippingCost: 'shippingCost',
+  discountAmount: 'discountAmount',
+  taxAmount: 'taxAmount',
+  total: 'total',
+  couponId: 'couponId',
+  couponCode: 'couponCode',
+  status: 'status',
+  paymentStatus: 'paymentStatus',
+  paymentMethod: 'paymentMethod',
+  notes: 'notes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.OrderItemScalarFieldEnum = {
+  id: 'id',
+  orderId: 'orderId',
+  productId: 'productId',
+  variantId: 'variantId',
+  productName: 'productName',
+  variantName: 'variantName',
+  productSku: 'productSku',
+  productImage: 'productImage',
+  quantity: 'quantity',
+  unitPrice: 'unitPrice',
+  totalPrice: 'totalPrice'
+};
+
+exports.Prisma.ReviewScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  productId: 'productId',
+  rating: 'rating',
+  comment: 'comment',
+  isApproved: 'isApproved',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
+};
+
+exports.Prisma.NullableJsonNullValueInput = {
+  DbNull: Prisma.DbNull,
+  JsonNull: Prisma.JsonNull
+};
+
+exports.Prisma.JsonNullValueInput = {
+  JsonNull: Prisma.JsonNull
 };
 
 exports.Prisma.QueryMode = {
@@ -139,6 +339,12 @@ exports.Prisma.QueryMode = {
 exports.Prisma.NullsOrder = {
   first: 'first',
   last: 'last'
+};
+
+exports.Prisma.JsonNullValueFilter = {
+  DbNull: Prisma.DbNull,
+  JsonNull: Prisma.JsonNull,
+  AnyNull: Prisma.AnyNull
 };
 exports.UserRole = exports.$Enums.UserRole = {
   USER: 'USER',
@@ -151,9 +357,57 @@ exports.SessionStatus = exports.$Enums.SessionStatus = {
   REVOKED: 'REVOKED'
 };
 
+exports.DiscountType = exports.$Enums.DiscountType = {
+  PERCENTAGE: 'PERCENTAGE',
+  FIXED: 'FIXED'
+};
+
+exports.CouponType = exports.$Enums.CouponType = {
+  PERCENTAGE: 'PERCENTAGE',
+  FIXED: 'FIXED'
+};
+
+exports.OrderStatus = exports.$Enums.OrderStatus = {
+  PENDING: 'PENDING',
+  CONFIRMED: 'CONFIRMED',
+  PROCESSING: 'PROCESSING',
+  SHIPPED: 'SHIPPED',
+  DELIVERED: 'DELIVERED',
+  CANCELLED: 'CANCELLED',
+  REFUNDED: 'REFUNDED'
+};
+
+exports.PaymentStatus = exports.$Enums.PaymentStatus = {
+  UNPAID: 'UNPAID',
+  PAID: 'PAID',
+  FAILED: 'FAILED',
+  REFUNDED: 'REFUNDED'
+};
+
+exports.PaymentMethod = exports.$Enums.PaymentMethod = {
+  CASH_ON_DELIVERY: 'CASH_ON_DELIVERY',
+  CREDIT_CARD: 'CREDIT_CARD',
+  PAYPAL: 'PAYPAL',
+  WALLET: 'WALLET'
+};
+
 exports.Prisma.ModelName = {
   User: 'User',
-  Session: 'Session'
+  Session: 'Session',
+  Address: 'Address',
+  Category: 'Category',
+  Product: 'Product',
+  ProductVariant: 'ProductVariant',
+  ProductCategory: 'ProductCategory',
+  Wishlist: 'Wishlist',
+  WishlistItem: 'WishlistItem',
+  Cart: 'Cart',
+  CartItem: 'CartItem',
+  Coupon: 'Coupon',
+  CouponUsage: 'CouponUsage',
+  Order: 'Order',
+  OrderItem: 'OrderItem',
+  Review: 'Review'
 };
 /**
  * Create the Client
@@ -202,13 +456,13 @@ const config = {
       }
     }
   },
-  "inlineSchema": "generator client {\n  provider = \"prisma-client-js\"\n  output   = \"./generated\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n  url      = env(\"DATABASE_URL\")\n}\n\nenum UserRole {\n  USER\n  ADMIN\n}\n\nenum SessionStatus {\n  PENDING\n  ACTIVE\n  REVOKED\n}\n\nmodel User {\n  id           String   @id @default(uuid())\n  email        String   @unique\n  username     String   @unique\n  passwordHash String\n  role         UserRole @default(USER)\n\n  isVerified   Boolean @default(false)\n  pendingEmail String?\n\n  passwordResetTokenHash          String?\n  passwordResetTokenExpiresAt     DateTime?\n  passwordResetTokenUsedAt        DateTime?\n  emailVerificationTokenHash      String?\n  emailVerificationTokenExpiresAt DateTime?\n  emailVerificationTokenUsedAt    DateTime?\n\n  sessions Session[]\n\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  @@index([passwordResetTokenHash])\n  @@index([emailVerificationTokenHash])\n}\n\nmodel Session {\n  id               String        @id @default(uuid())\n  userId           String\n  refreshTokenHash String?\n  expiresAt        DateTime\n  revokedAt        DateTime?\n  status           SessionStatus @default(ACTIVE)\n\n  deviceName String?\n  userAgent  String?\n  ipAddress  String?\n  lastUsedAt DateTime?\n\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  user User @relation(fields: [userId], references: [id], onDelete: Cascade)\n\n  @@index([userId])\n}\n",
-  "inlineSchemaHash": "50f3005458d27fa2ef10e9468ee481d5c3ad9ba71f7a55972066f2f42e1d6cb5",
+  "inlineSchema": "// ============================================\n// GENERATOR & DATASOURCE\n// ============================================\n\ngenerator client {\n  provider = \"prisma-client-js\"\n  output   = \"./generated\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n  url      = env(\"DATABASE_URL\")\n}\n\n// ============================================\n// ENUMS\n// ============================================\n\nenum UserRole {\n  USER\n  ADMIN\n}\n\nenum SessionStatus {\n  PENDING\n  ACTIVE\n  REVOKED\n}\n\nenum DiscountType {\n  PERCENTAGE\n  FIXED\n}\n\nenum CouponType {\n  PERCENTAGE\n  FIXED\n}\n\nenum OrderStatus {\n  PENDING\n  CONFIRMED\n  PROCESSING\n  SHIPPED\n  DELIVERED\n  CANCELLED\n  REFUNDED\n}\n\nenum PaymentStatus {\n  UNPAID\n  PAID\n  FAILED\n  REFUNDED\n}\n\nenum PaymentMethod {\n  CASH_ON_DELIVERY\n  CREDIT_CARD\n  PAYPAL\n  WALLET\n}\n\n// ============================================\n// USER\n// ============================================\n\nmodel User {\n  id           String   @id @default(uuid())\n  email        String   @unique\n  username     String   @unique\n  passwordHash String\n  role         UserRole @default(USER)\n\n  isVerified   Boolean @default(false)\n  pendingEmail String?\n\n  passwordResetTokenHash          String?\n  passwordResetTokenExpiresAt     DateTime?\n  passwordResetTokenUsedAt        DateTime?\n  emailVerificationTokenHash      String?\n  emailVerificationTokenExpiresAt DateTime?\n  emailVerificationTokenUsedAt    DateTime?\n\n  sessions Session[]\n\n  addresses    Address[]\n  cart         Cart?\n  orders       Order[]\n  reviews      Review[]\n  wishlist     Wishlist?\n  couponUsages CouponUsage[]\n\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  @@index([passwordResetTokenHash])\n  @@index([emailVerificationTokenHash])\n}\n\n// ============================================\n// SESSION\n// ============================================\n\nmodel Session {\n  id               String        @id @default(uuid())\n  userId           String\n  refreshTokenHash String?\n  expiresAt        DateTime\n  revokedAt        DateTime?\n  status           SessionStatus @default(ACTIVE)\n\n  deviceName String?\n  userAgent  String?\n  ipAddress  String?\n  lastUsedAt DateTime?\n\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  user User @relation(fields: [userId], references: [id], onDelete: Cascade)\n\n  @@index([userId])\n}\n\n// ============================================\n// ADDRESS\n// ============================================\n\nmodel Address {\n  id         String  @id @default(uuid())\n  userId     String\n  label      String?\n  fullName   String\n  phone      String\n  country    String\n  city       String\n  area       String?\n  street     String\n  building   String?\n  apartment  String?\n  postalCode String?\n  isDefault  Boolean @default(false)\n\n  user User @relation(fields: [userId], references: [id], onDelete: Cascade)\n\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  @@index([userId])\n}\n\n// ============================================\n// CATEGORY\n// ============================================\n\nmodel Category {\n  id       String  @id @default(uuid())\n  name     String\n  arName   String\n  slug     String  @unique\n  image    String?\n  parentId String?\n\n  parent   Category?  @relation(\"SubCategories\", fields: [parentId], references: [id], onDelete: SetNull)\n  children Category[] @relation(\"SubCategories\")\n\n  isActive  Boolean @default(true)\n  sortOrder Int     @default(0)\n\n  products ProductCategory[]\n\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  @@index([parentId])\n  @@index([isActive])\n}\n\n// ============================================\n// PRODUCT\n// ============================================\n\nmodel Product {\n  id String @id @default(uuid())\n\n  // Basic Info\n  name   String\n  arName String\n  slug   String @unique\n  sku    String @unique\n\n  // Flags\n  isNew       Boolean @default(false)\n  isActive    Boolean @default(true)\n  isAvailable Boolean @default(true)\n\n  // Pricing\n  regularPrice  Decimal @db.Decimal(10, 2)\n  discountPrice Decimal @db.Decimal(10, 2)\n\n  onDiscount        Boolean       @default(false)\n  discountType      DiscountType?\n  discountValue     Decimal?      @db.Decimal(10, 2)\n  discountStartDate DateTime?\n  discountEndDate   DateTime?\n\n  // Description\n  description   String? @db.Text\n  arDescription String? @db.Text\n\n  // Shipping Info\n  weight     Float?\n  dimensions Json?\n\n  // Images\n  mainImage    String\n  imageGallery String[]\n\n  // Relations\n  categories    ProductCategory[]\n  variants      ProductVariant[]\n  cartItems     CartItem[]\n  orderItems    OrderItem[]\n  reviews       Review[]\n  wishlistItems WishlistItem[]\n\n  // Soft Delete\n  deletedAt DateTime?\n\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  @@index([isNew])\n  @@index([onDiscount])\n  @@index([isActive])\n  @@index([deletedAt])\n  @@index([discountPrice])\n}\n\n// ============================================\n// PRODUCT VARIANT\n// ============================================\n\nmodel ProductVariant {\n  id        String @id @default(uuid())\n  productId String\n\n  // Variant Identity\n  sku    String  @unique\n  name   String\n  arName String?\n\n  // Size\n  size String?\n\n  // Flexible Attributes\n  // Example:\n  // { \"color\": \"red\", \"material\": \"cotton\" }\n  attributes Json\n\n  // Pricing Override\n  // If null, use Product price\n  regularPrice  Decimal? @db.Decimal(10, 2)\n  discountPrice Decimal? @db.Decimal(10, 2)\n\n  // Stock\n  stockQuantity Int     @default(0)\n  isAvailable   Boolean @default(true)\n\n  // Images\n  mainImage    String?\n  imageGallery String[]\n\n  // Flags\n  isActive  Boolean @default(true)\n  sortOrder Int     @default(0)\n\n  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)\n\n  cartItems  CartItem[]\n  orderItems OrderItem[]\n\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  @@index([productId])\n  @@index([isActive])\n}\n\n// ============================================\n// PRODUCT <-> CATEGORY\n// ============================================\n\nmodel ProductCategory {\n  productId  String\n  categoryId String\n\n  product  Product  @relation(fields: [productId], references: [id], onDelete: Cascade)\n  category Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)\n\n  @@id([productId, categoryId])\n  @@index([categoryId])\n}\n\n// ============================================\n// WISHLIST\n// ============================================\n\nmodel Wishlist {\n  id     String @id @default(uuid())\n  userId String @unique\n\n  items WishlistItem[]\n\n  user User @relation(fields: [userId], references: [id], onDelete: Cascade)\n\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n}\n\nmodel WishlistItem {\n  id         String @id @default(uuid())\n  wishlistId String\n  productId  String\n\n  wishlist Wishlist @relation(fields: [wishlistId], references: [id], onDelete: Cascade)\n  product  Product  @relation(fields: [productId], references: [id], onDelete: Cascade)\n\n  createdAt DateTime @default(now())\n\n  @@unique([wishlistId, productId])\n  @@index([wishlistId])\n  @@index([productId])\n}\n\n// ============================================\n// CART\n// ============================================\n\nmodel Cart {\n  id         String  @id @default(uuid())\n  userId     String? @unique\n  guestToken String? @unique\n\n  items CartItem[]\n\n  user User? @relation(fields: [userId], references: [id], onDelete: Cascade)\n\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n}\n\nmodel CartItem {\n  id         String  @id @default(uuid())\n  cartId     String\n  productId  String\n  variantId  String?\n  variantKey String  @default(\"none\") // \"none\" when no variant, otherwise variantId\n\n  quantity Int @default(1)\n\n  // Price snapshot when added to cart\n  priceAtAdd Decimal @db.Decimal(10, 2)\n\n  cart    Cart            @relation(fields: [cartId], references: [id], onDelete: Cascade)\n  product Product         @relation(fields: [productId], references: [id], onDelete: Cascade)\n  variant ProductVariant? @relation(fields: [variantId], references: [id], onDelete: SetNull)\n\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  // Composite unique key that works even when variantId is null\n  @@unique([cartId, productId, variantKey])\n  @@index([cartId])\n  @@index([productId])\n  @@index([variantId])\n}\n\n// ============================================\n// COUPON\n// ============================================\n\nmodel Coupon {\n  id   String @id @default(uuid())\n  code String @unique\n\n  type  CouponType\n  value Decimal    @db.Decimal(10, 2)\n\n  // Usage Conditions\n  minOrderAmount Decimal? @db.Decimal(10, 2)\n  maxDiscount    Decimal? @db.Decimal(10, 2)\n\n  // Usage Limits\n  usageLimit        Int?\n  usageLimitPerUser Int? @default(1)\n  usedCount         Int  @default(0)\n\n  // Validity\n  startDate DateTime\n  endDate   DateTime\n\n  // Flags\n  isActive Boolean @default(true)\n\n  // Relations\n  usages CouponUsage[]\n  orders Order[]\n\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  @@index([isActive])\n  @@index([startDate, endDate])\n}\n\nmodel CouponUsage {\n  id       String  @id @default(uuid())\n  couponId String\n  userId   String\n  orderId  String? @unique\n\n  discountAmount Decimal @db.Decimal(10, 2)\n\n  coupon Coupon @relation(fields: [couponId], references: [id], onDelete: Cascade)\n  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)\n  order  Order? @relation(fields: [orderId], references: [id], onDelete: SetNull)\n\n  createdAt DateTime @default(now())\n\n  @@index([couponId])\n  @@index([userId])\n}\n\n// ============================================\n// ORDER\n// ============================================\n\nmodel Order {\n  id          String  @id @default(uuid())\n  orderNumber String  @unique\n  userId      String?\n\n  // Customer Snapshot\n  customerName  String\n  customerEmail String\n  customerPhone String\n\n  // Shipping Address Snapshot\n  shippingAddress Json\n\n  // Totals\n  subtotal       Decimal @db.Decimal(10, 2)\n  shippingCost   Decimal @default(0) @db.Decimal(10, 2)\n  discountAmount Decimal @default(0) @db.Decimal(10, 2)\n  taxAmount      Decimal @default(0) @db.Decimal(10, 2)\n  total          Decimal @db.Decimal(10, 2)\n\n  // Coupon Snapshot\n  couponId   String?\n  couponCode String?\n\n  // Status\n  status        OrderStatus    @default(PENDING)\n  paymentStatus PaymentStatus  @default(UNPAID)\n  paymentMethod PaymentMethod?\n\n  notes String? @db.Text\n\n  items OrderItem[]\n\n  user   User?   @relation(fields: [userId], references: [id], onDelete: SetNull)\n  coupon Coupon? @relation(fields: [couponId], references: [id], onDelete: SetNull)\n\n  // One coupon usage per order\n  couponUsage CouponUsage?\n\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  @@index([userId])\n  @@index([status])\n  @@index([paymentStatus])\n  @@index([couponId])\n  @@index([createdAt])\n}\n\n// ============================================\n// ORDER ITEM\n// ============================================\n\nmodel OrderItem {\n  id      String @id @default(uuid())\n  orderId String\n\n  // Product Snapshot\n  productId    String?\n  variantId    String?\n  productName  String\n  variantName  String?\n  productSku   String\n  productImage String?\n\n  quantity   Int\n  unitPrice  Decimal @db.Decimal(10, 2)\n  totalPrice Decimal @db.Decimal(10, 2)\n\n  order   Order           @relation(fields: [orderId], references: [id], onDelete: Cascade)\n  product Product?        @relation(fields: [productId], references: [id], onDelete: SetNull)\n  variant ProductVariant? @relation(fields: [variantId], references: [id], onDelete: SetNull)\n\n  @@index([orderId])\n  @@index([productId])\n  @@index([variantId])\n}\n\n// ============================================\n// REVIEW\n// ============================================\n\nmodel Review {\n  id         String  @id @default(uuid())\n  userId     String\n  productId  String\n  rating     Int\n  comment    String? @db.Text\n  isApproved Boolean @default(false)\n\n  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)\n  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)\n\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  @@unique([userId, productId])\n  @@index([productId])\n  @@index([isApproved])\n}\n",
+  "inlineSchemaHash": "5e865a8f1a5cfb09161cd9a6bea5f05de865c958b1ff83f1f538dcdcf733fb4f",
   "copyEngine": true
 }
 config.dirname = '/'
 
-config.runtimeDataModel = JSON.parse("{\"models\":{\"User\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"email\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"username\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"passwordHash\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"role\",\"kind\":\"enum\",\"type\":\"UserRole\"},{\"name\":\"isVerified\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"pendingEmail\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"passwordResetTokenHash\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"passwordResetTokenExpiresAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"passwordResetTokenUsedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"emailVerificationTokenHash\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"emailVerificationTokenExpiresAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"emailVerificationTokenUsedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"sessions\",\"kind\":\"object\",\"type\":\"Session\",\"relationName\":\"SessionToUser\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"Session\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"refreshTokenHash\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"expiresAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"revokedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"status\",\"kind\":\"enum\",\"type\":\"SessionStatus\"},{\"name\":\"deviceName\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"userAgent\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"ipAddress\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"lastUsedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"user\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"SessionToUser\"}],\"dbName\":null}},\"enums\":{},\"types\":{}}")
+config.runtimeDataModel = JSON.parse("{\"models\":{\"User\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"email\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"username\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"passwordHash\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"role\",\"kind\":\"enum\",\"type\":\"UserRole\"},{\"name\":\"isVerified\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"pendingEmail\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"passwordResetTokenHash\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"passwordResetTokenExpiresAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"passwordResetTokenUsedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"emailVerificationTokenHash\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"emailVerificationTokenExpiresAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"emailVerificationTokenUsedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"sessions\",\"kind\":\"object\",\"type\":\"Session\",\"relationName\":\"SessionToUser\"},{\"name\":\"addresses\",\"kind\":\"object\",\"type\":\"Address\",\"relationName\":\"AddressToUser\"},{\"name\":\"cart\",\"kind\":\"object\",\"type\":\"Cart\",\"relationName\":\"CartToUser\"},{\"name\":\"orders\",\"kind\":\"object\",\"type\":\"Order\",\"relationName\":\"OrderToUser\"},{\"name\":\"reviews\",\"kind\":\"object\",\"type\":\"Review\",\"relationName\":\"ReviewToUser\"},{\"name\":\"wishlist\",\"kind\":\"object\",\"type\":\"Wishlist\",\"relationName\":\"UserToWishlist\"},{\"name\":\"couponUsages\",\"kind\":\"object\",\"type\":\"CouponUsage\",\"relationName\":\"CouponUsageToUser\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"Session\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"refreshTokenHash\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"expiresAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"revokedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"status\",\"kind\":\"enum\",\"type\":\"SessionStatus\"},{\"name\":\"deviceName\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"userAgent\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"ipAddress\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"lastUsedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"user\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"SessionToUser\"}],\"dbName\":null},\"Address\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"label\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"fullName\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"phone\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"country\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"city\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"area\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"street\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"building\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"apartment\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"postalCode\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"isDefault\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"user\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"AddressToUser\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"Category\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"arName\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"slug\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"image\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"parentId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"parent\",\"kind\":\"object\",\"type\":\"Category\",\"relationName\":\"SubCategories\"},{\"name\":\"children\",\"kind\":\"object\",\"type\":\"Category\",\"relationName\":\"SubCategories\"},{\"name\":\"isActive\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"sortOrder\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"products\",\"kind\":\"object\",\"type\":\"ProductCategory\",\"relationName\":\"CategoryToProductCategory\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"Product\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"arName\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"slug\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"sku\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"isNew\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"isActive\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"isAvailable\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"regularPrice\",\"kind\":\"scalar\",\"type\":\"Decimal\"},{\"name\":\"discountPrice\",\"kind\":\"scalar\",\"type\":\"Decimal\"},{\"name\":\"onDiscount\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"discountType\",\"kind\":\"enum\",\"type\":\"DiscountType\"},{\"name\":\"discountValue\",\"kind\":\"scalar\",\"type\":\"Decimal\"},{\"name\":\"discountStartDate\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"discountEndDate\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"description\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"arDescription\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"weight\",\"kind\":\"scalar\",\"type\":\"Float\"},{\"name\":\"dimensions\",\"kind\":\"scalar\",\"type\":\"Json\"},{\"name\":\"mainImage\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"imageGallery\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"categories\",\"kind\":\"object\",\"type\":\"ProductCategory\",\"relationName\":\"ProductToProductCategory\"},{\"name\":\"variants\",\"kind\":\"object\",\"type\":\"ProductVariant\",\"relationName\":\"ProductToProductVariant\"},{\"name\":\"cartItems\",\"kind\":\"object\",\"type\":\"CartItem\",\"relationName\":\"CartItemToProduct\"},{\"name\":\"orderItems\",\"kind\":\"object\",\"type\":\"OrderItem\",\"relationName\":\"OrderItemToProduct\"},{\"name\":\"reviews\",\"kind\":\"object\",\"type\":\"Review\",\"relationName\":\"ProductToReview\"},{\"name\":\"wishlistItems\",\"kind\":\"object\",\"type\":\"WishlistItem\",\"relationName\":\"ProductToWishlistItem\"},{\"name\":\"deletedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"ProductVariant\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"productId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"sku\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"arName\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"size\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"attributes\",\"kind\":\"scalar\",\"type\":\"Json\"},{\"name\":\"regularPrice\",\"kind\":\"scalar\",\"type\":\"Decimal\"},{\"name\":\"discountPrice\",\"kind\":\"scalar\",\"type\":\"Decimal\"},{\"name\":\"stockQuantity\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"isAvailable\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"mainImage\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"imageGallery\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"isActive\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"sortOrder\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"product\",\"kind\":\"object\",\"type\":\"Product\",\"relationName\":\"ProductToProductVariant\"},{\"name\":\"cartItems\",\"kind\":\"object\",\"type\":\"CartItem\",\"relationName\":\"CartItemToProductVariant\"},{\"name\":\"orderItems\",\"kind\":\"object\",\"type\":\"OrderItem\",\"relationName\":\"OrderItemToProductVariant\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"ProductCategory\":{\"fields\":[{\"name\":\"productId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"categoryId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"product\",\"kind\":\"object\",\"type\":\"Product\",\"relationName\":\"ProductToProductCategory\"},{\"name\":\"category\",\"kind\":\"object\",\"type\":\"Category\",\"relationName\":\"CategoryToProductCategory\"}],\"dbName\":null},\"Wishlist\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"items\",\"kind\":\"object\",\"type\":\"WishlistItem\",\"relationName\":\"WishlistToWishlistItem\"},{\"name\":\"user\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"UserToWishlist\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"WishlistItem\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"wishlistId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"productId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"wishlist\",\"kind\":\"object\",\"type\":\"Wishlist\",\"relationName\":\"WishlistToWishlistItem\"},{\"name\":\"product\",\"kind\":\"object\",\"type\":\"Product\",\"relationName\":\"ProductToWishlistItem\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"Cart\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"guestToken\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"items\",\"kind\":\"object\",\"type\":\"CartItem\",\"relationName\":\"CartToCartItem\"},{\"name\":\"user\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"CartToUser\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"CartItem\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"cartId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"productId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"variantId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"variantKey\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"quantity\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"priceAtAdd\",\"kind\":\"scalar\",\"type\":\"Decimal\"},{\"name\":\"cart\",\"kind\":\"object\",\"type\":\"Cart\",\"relationName\":\"CartToCartItem\"},{\"name\":\"product\",\"kind\":\"object\",\"type\":\"Product\",\"relationName\":\"CartItemToProduct\"},{\"name\":\"variant\",\"kind\":\"object\",\"type\":\"ProductVariant\",\"relationName\":\"CartItemToProductVariant\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"Coupon\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"code\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"type\",\"kind\":\"enum\",\"type\":\"CouponType\"},{\"name\":\"value\",\"kind\":\"scalar\",\"type\":\"Decimal\"},{\"name\":\"minOrderAmount\",\"kind\":\"scalar\",\"type\":\"Decimal\"},{\"name\":\"maxDiscount\",\"kind\":\"scalar\",\"type\":\"Decimal\"},{\"name\":\"usageLimit\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"usageLimitPerUser\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"usedCount\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"startDate\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"endDate\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"isActive\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"usages\",\"kind\":\"object\",\"type\":\"CouponUsage\",\"relationName\":\"CouponToCouponUsage\"},{\"name\":\"orders\",\"kind\":\"object\",\"type\":\"Order\",\"relationName\":\"CouponToOrder\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"CouponUsage\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"couponId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"orderId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"discountAmount\",\"kind\":\"scalar\",\"type\":\"Decimal\"},{\"name\":\"coupon\",\"kind\":\"object\",\"type\":\"Coupon\",\"relationName\":\"CouponToCouponUsage\"},{\"name\":\"user\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"CouponUsageToUser\"},{\"name\":\"order\",\"kind\":\"object\",\"type\":\"Order\",\"relationName\":\"CouponUsageToOrder\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"Order\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"orderNumber\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"customerName\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"customerEmail\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"customerPhone\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"shippingAddress\",\"kind\":\"scalar\",\"type\":\"Json\"},{\"name\":\"subtotal\",\"kind\":\"scalar\",\"type\":\"Decimal\"},{\"name\":\"shippingCost\",\"kind\":\"scalar\",\"type\":\"Decimal\"},{\"name\":\"discountAmount\",\"kind\":\"scalar\",\"type\":\"Decimal\"},{\"name\":\"taxAmount\",\"kind\":\"scalar\",\"type\":\"Decimal\"},{\"name\":\"total\",\"kind\":\"scalar\",\"type\":\"Decimal\"},{\"name\":\"couponId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"couponCode\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"status\",\"kind\":\"enum\",\"type\":\"OrderStatus\"},{\"name\":\"paymentStatus\",\"kind\":\"enum\",\"type\":\"PaymentStatus\"},{\"name\":\"paymentMethod\",\"kind\":\"enum\",\"type\":\"PaymentMethod\"},{\"name\":\"notes\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"items\",\"kind\":\"object\",\"type\":\"OrderItem\",\"relationName\":\"OrderToOrderItem\"},{\"name\":\"user\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"OrderToUser\"},{\"name\":\"coupon\",\"kind\":\"object\",\"type\":\"Coupon\",\"relationName\":\"CouponToOrder\"},{\"name\":\"couponUsage\",\"kind\":\"object\",\"type\":\"CouponUsage\",\"relationName\":\"CouponUsageToOrder\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"OrderItem\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"orderId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"productId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"variantId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"productName\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"variantName\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"productSku\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"productImage\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"quantity\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"unitPrice\",\"kind\":\"scalar\",\"type\":\"Decimal\"},{\"name\":\"totalPrice\",\"kind\":\"scalar\",\"type\":\"Decimal\"},{\"name\":\"order\",\"kind\":\"object\",\"type\":\"Order\",\"relationName\":\"OrderToOrderItem\"},{\"name\":\"product\",\"kind\":\"object\",\"type\":\"Product\",\"relationName\":\"OrderItemToProduct\"},{\"name\":\"variant\",\"kind\":\"object\",\"type\":\"ProductVariant\",\"relationName\":\"OrderItemToProductVariant\"}],\"dbName\":null},\"Review\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"productId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"rating\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"comment\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"isApproved\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"user\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"ReviewToUser\"},{\"name\":\"product\",\"kind\":\"object\",\"type\":\"Product\",\"relationName\":\"ProductToReview\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null}},\"enums\":{},\"types\":{}}")
 defineDmmfProperty(exports.Prisma, config.runtimeDataModel)
 config.engineWasm = {
   getRuntime: async () => require('./query_engine_bg.js'),

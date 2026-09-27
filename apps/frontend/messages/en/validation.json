@@ -1,0 +1,9 @@
+{
+    "validation": {
+        "required": "This field is required.",
+        "email": "Please enter a valid email address.",
+        "minLength": "This field must be at least {min} characters long.",
+        "maxLength": "This field must be no more than {max} characters long.",
+        "pattern": "This field has an invalid format."
+    }
+}

@@ -8,7 +8,7 @@ import { SessionStatus } from "@repo/database";
 import { UsersService } from "../../users/users.service";
 
 import { AuthMapper } from "../mappers/auth.mapper";
-import { JwtPayload, JwtUser } from "../types";
+import { JwtPayload, JwtUser } from "@repo/shared/interfaces";
 import { SessionsService } from "../../sessions/sessions.service";
 
 @Injectable()
@@ -55,6 +55,8 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     if (!user) {
       throw new UnauthorizedException();
     }
+
+    await this.sessionsService.touchLastUsed(session.id);
 
     return AuthMapper.toJwtUser(user, payload.sessionId);
   }

@@ -3,12 +3,21 @@ import "../../styles/globals.css";
 import { Header } from "../../components/layout/Header";
 import { Footer } from "../../components/layout/Footer";
 import { ThemeProvider } from "../../components/providers/theme-provider";
+import { QueryProvider } from "../../components/providers/query-provider";
 
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { routing } from "../../i18n/routing";
-import { QueryProvider } from "@/components/providers/query-provider";
+
+import type { Metadata } from "next";
+import { websiteTitle, websiteDescription } from "@repo/shared/constants";
+import { AuthProvider } from "../../components/providers/auth-provider";
+
+export const metadata: Metadata = {
+  title: websiteTitle,
+  description: websiteDescription,
+};
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
@@ -47,18 +56,20 @@ export default async function LocaleLayout({
         className={`${geistSans.variable} ${geistMono.variable} flex min-h-screen flex-col bg-gray-50 text-gray-900 antialiased dark:bg-gray-950 dark:text-gray-100`}
       >
         <QueryProvider>
-          <NextIntlClientProvider messages={messages}>
-            <ThemeProvider
-              attribute="class"
-              defaultTheme="system"
-              enableSystem
-              disableTransitionOnChange
-            >
-              <Header />
-              <main className="flex-1">{children}</main>
-              <Footer />
-            </ThemeProvider>
-          </NextIntlClientProvider>
+          <AuthProvider>
+            <NextIntlClientProvider messages={messages}>
+              <ThemeProvider
+                attribute="class"
+                defaultTheme="system"
+                enableSystem
+                disableTransitionOnChange
+              >
+                <Header />
+                <main className="flex-1">{children}</main>
+                <Footer />
+              </ThemeProvider>
+            </NextIntlClientProvider>
+          </AuthProvider>
         </QueryProvider>
       </body>
     </html>

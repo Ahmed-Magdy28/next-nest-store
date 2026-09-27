@@ -1,6 +1,6 @@
 import type { Session } from "@repo/database";
 
-import type { SessionSummaryDto } from "../dto";
+import type { SessionSummaryDto } from "@repo/shared/dtos/sessions";
 
 export class SessionMapper {
   static toSummary(
