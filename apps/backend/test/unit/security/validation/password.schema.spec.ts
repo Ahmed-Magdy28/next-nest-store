@@ -1,4 +1,4 @@
-import { passwordSchema } from "../../../../src/common/validation/password.schema";
+import { passwordSchema } from "@repo/shared/schemas/common";
 
 describe("passwordSchema", () => {
   it("should accept a valid password", () => {

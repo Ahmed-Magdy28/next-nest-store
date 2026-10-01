@@ -46,7 +46,8 @@
         "order": "Order",
         "descending": "Descending",
         "ascending": "Ascending",
-        "reset": "Reset filters"
+        "showFilters": "Show Filters",
+        "hideFilters": "Hide Filters"
     },
     "Categories": {
         "title": "Categories",

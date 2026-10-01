@@ -232,4 +232,44 @@ export class SessionsRepository {
       },
     });
   }
+
+  deleteById(id: string): Promise<Session> {
+    return this.prisma.session.delete({
+      where: { id },
+    });
+  }
+
+  deleteOtherSessions(
+    userId: string,
+    currentSessionId: string,
+  ): Promise<{ count: number }> {
+    return this.prisma.session.deleteMany({
+      where: {
+        userId,
+        id: { not: currentSessionId },
+      },
+    });
+  }
+
+  deleteAllByUserId(userId: string): Promise<{ count: number }> {
+    return this.prisma.session.deleteMany({
+      where: { userId },
+    });
+  }
+
+  revokeOtherSessions(
+    userId: string,
+    currentSessionId: string,
+  ): Promise<{ count: number }> {
+    return this.prisma.session.updateMany({
+      where: {
+        userId,
+        id: { not: currentSessionId },
+      },
+      data: {
+        status: SessionStatus.REVOKED,
+        revokedAt: new Date(),
+      },
+    });
+  }
 }

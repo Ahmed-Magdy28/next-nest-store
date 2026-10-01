@@ -11,9 +11,11 @@ import {
 import {
   CurrentUser,
   Public,
+  Roles,
   Swagger,
   UseZodValidation,
 } from "../../common/decorators";
+import { UserRole } from "@repo/database";
 
 import type { JwtUser } from "@repo/shared/interfaces";
 
@@ -37,6 +39,13 @@ import { VerifyEmailDto, ChangePasswordDto } from "@repo/shared/dtos/auth";
 @Controller("users")
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
+
+  @Get("stats")
+  @Roles(UserRole.ADMIN)
+  @Swagger("get-users-stats")
+  getStats(): Promise<{ totalUsers: number; activeUsers: number }> {
+    return this.usersService.getUserStats();
+  }
 
   @Get("me")
   @Swagger("get-my-profile")

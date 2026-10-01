@@ -13,7 +13,7 @@ export const DEFAULT_PAGE = 1;
 export const DEFAULT_CATEGORIES_LIMIT_PER_PAGE = 5;
 
 /** Max number of categories per page (hard cap on `limit` query param) */
-export const MAX_CATEGORIES_LIMIT = 25;
+export const MAX_CATEGORIES_LIMIT = 500;
 
 /** Max number of direct children a category can have */
 export const MAX_CHILDREN_CATEGORY_PER_PARENT_CATEGORY = 15;

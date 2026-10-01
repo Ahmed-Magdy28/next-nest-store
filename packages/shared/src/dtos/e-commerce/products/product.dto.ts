@@ -61,14 +61,17 @@ export interface ProductListItemDto {
   name: string;
   arName: string;
   slug: string;
+  sku?: string;
   mainImage: string;
   regularPrice: number;
   discountPrice: number;
   onDiscount: boolean;
   isNew: boolean;
   isAvailable: boolean;
+  isActive: boolean;
   categories: { id: string; name: string; arName: string; slug: string }[];
   isInWishlist: boolean;
+  variants?: ProductVariantDto[];
 }
 
 export interface CreateProductDto {

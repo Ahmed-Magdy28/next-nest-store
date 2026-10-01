@@ -382,15 +382,28 @@ export class ProductsService {
             create: categoryIds.map((categoryId) => ({ categoryId })),
           }
         : undefined,
-      variants: variants?.length
-        ? {
-            create: variants.map((v) => ({
+      variants: {
+        create: variants?.length
+          ? variants.map((v) => ({
               ...v,
               attributes: v.attributes ?? {},
               imageGallery: v.imageGallery ?? [],
-            })),
-          }
-        : undefined,
+            }))
+          : [
+              {
+                sku: `${data.sku}-DEFAULT`,
+                name: data.name,
+                arName: data.arName,
+                regularPrice: data.regularPrice,
+                discountPrice: discountPrice ?? data.regularPrice,
+                stockQuantity: 10,
+                isAvailable: true,
+                isActive: true,
+                attributes: {},
+                imageGallery: [],
+              },
+            ],
+      },
     };
   }
 
@@ -414,6 +427,47 @@ export class ProductsService {
       updateData.categories = {
         deleteMany: {},
         create: categoryIds.map((categoryId) => ({ categoryId })),
+      };
+    }
+
+    if (variants && variants.length > 0) {
+      updateData.variants = {
+        updateMany: {
+          where: {
+            sku: { notIn: variants.map((v) => v.sku) },
+          },
+          data: {
+            isActive: false,
+          },
+        },
+        upsert: variants.map((v) => ({
+          where: { sku: v.sku },
+          update: {
+            name: v.name,
+            arName: v.arName,
+            size: v.size,
+            regularPrice: v.regularPrice,
+            discountPrice: v.discountPrice,
+            stockQuantity: v.stockQuantity ?? 0,
+            attributes: v.attributes ?? {},
+            mainImage: v.mainImage,
+            imageGallery: v.imageGallery ?? [],
+            isActive: true,
+          },
+          create: {
+            sku: v.sku,
+            name: v.name,
+            arName: v.arName,
+            size: v.size,
+            regularPrice: v.regularPrice,
+            discountPrice: v.discountPrice,
+            stockQuantity: v.stockQuantity ?? 0,
+            attributes: v.attributes ?? {},
+            mainImage: v.mainImage,
+            imageGallery: v.imageGallery ?? [],
+            isActive: true,
+          },
+        })),
       };
     }
 

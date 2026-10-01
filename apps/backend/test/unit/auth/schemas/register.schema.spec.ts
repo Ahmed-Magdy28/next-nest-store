@@ -1,4 +1,4 @@
-import { registerSchema } from "../../../../src/modules/auth/schemas/register.schema";
+import { registerSchema } from "@repo/shared/schemas/auth";
 
 describe("registerSchema", () => {
   const validData = {

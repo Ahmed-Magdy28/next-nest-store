@@ -18,9 +18,12 @@
     "migrate": "dotenv -e ../../.env -- prisma migrate dev --schema=./prisma/schema.prisma",
     "migrate:test": "dotenv -e ../../.env -- sh -c 'DATABASE_URL=\"$DATABASE_TEST_URL\" prisma migrate deploy --schema=./prisma/schema.prisma'",
     "migrate:deploy": "dotenv -e ../../.env -- prisma migrate deploy --schema=./prisma/schema.prisma",
+    "migrate:reset": "dotenv -e ../../.env -- prisma migrate reset --schema=./prisma/schema.prisma --force",
+    "db:push": "dotenv -e ../../.env -- prisma db push --schema=./prisma/schema.prisma --force-reset",
     "studio": "dotenv -e ../../.env -- prisma studio --schema=./prisma/schema.prisma",
     "migrate:status": "dotenv -e ../../.env -- prisma migrate status --schema=./prisma/schema.prisma",
-    "seed": "dotenv -e ../../.env -- tsx src/seed/index.ts"
+    "seed": "dotenv -e ../../.env -- tsx src/seed/index.ts",
+    "reset": "pnpm migrate:reset"
   },
   "dependencies": {
     "@nestjs/common": "^11.2.3",
@@ -36,6 +39,7 @@
     "bcrypt": "^6.0.0"
   },
   "devDependencies": {
+    "@faker-js/faker": "^10.6.0",
     "@repo/typescript-config": "workspace:*",
     "@types/bcrypt": "^6.0.0",
     "@types/node": "^26.5.0",

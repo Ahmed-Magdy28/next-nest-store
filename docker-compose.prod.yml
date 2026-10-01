@@ -63,6 +63,27 @@ services:
     networks:
       - store-network
 
+  admin:
+    build:
+      context: .
+      dockerfile: docker/admin/Dockerfile.prod
+      args:
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL}
+        ADMIN_SITE_TITLE: ${ADMIN_SITE_TITLE:-Admin Dashboard}
+    container_name: store-prod-admin
+    restart: always
+    depends_on:
+      - backend
+    env_file:
+      - .env
+    environment:
+      NODE_ENV: production
+      PORT: 4005
+    ports:
+      - "${ADMIN_PORT:-4005}:4005"
+    networks:
+      - store-network
+
 volumes:
   postgres-prod-data:
 

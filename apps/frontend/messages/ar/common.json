@@ -9,9 +9,11 @@
         "edit": "تعديل",
         "close": "إغلاق",
         "yes": "نعم",
-        "no": "لا",
+        "confirm": "تأكيد",
         "previous": "السابق",
         "next": "التالي",
-        "pageOf": "صفحة {page} من {totalPages}"
+        "page": "صفحة",
+        "of": "من",
+        "back": "رجوع"
     }
 }

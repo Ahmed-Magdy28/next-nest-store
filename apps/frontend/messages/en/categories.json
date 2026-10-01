@@ -1,0 +1,10 @@
+{
+  "Categories": {
+    "title": "Categories",
+    "subtitle": "Browse products by category",
+    "allCategories": "All Categories",
+    "viewAll": "View All",
+    "noCategories": "No categories found",
+    "subcategories": "Subcategories"
+  }
+}

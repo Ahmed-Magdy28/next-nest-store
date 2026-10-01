@@ -73,10 +73,15 @@ describe("AuthService", () => {
       create: jest.fn(),
       findById: jest.fn(),
       findActiveByUserId: jest.fn(),
-      countActiveByUserId: jest.fn(),
+      countActiveByUserId: jest.fn().mockResolvedValue(0),
+      countPendingByUserId: jest.fn().mockResolvedValue(0),
+      countRevokedByUserId: jest.fn().mockResolvedValue(0),
+      deleteOldestRevoked: jest.fn().mockResolvedValue(undefined as any),
+      deleteExpiredByUserId: jest.fn().mockResolvedValue(undefined as any),
       activate: jest.fn(),
       updateRefreshTokenHash: jest.fn(),
       revoke: jest.fn(),
+      touchLastUsed: jest.fn().mockResolvedValue(session as any),
     } as unknown as jest.Mocked<SessionsService>;
 
     service = new AuthService(

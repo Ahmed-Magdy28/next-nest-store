@@ -9,5 +9,5 @@ export default () => ({
     process.env.CORS_ORIGIN ??
     (process.env.NODE_ENV === "production"
       ? undefined
-      : "http://localhost:4000"),
+      : "http://localhost:4000,http://localhost:4005"),
 });

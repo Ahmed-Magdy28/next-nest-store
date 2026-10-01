@@ -5,10 +5,14 @@ import Link from "next/link";
 import { ChevronLeft } from "lucide-react";
 
 import { useProduct } from "../../../../hooks/use-products";
-
 import { useAddToCart } from "../../../../hooks/use-cart";
+import {
+  useAddToWishlist,
+  useRemoveFromWishlist,
+} from "../../../../hooks/use-wishlist";
 import { ProductGallery } from "../../../../components/e-commerce/products/product-gallery";
 import { ProductInfo } from "../../../../components/e-commerce/products/product-info";
+import { ProductReviews } from "../../../../components/e-commerce/reviews/product-reviews";
 
 interface PageProps {
   params: Promise<{ locale: string; slug: string }>;
@@ -18,6 +22,8 @@ export default function ProductDetailsPage({ params }: PageProps) {
   const { slug } = use(params);
   const { data: product, isLoading, isError, error } = useProduct(slug);
   const addToCart = useAddToCart();
+  const addToWishlist = useAddToWishlist();
+  const removeFromWishlist = useRemoveFromWishlist();
 
   if (isLoading) {
     return (
@@ -90,10 +96,17 @@ export default function ProductDetailsPage({ params }: PageProps) {
               });
             }}
             onToggleWishlist={(p) => {
-              console.log("Toggle wishlist:", p);
+              if (p.isInWishlist) {
+                removeFromWishlist.mutate(p.id);
+              } else {
+                addToWishlist.mutate(p.id);
+              }
             }}
           />
         </div>
+
+        {/* Product Reviews */}
+        <ProductReviews productId={product.id} />
       </div>
     </div>
   );

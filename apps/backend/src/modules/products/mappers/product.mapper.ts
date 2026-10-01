@@ -96,12 +96,14 @@ export class ProductMapper {
       name: product.name,
       arName: product.arName,
       slug: product.slug,
+      sku: product.sku,
       mainImage: product.mainImage,
       regularPrice: Number(product.regularPrice),
       discountPrice: Number(product.discountPrice),
       onDiscount: product.onDiscount,
       isNew: product.isNew,
       isAvailable: product.isAvailable,
+      isActive: product.isActive,
       isInWishlist,
       categories: product.categories.map((pc) => ({
         id: pc.category.id,
@@ -109,6 +111,7 @@ export class ProductMapper {
         arName: pc.category.arName,
         slug: pc.category.slug,
       })),
+      variants: product.variants?.map((v) => ProductMapper.toVariantDto(v)),
     };
   }
 }

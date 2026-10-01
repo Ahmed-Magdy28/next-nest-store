@@ -254,4 +254,13 @@ export class UsersService {
       throw new ConflictException("Email already exists");
     }
   }
+
+  async getUserStats(): Promise<{ totalUsers: number; activeUsers: number }> {
+    const [totalUsers, activeUsers] = await Promise.all([
+      this.usersRepository.countTotalUsers(),
+      this.usersRepository.countActiveUsers(),
+    ]);
+
+    return { totalUsers, activeUsers };
+  }
 }

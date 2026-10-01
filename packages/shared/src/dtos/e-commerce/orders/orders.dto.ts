@@ -1,6 +1,20 @@
+import { z } from "zod";
+import type { OrderStatus, PaymentStatus, PaymentMethod } from "@repo/database";
+import {
+  createOrderSchema,
+  listOrdersQuerySchema,
+  updateOrderStatusSchema,
+  updatePaymentStatusSchema,
+} from "../../../schemas/e-commerce/orders";
+
+export type CreateOrderDto = z.infer<typeof createOrderSchema>;
+export type UpdateOrderStatusDto = z.infer<typeof updateOrderStatusSchema>;
+export type UpdatePaymentStatusDto = z.infer<typeof updatePaymentStatusSchema>;
+export type ListOrdersQueryDto = z.infer<typeof listOrdersQuerySchema>;
+
 export interface OrderItemDto {
   id: string;
-  productId: string | null;
+  productId: string;
   variantId: string | null;
   productName: string;
   variantName: string | null;
@@ -25,28 +39,10 @@ export interface OrderDto {
   taxAmount: number;
   total: number;
   couponCode: string | null;
-  status: string;
-  paymentStatus: string;
-  paymentMethod: string | null;
+  status: OrderStatus;
+  paymentStatus: PaymentStatus;
+  paymentMethod: PaymentMethod | null;
   notes: string | null;
-  items: OrderItemDto[];
-  createdAt: Date;
-}
-
-export interface CreateOrderDto {
-  customerName: string;
-  customerEmail: string;
-  customerPhone: string;
-  shippingAddress: {
-    country: string;
-    city: string;
-    area?: string;
-    street: string;
-    building?: string;
-    apartment?: string;
-    postalCode?: string;
-  };
-  paymentMethod: "CASH_ON_DELIVERY" | "CREDIT_CARD" | "PAYPAL" | "WALLET";
-  couponCode?: string;
-  notes?: string;
+  items?: OrderItemDto[];
+  createdAt: Date | string;
 }

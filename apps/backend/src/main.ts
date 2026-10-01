@@ -22,10 +22,29 @@ async function bootstrap() {
 
   app.enableCors({
     credentials: true,
+    exposedHeaders: ["x-guest-cart-token"],
     origin(origin, callback) {
       if (!origin || corsOrigins.includes(origin)) {
         callback(null, true);
         return;
+      }
+      // Allow local network IP origins in development (e.g. mobile testing on 192.168.x.x)
+      if (process.env.NODE_ENV !== "production") {
+        try {
+          const url = new URL(origin);
+          if (
+            url.hostname === "localhost" ||
+            url.hostname === "127.0.0.1" ||
+            /^192\.168\.\d+\.\d+$/.test(url.hostname) ||
+            /^10\.\d+\.\d+\.\d+$/.test(url.hostname) ||
+            /^172\.(1[6-9]|2\d|3[0-1])\.\d+\.\d+$/.test(url.hostname)
+          ) {
+            callback(null, true);
+            return;
+          }
+        } catch {
+          // ignore
+        }
       }
       callback(new Error("Not allowed by CORS"), false);
     },

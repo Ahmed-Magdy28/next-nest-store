@@ -1,4 +1,4 @@
-import { refreshTokenSchema } from "../../../../src/modules/auth/schemas/refresh-token.schema";
+import { refreshTokenSchema } from "@repo/shared/schemas/auth";
 
 describe("refreshTokenSchema", () => {
   it("should accept an empty object", () => {

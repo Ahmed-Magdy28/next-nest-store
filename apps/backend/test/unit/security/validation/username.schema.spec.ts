@@ -1,4 +1,4 @@
-import { usernameSchema } from "../../../../src/common/validation/username.schema";
+import { usernameSchema } from "@repo/shared/schemas/common";
 
 describe("usernameSchema", () => {
   it("should accept a valid username", () => {

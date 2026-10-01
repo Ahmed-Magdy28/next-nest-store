@@ -12,6 +12,16 @@ const optionalBoolean = z.preprocess((val) => {
   return val;
 }, z.boolean().optional());
 
+const optionalUuid = z.preprocess((val) => {
+  if (val === "" || val === null || val === undefined) return undefined;
+  return val;
+}, z.string().uuid().optional());
+
+const optionalUrl = z.preprocess((val) => {
+  if (val === "" || val === null || val === undefined) return undefined;
+  return val;
+}, z.string().url().optional());
+
 export const createCategorySchema = z.object({
   name: z.string().min(2).max(100),
   arName: z.string().min(2).max(100),
@@ -20,8 +30,8 @@ export const createCategorySchema = z.object({
     .min(2)
     .max(100)
     .regex(/^[a-z0-9-]+$/),
-  image: z.string().url().optional(),
-  parentId: z.string().uuid().optional(),
+  image: optionalUrl,
+  parentId: optionalUuid,
   isActive: z.boolean().optional(),
   sortOrder: z.number().int().min(0).optional(),
 });

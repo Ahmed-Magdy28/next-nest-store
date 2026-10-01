@@ -4,6 +4,7 @@ import {
   Injectable,
   NotFoundException,
 } from "@nestjs/common";
+import type { Prisma } from "@repo/database";
 
 import type {
   CategoryDto,
@@ -180,7 +181,17 @@ export class CategoriesService {
       }
     }
 
-    const category = await this.categoriesRepository.create(data);
+    const createData: Prisma.CategoryUncheckedCreateInput = {
+      name: data.name,
+      arName: data.arName || data.name,
+      slug: data.slug,
+      image: data.image ?? null,
+      parentId: data.parentId || null,
+      isActive: data.isActive ?? true,
+      sortOrder: data.sortOrder ?? 0,
+    };
+
+    const category = await this.categoriesRepository.create(createData);
     return CategoryMapper.toDto(category);
   }
 
@@ -208,7 +219,17 @@ export class CategoriesService {
       }
     }
 
-    const updated = await this.categoriesRepository.update(id, data);
+    const updateData: Prisma.CategoryUncheckedUpdateInput = {
+      ...(data.name !== undefined && { name: data.name }),
+      ...(data.arName !== undefined && { arName: data.arName }),
+      ...(data.slug !== undefined && { slug: data.slug }),
+      ...(data.image !== undefined && { image: data.image ?? null }),
+      ...(data.parentId !== undefined && { parentId: data.parentId || null }),
+      ...(data.isActive !== undefined && { isActive: data.isActive }),
+      ...(data.sortOrder !== undefined && { sortOrder: data.sortOrder }),
+    };
+
+    const updated = await this.categoriesRepository.update(id, updateData);
     return CategoryMapper.toDto(updated);
   }
 

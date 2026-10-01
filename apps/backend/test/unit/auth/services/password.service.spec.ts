@@ -1,4 +1,4 @@
-import { PasswordService } from "../../../../src/modules/auth/services/password.service";
+import { PasswordService } from "../../../../src/common/services/password.service";
 import { hashPassword, verifyPassword } from "../../../../src/common/security";
 
 jest.mock("../../../../src/common/security", () => ({

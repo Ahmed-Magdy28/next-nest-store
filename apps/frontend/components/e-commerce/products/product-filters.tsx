@@ -1,6 +1,7 @@
 "use client";
 
 import { Search, X } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useCategoriesTree } from "../../../hooks/use-categories";
 import { useLocalized } from "../../../i18n/use-localized";
 
@@ -12,10 +13,13 @@ interface ProductFiltersProps {
   onCategoryChange: (value: string | undefined) => void;
 
   onDiscount?: boolean;
-  onOnDiscountChange: (value: boolean | undefined) => void;
+  onOnDiscountChange?: (value: boolean | undefined) => void;
 
   isNew?: boolean;
-  onIsNewChange: (value: boolean | undefined) => void;
+  onIsNewChange?: (value: boolean | undefined) => void;
+
+  hideDiscountFilter?: boolean;
+  hideNewArrivalsFilter?: boolean;
 
   sortBy: "createdAt" | "updatedAt" | "price" | "name";
   onSortByChange: (value: "createdAt" | "updatedAt" | "price" | "name") => void;
@@ -35,33 +39,41 @@ export function ProductFilters({
   onOnDiscountChange,
   isNew,
   onIsNewChange,
+  hideDiscountFilter,
+  hideNewArrivalsFilter,
   sortBy,
   onSortByChange,
   sortOrder,
   onSortOrderChange,
   onReset,
 }: ProductFiltersProps) {
+  const t = useTranslations("ProductFilters");
   const { data: categories, isLoading } = useCategoriesTree();
-  const { t } = useLocalized();
+  const { t: tLocalized } = useLocalized();
+
+  const showFlagsSection = !hideDiscountFilter || !hideNewArrivalsFilter;
 
   const hasFilters =
-    !!search || !!categoryId || onDiscount !== undefined || isNew !== undefined;
+    !!search ||
+    !!categoryId ||
+    (!hideDiscountFilter && onDiscount !== undefined) ||
+    (!hideNewArrivalsFilter && isNew !== undefined);
 
   return (
     <aside className="space-y-6 rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-gray-900">
       {/* Search */}
       <div>
         <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-gray-600 dark:text-gray-300">
-          Search
+          {t("search")}
         </label>
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+          <Search className="absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
           <input
             type="text"
             value={search}
             onChange={(e) => onSearchChange(e.target.value)}
-            placeholder="Search products..."
-            className="w-full rounded-lg border border-gray-200 bg-gray-50 py-2 pl-9 pr-3 text-sm outline-none focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-500/20 dark:border-gray-800 dark:bg-gray-950 dark:focus:bg-gray-900"
+            placeholder={t("searchPlaceholder")}
+            className="w-full rounded-lg border border-gray-200 bg-gray-50 py-2 ps-9 pe-3 text-sm outline-none focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-500/20 dark:border-gray-800 dark:bg-gray-950 dark:focus:bg-gray-900"
           />
         </div>
       </div>
@@ -69,7 +81,7 @@ export function ProductFilters({
       {/* Category */}
       <div>
         <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-gray-600 dark:text-gray-300">
-          Category
+          {t("category")}
         </label>
         <select
           value={categoryId ?? ""}
@@ -77,13 +89,13 @@ export function ProductFilters({
           disabled={isLoading}
           className="w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm outline-none focus:border-blue-500 focus:bg-white dark:border-gray-800 dark:bg-gray-950 dark:focus:bg-gray-900"
         >
-          <option value="">All categories</option>
+          <option value="">{t("allCategories")}</option>
           {categories?.map((cat) => (
-            <optgroup key={cat.id} label={t(cat)}>
-              <option value={cat.id}>{t(cat)}</option>
+            <optgroup key={cat.id} label={tLocalized(cat)}>
+              <option value={cat.id}>{tLocalized(cat)}</option>
               {cat.children.map((child) => (
                 <option key={child.id} value={child.id}>
-                  — {t(child)}
+                  — {tLocalized(child)}
                 </option>
               ))}
             </optgroup>
@@ -92,54 +104,62 @@ export function ProductFilters({
       </div>
 
       {/* Flags */}
-      <div className="space-y-2">
-        <label className="block text-xs font-semibold uppercase tracking-wider text-gray-600 dark:text-gray-300">
-          Filters
-        </label>
+      {showFlagsSection && (
+        <div className="space-y-2">
+          <label className="block text-xs font-semibold uppercase tracking-wider text-gray-600 dark:text-gray-300">
+            {t("filters")}
+          </label>
 
-        <label className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-200">
-          <input
-            type="checkbox"
-            checked={onDiscount === true}
-            onChange={(e) =>
-              onOnDiscountChange(e.target.checked ? true : undefined)
-            }
-            className="h-4 w-4 rounded border-gray-300 text-blue-600"
-          />
-          On discount
-        </label>
+          {!hideDiscountFilter && onOnDiscountChange && (
+            <label className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-200 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={onDiscount === true}
+                onChange={(e) =>
+                  onOnDiscountChange(e.target.checked ? true : undefined)
+                }
+                className="h-4 w-4 rounded border-gray-300 text-blue-600"
+              />
+              {t("onDiscount")}
+            </label>
+          )}
 
-        <label className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-200">
-          <input
-            type="checkbox"
-            checked={isNew === true}
-            onChange={(e) => onIsNewChange(e.target.checked ? true : undefined)}
-            className="h-4 w-4 rounded border-gray-300 text-blue-600"
-          />
-          New arrivals
-        </label>
-      </div>
+          {!hideNewArrivalsFilter && onIsNewChange && (
+            <label className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-200 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={isNew === true}
+                onChange={(e) =>
+                  onIsNewChange(e.target.checked ? true : undefined)
+                }
+                className="h-4 w-4 rounded border-gray-300 text-blue-600"
+              />
+              {t("newArrivals")}
+            </label>
+          )}
+        </div>
+      )}
 
       {/* Sort */}
       <div className="grid grid-cols-2 gap-2">
         <div>
           <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-gray-600 dark:text-gray-300">
-            Sort by
+            {t("sortBy")}
           </label>
           <select
             value={sortBy}
             onChange={(e) => onSortByChange(e.target.value as typeof sortBy)}
             className="w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm outline-none focus:border-blue-500 dark:border-gray-800 dark:bg-gray-950"
           >
-            <option value="createdAt">Newest</option>
-            <option value="updatedAt">Recently updated</option>
-            <option value="price">Price</option>
-            <option value="name">Name</option>
+            <option value="createdAt">{t("newest")}</option>
+            <option value="updatedAt">{t("recentlyUpdated")}</option>
+            <option value="price">{t("price")}</option>
+            <option value="name">{t("name")}</option>
           </select>
         </div>
         <div>
           <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-gray-600 dark:text-gray-300">
-            Order
+            {t("order")}
           </label>
           <select
             value={sortOrder}
@@ -148,8 +168,8 @@ export function ProductFilters({
             }
             className="w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm outline-none focus:border-blue-500 dark:border-gray-800 dark:bg-gray-950"
           >
-            <option value="desc">Descending</option>
-            <option value="asc">Ascending</option>
+            <option value="desc">{t("descending")}</option>
+            <option value="asc">{t("ascending")}</option>
           </select>
         </div>
       </div>
@@ -159,10 +179,10 @@ export function ProductFilters({
         <button
           type="button"
           onClick={onReset}
-          className="inline-flex w-full items-center justify-center gap-1.5 rounded-lg border border-gray-200 px-3 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50 dark:border-gray-800 dark:text-gray-200 dark:hover:bg-gray-800"
+          className="inline-flex w-full items-center justify-center gap-1.5 rounded-lg border border-gray-200 px-3 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50 dark:border-gray-800 dark:text-gray-200 dark:hover:bg-gray-800 cursor-pointer"
         >
           <X className="h-3.5 w-3.5" />
-          Reset filters
+          {t("reset")}
         </button>
       )}
     </aside>

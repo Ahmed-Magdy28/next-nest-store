@@ -1,4 +1,4 @@
-import { loginSchema } from "../../../../src/modules/auth/schemas/login.schema";
+import { loginSchema } from "@repo/shared/schemas/auth";
 
 describe("loginSchema", () => {
   const validData = {

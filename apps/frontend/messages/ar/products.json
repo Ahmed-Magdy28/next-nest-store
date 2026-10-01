@@ -46,7 +46,8 @@
         "order": "الترتيب",
         "descending": "تنازلي",
         "ascending": "تصاعدي",
-        "reset": "إعادة تعيين"
+        "showFilters": "عرض الفلاتر",
+        "hideFilters": "إخفاء الفلاتر"
     },
     "Categories": {
         "title": "الأقسام",

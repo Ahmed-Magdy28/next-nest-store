@@ -1,6 +1,7 @@
 import type { PrismaClient } from "../../prisma/generated";
 import { DiscountType } from "../../prisma/generated";
 import { allProducts } from "./products";
+import { generateFakerProducts } from "./faker-products.generator";
 import type { ProductSeed } from "./helpers";
 import { CreateProductDto } from "../../../shared/dist/dtos/e-commerce/products/product.dto";
 
@@ -49,11 +50,14 @@ export async function seedProducts(
   prisma: PrismaClient,
   slugToId: Map<string, string>,
 ) {
-  console.log(`🌱 Seeding ${allProducts.length} products...`);
+  const fakerProducts = generateFakerProducts();
+  const totalProducts = [...allProducts, ...fakerProducts];
+
+  console.log(`🌱 Seeding ${totalProducts.length} products (${allProducts.length} curated + ${fakerProducts.length} Faker generated)...`);
 
   let created = 0;
 
-  for (const product of allProducts) {
+  for (const product of totalProducts) {
     const data = buildProductData(product, slugToId);
 
     await prisma.product.upsert({
@@ -63,8 +67,8 @@ export async function seedProducts(
     });
 
     created++;
-    if (created % 10 === 0) {
-      console.log(`  ↳ ${created}/${allProducts.length}`);
+    if (created % 25 === 0 || created === totalProducts.length) {
+      console.log(`  ↳ ${created}/${totalProducts.length}`);
     }
   }
 

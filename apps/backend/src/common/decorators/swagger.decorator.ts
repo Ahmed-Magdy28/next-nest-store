@@ -21,6 +21,7 @@ import {
   updateMyProfileSwagger,
   updateMyProfileUsernameSwagger,
   verifyEmailSwagger,
+  usersStatsSwagger,
 } from "../../modules/users/swagger";
 
 import {
@@ -64,7 +65,35 @@ import {
   clearWishlistSwagger,
 } from "../../modules/wishlist/swagger";
 
-// TODO: Add more swagger decorators for other endpoints as needed
+import {
+  listCouponsSwagger,
+  getCouponSwagger,
+  createCouponSwagger,
+  updateCouponSwagger,
+  deleteCouponSwagger,
+  validateCouponSwagger,
+} from "../../modules/coupons/swagger";
+
+import {
+  createOrderSwagger,
+  listOrdersSwagger,
+  getOrderSwagger,
+  getMyOrdersSwagger,
+  getMyOrderSwagger,
+  updateOrderStatusSwagger,
+  updatePaymentStatusSwagger,
+} from "../../modules/orders/swagger";
+
+import {
+  listProductReviewsSwagger,
+  getRatingSummarySwagger,
+  createReviewSwagger,
+  updateReviewSwagger,
+  deleteReviewSwagger,
+  listAllReviewsSwagger,
+  moderateReviewSwagger,
+} from "../../modules/reviews/swagger";
+
 type SwaggerEndpoint =
   | "me"
   | "login"
@@ -84,6 +113,7 @@ type SwaggerEndpoint =
   | "update-my-email"
   | "verify-email"
   | "change-password"
+  | "get-users-stats"
   | "list-categories"
   | "category-tree"
   | "get-category"
@@ -113,7 +143,31 @@ type SwaggerEndpoint =
   | "get-wishlist"
   | "add-to-wishlist"
   | "remove-from-wishlist"
-  | "clear-wishlist";
+  | "clear-wishlist"
+  // Coupons
+  | "list-coupons"
+  | "get-coupon"
+  | "create-coupon"
+  | "update-coupon"
+  | "delete-coupon"
+  | "validate-coupon"
+  // Orders
+  | "create-order"
+  | "list-orders"
+  | "get-order"
+  | "get-my-orders"
+  | "get-my-order"
+  | "update-order-status"
+  | "update-payment-status"
+  // Reviews
+  | "list-product-reviews"
+  | "get-rating-summary"
+  | "create-review"
+  | "update-review"
+  | "delete-review"
+  | "list-all-reviews"
+  | "moderate-review";
+
 export const Swagger = (name: SwaggerEndpoint) => {
   switch (name) {
     case "me":
@@ -169,6 +223,9 @@ export const Swagger = (name: SwaggerEndpoint) => {
 
     case "change-password":
       return applyDecorators(changePasswordSwagger);
+
+    case "get-users-stats":
+      return applyDecorators(usersStatsSwagger);
 
     case "list-categories":
       return applyDecorators(listCategoriesSwagger);
@@ -251,6 +308,69 @@ export const Swagger = (name: SwaggerEndpoint) => {
 
     case "clear-wishlist":
       return applyDecorators(clearWishlistSwagger);
+
+    // Coupons
+    case "list-coupons":
+      return applyDecorators(listCouponsSwagger);
+
+    case "get-coupon":
+      return applyDecorators(getCouponSwagger);
+
+    case "create-coupon":
+      return applyDecorators(createCouponSwagger);
+
+    case "update-coupon":
+      return applyDecorators(updateCouponSwagger);
+
+    case "delete-coupon":
+      return applyDecorators(deleteCouponSwagger);
+
+    case "validate-coupon":
+      return applyDecorators(validateCouponSwagger);
+
+    // Orders
+    case "create-order":
+      return applyDecorators(createOrderSwagger);
+
+    case "list-orders":
+      return applyDecorators(listOrdersSwagger);
+
+    case "get-order":
+      return applyDecorators(getOrderSwagger);
+
+    case "get-my-orders":
+      return applyDecorators(getMyOrdersSwagger);
+
+    case "get-my-order":
+      return applyDecorators(getMyOrderSwagger);
+
+    case "update-order-status":
+      return applyDecorators(updateOrderStatusSwagger);
+
+    case "update-payment-status":
+      return applyDecorators(updatePaymentStatusSwagger);
+
+    // Reviews
+    case "list-product-reviews":
+      return applyDecorators(listProductReviewsSwagger);
+
+    case "get-rating-summary":
+      return applyDecorators(getRatingSummarySwagger);
+
+    case "create-review":
+      return applyDecorators(createReviewSwagger);
+
+    case "update-review":
+      return applyDecorators(updateReviewSwagger);
+
+    case "delete-review":
+      return applyDecorators(deleteReviewSwagger);
+
+    case "list-all-reviews":
+      return applyDecorators(listAllReviewsSwagger);
+
+    case "moderate-review":
+      return applyDecorators(moderateReviewSwagger);
 
     default:
       throw new Error(`Unknown Swagger decorator: ${name}`);

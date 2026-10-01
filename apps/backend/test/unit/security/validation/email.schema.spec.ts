@@ -1,4 +1,4 @@
-import { emailSchema } from "../../../../src/common/validation/email.schema";
+import { emailSchema } from "@repo/shared/schemas/common";
 
 describe("emailSchema", () => {
   it("should accept a valid email", () => {

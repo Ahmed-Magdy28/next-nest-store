@@ -68,13 +68,13 @@ export const createProductSchema = z.object({
   discountValue: z.number().positive().optional(),
   discountStartDate: z.string().datetime().optional(),
   discountEndDate: z.string().datetime().optional(),
-  description: z.string().optional(),
-  arDescription: z.string().optional(),
+  description: z.preprocess((v) => (v === "" || v === null ? undefined : v), z.string().optional()),
+  arDescription: z.preprocess((v) => (v === "" || v === null ? undefined : v), z.string().optional()),
   weight: z.number().positive().optional(),
   dimensions: z.record(z.string(), z.any()).optional(),
   mainImage: z.string().url(),
   imageGallery: z.array(z.string().url()).optional(),
-  categoryIds: z.array(z.string().uuid()).optional(),
+  categoryIds: z.preprocess((v) => (!Array.isArray(v) ? [] : v), z.array(z.string().uuid()).optional()),
   variants: z.array(variantSchema).optional(),
 });
 

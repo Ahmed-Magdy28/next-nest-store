@@ -5,6 +5,7 @@ import {
   Get,
   Delete,
   Param,
+  Query,
   UseGuards,
   HttpStatus,
   Headers,
@@ -137,14 +138,40 @@ export class AuthController {
   async revokeSession(
     @CurrentUser() user: JwtUser,
     @Param("id") id: string,
+    @Query("permanent") permanent?: string,
   ): Promise<void> {
-    await this.authService.revokeSession(user.id, id);
+    if (permanent === "true") {
+      await this.authService.deleteSession(user.id, id);
+    } else {
+      await this.authService.revokeSession(user.id, id);
+    }
   }
 
   @Delete("sessions")
   @Swagger("revoke-all-sessions")
   @HttpCode(HttpStatus.NO_CONTENT)
-  async revokeAllSessions(@CurrentUser() user: JwtUser): Promise<void> {
+  async revokeAllSessions(
+    @CurrentUser() user: JwtUser,
+    @Query("othersOnly") othersOnly?: string,
+    @Query("permanent") permanent?: string,
+  ): Promise<void> {
+    const isOthersOnly = othersOnly === "true";
+    const isPermanent = permanent === "true";
+
+    if (isPermanent) {
+      if (isOthersOnly && user.sessionId) {
+        await this.authService.deleteOtherSessions(user.id, user.sessionId);
+      } else {
+        await this.authService.deleteAllSessions(user.id);
+      }
+      return;
+    }
+
+    if (isOthersOnly && user.sessionId) {
+      await this.authService.revokeOtherSessions(user.id, user.sessionId);
+      return;
+    }
+
     await this.authService.revokeAllSessions(user.id);
   }
 

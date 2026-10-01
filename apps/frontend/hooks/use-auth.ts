@@ -17,6 +17,7 @@ import { tokenStorage } from "../lib/api/common/token-storage";
 import { queryKeys } from "../lib/api/e-commerce/query-keys";
 import { useAuthStore } from "../lib/stores/auth-store";
 import { cacheTimeInMinutes } from "@repo/shared/constants/e-commerce";
+import { mergeCart, setStoredGuestToken } from "../lib/api/e-commerce/cart";
 
 // ─── Read ───────────────────────────────────────────────
 
@@ -39,10 +40,24 @@ export function useRegister() {
   const setUser = useAuthStore((s) => s.setUser);
 
   return useMutation({
-    mutationFn: (body: RegisterDto) => authApi.register(body),
+    mutationFn: async (body: RegisterDto) => {
+      const authRes = await authApi.register(body);
+      let mergedCart = null;
+      try {
+        const res = await mergeCart();
+        mergedCart = res.cart;
+      } catch (err) {
+        console.error("Cart merge error on register:", err);
+      }
+      return { ...authRes, cart: mergedCart };
+    },
     onSuccess: (data) => {
       setUser(data.user);
       qc.setQueryData(queryKeys.me, data.user);
+      if (data.cart) {
+        qc.setQueryData(queryKeys.cart, data.cart);
+      }
+      qc.invalidateQueries({ queryKey: queryKeys.cart });
       toast.success("تم إنشاء الحساب بنجاح 🎉");
     },
     onError: (error) => {
@@ -58,10 +73,24 @@ export function useLogin() {
   const setUser = useAuthStore((s) => s.setUser);
 
   return useMutation({
-    mutationFn: (body: LoginDto) => authApi.login(body),
+    mutationFn: async (body: LoginDto) => {
+      const authRes = await authApi.login(body);
+      let mergedCart = null;
+      try {
+        const res = await mergeCart();
+        mergedCart = res.cart;
+      } catch (err) {
+        console.error("Cart merge error on login:", err);
+      }
+      return { ...authRes, cart: mergedCart };
+    },
     onSuccess: (data) => {
       setUser(data.user);
       qc.setQueryData(queryKeys.me, data.user);
+      if (data.cart) {
+        qc.setQueryData(queryKeys.cart, data.cart);
+      }
+      qc.invalidateQueries({ queryKey: queryKeys.cart });
       toast.success(`أهلاً بيك يا ${data.user.username} 👋`);
     },
     onError: (error) => {
@@ -85,6 +114,7 @@ export function useLogout() {
     mutationFn: () => authApi.logout(),
     onSuccess: () => {
       clear();
+      setStoredGuestToken(null);
       qc.clear();
       toast.success("تم تسجيل الخروج");
       router.push("/");

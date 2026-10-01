@@ -9,6 +9,7 @@ export const queryKeys = {
   me: ["auth", "me"] as const,
   profile: ["users", "profile"] as const,
   sessions: ["auth", "sessions"] as const,
+  addresses: ["addresses"] as const,
 
   // Products
   products: {
@@ -37,4 +38,19 @@ export const queryKeys = {
 
   // Wishlist
   wishlist: ["wishlist"] as const,
+
+  // Reviews
+  reviews: {
+    product: (productId: string, params?: Record<string, unknown>) =>
+      ["reviews", "product", productId, params ?? {}] as const,
+    summary: (productId: string) => ["reviews", "summary", productId] as const,
+  },
+
+  // Orders
+  orders: {
+    all: ["orders"] as const,
+    myList: (params?: Record<string, unknown>) =>
+      ["orders", "my", params ?? {}] as const,
+    myDetail: (id: string) => ["orders", "my", id] as const,
+  },
 } as const;

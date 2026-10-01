@@ -72,6 +72,40 @@ services:
 
     command: sh -c "pnpm --filter frontend dev"
 
+  admin:
+    build:
+      context: .
+      dockerfile: docker/admin/Dockerfile
+
+    container_name: next-nest-store-admin
+
+    restart: unless-stopped
+
+    depends_on:
+      - backend
+
+    env_file:
+      - .env
+
+    environment:
+      NODE_ENV: development
+      CI: "true"
+      PORT: ${ADMIN_PORT:-4005}
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:3000}
+      ADMIN_SITE_TITLE: ${ADMIN_SITE_TITLE:-Admin Dashboard}
+
+    ports:
+      - "${ADMIN_PORT:-4005}:${ADMIN_PORT:-4005}"
+
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/apps/admin/node_modules
+      - /app/apps/admin/.next
+      - /app/packages/ui/node_modules
+
+    command: sh -c "pnpm --filter admin dev"
+
   postgres:
     image: postgres:17
 

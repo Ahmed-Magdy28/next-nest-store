@@ -176,14 +176,19 @@ export class CategoriesRepository {
 
   // ─── Write ──────────────────────────────────────────────
 
-  create(data: Prisma.CategoryCreateInput): Promise<Category> {
-    return this.prisma.category.create({ data });
+  create(
+    data: Prisma.CategoryCreateInput | Prisma.CategoryUncheckedCreateInput,
+  ): Promise<Category> {
+    return this.prisma.category.create({ data: data as any });
   }
 
-  update(id: string, data: Prisma.CategoryUpdateInput): Promise<Category> {
+  update(
+    id: string,
+    data: Prisma.CategoryUpdateInput | Prisma.CategoryUncheckedUpdateInput,
+  ): Promise<Category> {
     return this.prisma.category.update({
       where: { id },
-      data,
+      data: data as any,
     });
   }
 

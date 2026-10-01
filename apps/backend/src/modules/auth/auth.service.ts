@@ -392,8 +392,40 @@ export class AuthService {
     await this.sessionsService.revoke(sessionId);
   }
 
+  async deleteSession(userId: string, sessionId: string): Promise<void> {
+    const session = await this.sessionsService.findById(sessionId);
+
+    if (!session) {
+      throw new NotFoundException("Session not found");
+    }
+
+    if (session.userId !== userId) {
+      throw new ForbiddenException("You cannot delete another user's session");
+    }
+
+    await this.sessionsService.deleteById(sessionId);
+  }
+
+  async revokeOtherSessions(
+    userId: string,
+    currentSessionId: string,
+  ): Promise<void> {
+    await this.sessionsService.revokeOtherSessions(userId, currentSessionId);
+  }
+
+  async deleteOtherSessions(
+    userId: string,
+    currentSessionId: string,
+  ): Promise<void> {
+    await this.sessionsService.deleteOtherSessions(userId, currentSessionId);
+  }
+
   async revokeAllSessions(userId: string): Promise<void> {
     await this.sessionsService.revokeAllByUserId(userId);
+  }
+
+  async deleteAllSessions(userId: string): Promise<void> {
+    await this.sessionsService.deleteAllByUserId(userId);
   }
 
   // ─────────────────────────────────────────────────────────────

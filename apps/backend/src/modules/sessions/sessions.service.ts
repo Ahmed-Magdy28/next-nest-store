@@ -99,4 +99,32 @@ export class SessionsService {
   revokeAllByUserId(userId: string): Promise<{ count: number }> {
     return this.sessionsRepository.revokeAllByUserId(userId);
   }
+
+  deleteById(id: string): Promise<Session> {
+    return this.sessionsRepository.deleteById(id);
+  }
+
+  deleteOtherSessions(
+    userId: string,
+    currentSessionId: string,
+  ): Promise<{ count: number }> {
+    return this.sessionsRepository.deleteOtherSessions(
+      userId,
+      currentSessionId,
+    );
+  }
+
+  deleteAllByUserId(userId: string): Promise<{ count: number }> {
+    return this.sessionsRepository.deleteAllByUserId(userId);
+  }
+
+  revokeOtherSessions(
+    userId: string,
+    currentSessionId: string,
+  ): Promise<{ count: number }> {
+    return this.sessionsRepository.revokeOtherSessions(
+      userId,
+      currentSessionId,
+    );
+  }
 }

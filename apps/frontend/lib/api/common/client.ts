@@ -1,7 +1,26 @@
 import type { ApiError, ApiRequestOptions } from "./types";
 import { tokenStorage } from "./token-storage";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3000";
+export function getApiBaseUrl(): string {
+  const envUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
+
+  if (typeof window !== "undefined") {
+    try {
+      const parsed = new URL(envUrl);
+      if (
+        (parsed.hostname === "localhost" || parsed.hostname === "127.0.0.1") &&
+        window.location.hostname !== "localhost" &&
+        window.location.hostname !== "127.0.0.1"
+      ) {
+        return `${parsed.protocol}//${window.location.hostname}:${parsed.port || "3000"}`;
+      }
+    } catch {
+      // fallback
+    }
+  }
+
+  return envUrl;
+}
 
 /**
  * Custom error thrown by the API client.
@@ -52,7 +71,7 @@ async function refreshAccessToken(): Promise<string | null> {
 
   refreshPromise = (async () => {
     try {
-      const res = await fetch(`${API_URL}/auth/refresh`, {
+      const res = await fetch(`${getApiBaseUrl()}/auth/refresh`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${refreshToken}`,
@@ -119,7 +138,8 @@ async function request<T>(
     return headers;
   };
 
-  const url = path.startsWith("http") ? path : `${API_URL}${path}`;
+  const baseUrl = getApiBaseUrl();
+  const url = path.startsWith("http") ? path : `${baseUrl}${path}`;
 
   const send = (token: string | null) =>
     fetch(url, {

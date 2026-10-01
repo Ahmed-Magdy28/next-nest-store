@@ -60,6 +60,7 @@ describe("JwtStrategy", () => {
       activate: jest.fn(),
       updateRefreshTokenHash: jest.fn(),
       revoke: jest.fn(),
+      touchLastUsed: jest.fn().mockResolvedValue({} as any),
     } as unknown as jest.Mocked<SessionsService>;
 
     configService = {

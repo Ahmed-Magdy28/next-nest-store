@@ -63,4 +63,25 @@ export class UsersRepository {
       passwordHash,
     });
   }
+
+  async countTotalUsers(): Promise<number> {
+    return this.prisma.user.count();
+  }
+
+  async countActiveUsers(): Promise<number> {
+    // A user is considered active if they have at least one ACTIVE, unexpired and unrevoked session
+    return this.prisma.user.count({
+      where: {
+        sessions: {
+          some: {
+            status: "ACTIVE",
+            revokedAt: null,
+            expiresAt: {
+              gt: new Date(),
+            },
+          },
+        },
+      },
+    });
+  }
 }

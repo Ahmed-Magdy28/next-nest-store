@@ -2,7 +2,12 @@
   "$schema": "https://turborepo.dev/schema.json",
   "ui": "tui",
   "globalEnv": [
+    "DEFAULT_LOCALE",
     "BACKEND_PORT",
+    "ADMIN_PORT",
+    "ADMIN_SITE_TITLE",
+    "Frontend_PORT",
+    "FRONTEND_PORT",
     "DATABASE_URL",
     "DATABASE_TEST_URL",
     "JWT_SECRET",

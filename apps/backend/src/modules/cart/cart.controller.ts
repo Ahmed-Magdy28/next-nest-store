@@ -11,6 +11,7 @@ import {
   Post,
   Req,
   Res,
+  UnauthorizedException,
   UseGuards,
 } from "@nestjs/common";
 
@@ -43,6 +44,7 @@ import {
 } from "@repo/shared/constants";
 
 import { CartService } from "./cart.service";
+import { CartMapper } from "./mappers/cart.mapper";
 
 @Controller("cart")
 @UseGuards(OptionalJwtAuthGuard)
@@ -59,9 +61,19 @@ export class CartController {
   async getCart(
     @CurrentUser() user: JwtUser | null,
     @Req() req: Request,
+    @Res({ passthrough: true }) res: Response,
   ): Promise<CartDto> {
     const guestToken = this.readGuestToken(req);
-    return this.cartService.getCart(user?.id ?? null, guestToken);
+    const result = await this.cartService.getOrCreateCart(
+      user?.id ?? null,
+      guestToken,
+    );
+
+    if (result.guestToken && !user) {
+      this.setGuestTokenCookie(res, result.guestToken);
+    }
+
+    return CartMapper.toDto(result.cart);
   }
 
   // ─────────────────────────────────────────────────────────
@@ -156,13 +168,18 @@ export class CartController {
   @HttpCode(HttpStatus.OK)
   @Swagger("merge-cart")
   async mergeCart(
-    @CurrentUser() user: JwtUser,
+    @CurrentUser() user: JwtUser | null,
     @Req() req: Request,
     @Res({ passthrough: true }) res: Response,
+    @Body() body?: { guestToken?: string },
   ): Promise<MergeCartResponseDto> {
-    const guestToken = this.readGuestToken(req);
+    if (!user) {
+      throw new UnauthorizedException("Authentication required to merge cart");
+    }
 
-    // No guest cart cookie → return user cart as-is
+    const guestToken = body?.guestToken || this.readGuestToken(req);
+
+    // No guest cart cookie or token → return user cart as-is
     if (!guestToken) {
       const cart = await this.cartService.getCart(user.id, null);
       return { cart, mergedItemsCount: 0, skippedItemsCount: 0 };
@@ -174,6 +191,7 @@ export class CartController {
     res.clearCookie(GUEST_CART_COOKIE_NAME, {
       path: GUEST_CART_COOKIE_PATH,
     });
+    res.setHeader("x-guest-cart-token", "");
 
     return result;
   }
@@ -185,7 +203,15 @@ export class CartController {
   private readGuestToken(req: Request): string | null {
     const cookies = (req as Request & { cookies?: Record<string, string> })
       .cookies;
-    return cookies?.[GUEST_CART_COOKIE_NAME] ?? null;
+    const fromCookie = cookies?.[GUEST_CART_COOKIE_NAME];
+    if (fromCookie) return fromCookie;
+
+    const fromHeader = req.headers["x-guest-cart-token"];
+    if (typeof fromHeader === "string" && fromHeader.trim()) {
+      return fromHeader.trim();
+    }
+
+    return null;
   }
 
   private setGuestTokenCookie(res: Response, token: string): void {
@@ -196,5 +222,6 @@ export class CartController {
       path: GUEST_CART_COOKIE_PATH,
       maxAge: GUEST_CART_TTL_MS,
     });
+    res.setHeader("x-guest-cart-token", token);
   }
 }
