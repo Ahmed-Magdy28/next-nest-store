@@ -20,21 +20,29 @@
 
 ```mermaid
 graph TD
-    subgraph Client ["Client Devices"]
-        Browser["Web Browser (Arabic RTL / English LTR)"]
+    subgraph Client ["Client & Admin Devices"]
+        BrowserStore["Storefront Shopper (Arabic RTL / English LTR)"]
+        BrowserAdmin["Store Administrator (Admin Dashboard)"]
     end
 
-    subgraph Storefront ["Frontend Layer (Next.js 16)"]
+    subgraph Storefront ["Storefront Layer (Next.js 16)"]
         NextApp["Next.js App Router & Turbopack"]
         I18n["next-intl (ar / en)"]
         Query["TanStack React Query v5"]
     end
 
+    subgraph AdminLayer ["Admin Layer (Next.js 16)"]
+        AdminApp["Admin Dashboard & Turbopack"]
+        AdminI18n["next-intl (ar / en)"]
+        AdminMetrics["KPIs & Catalog Management"]
+    end
+
     subgraph API ["Backend API Layer (NestJS 11)"]
-        NestApp["NestJS Modular Server"]
+        NestApp["NestJS Modular Server (Port 4005 / 3000)"]
         AuthModule["Auth & Multi-Device Sessions"]
         CatalogModule["Products, Variants & Categories"]
-        CartModule["Cart & Guest Tokens"]
+        CartModule["Cart, Orders & Checkout"]
+        UsersModule["Users & KPI Stats"]
         Swagger["Swagger UI (/docs)"]
     end
 
@@ -43,8 +51,10 @@ graph TD
         Postgres[(PostgreSQL 17 Database)]
     end
 
-    Browser -->|HTTP / HTTPS| NextApp
-    NextApp -->|API Calls (CORS)| NestApp
+    BrowserStore -->|"HTTP / HTTPS"| NextApp
+    BrowserAdmin -->|"HTTP / HTTPS"| AdminApp
+    NextApp -->|"API Calls (CORS)"| NestApp
+    AdminApp -->|"API Calls (CORS & Bearer Auth)"| NestApp
     NestApp --> Prisma
     Prisma --> Postgres
 ```
@@ -56,17 +66,18 @@ graph TD
 ```text
 .
 ├── apps/
-│   ├── frontend/             # Next.js 16 App Router storefront (Port 4000)
-│   └── backend/              # NestJS 11 REST API with Swagger & JWT (Port 3000)
+│   ├── frontend/             # Next.js 16 storefront (Port 4000)
+│   ├── admin/                # Next.js 16 admin dashboard (Port 3001)
+│   └── backend/              # NestJS 11 REST API with Swagger & JWT (Port 4005 / 3000)
 ├── packages/
 │   ├── database/             # Prisma schema, migrations, service & seeds
 │   ├── shared/               # Shared DTOs, Zod schemas, types & constants
-│   ├── ui/                   # Shared React UI components
 │   ├── eslint-config/        # Monorepo ESLint flat configs
 │   └── typescript-config/    # Monorepo tsconfig templates
 ├── docker/
 │   ├── backend/              # Dockerfile (Dev & Prod)
 │   ├── frontend/             # Dockerfile (Dev & Prod)
+│   ├── admin/                # Dockerfile (Dev & Prod)
 │   └── postgres/             # Database initialization scripts
 ├── docker-compose.yml        # Development environment (Hot-reloading)
 └── docker-compose.prod.yml   # Production-ready stack
