@@ -17,7 +17,11 @@ export default function LoginPage() {
   const router = useRouter();
   const login = useLogin();
   const [showPassword, setShowPassword] = useState(false);
-  const [rememberMe, setRememberMe] = useState(false);
+  const [rememberMe, setRememberMe] = useState(() =>
+    typeof window !== "undefined"
+      ? Boolean(localStorage.getItem("remembered_email"))
+      : false,
+  );
 
   const {
     register,
@@ -34,7 +38,6 @@ export default function LoginPage() {
     const savedEmail = localStorage.getItem("remembered_email");
     if (savedEmail) {
       setValue("email", savedEmail);
-      setRememberMe(true);
     }
   }, [setValue]);
 

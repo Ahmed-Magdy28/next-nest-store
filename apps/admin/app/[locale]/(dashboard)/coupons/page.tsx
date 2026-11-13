@@ -28,11 +28,11 @@ export default function CouponsPage() {
   const [maxDiscount, setMaxDiscount] = useState("");
   const [usageLimit, setUsageLimit] = useState("");
   const [usageLimitPerUser, setUsageLimitPerUser] = useState("1");
-  const [startDate, setStartDate] = useState(
-    new Date().toISOString().slice(0, 10)
+  const [startDate, setStartDate] = useState(() =>
+    new Date().toISOString().slice(0, 10),
   );
-  const [endDate, setEndDate] = useState(
-    new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10)
+  const [endDate, setEndDate] = useState(() =>
+    new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10),
   );
   const [isActive, setIsActive] = useState(true);
 
@@ -42,26 +42,36 @@ export default function CouponsPage() {
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => couponsApi.createCoupon(data),
+    mutationFn: (data: Parameters<typeof couponsApi.createCoupon>[0]) =>
+      couponsApi.createCoupon(data),
     onSuccess: () => {
       toast.success(t("createSuccess"));
       queryClient.invalidateQueries({ queryKey: ["admin", "coupons"] });
       closeModal();
     },
-    onError: (err: any) =>
-      toast.error(err?.message || "Failed to create coupon"),
+    onError: (err: unknown) =>
+      toast.error(
+        err instanceof Error ? err.message : "Failed to create coupon",
+      ),
   });
 
   const updateMutation = useMutation({
-    mutationFn: ({ id, data }: { id: string; data: any }) =>
-      couponsApi.updateCoupon(id, data),
+    mutationFn: ({
+      id,
+      data,
+    }: {
+      id: string;
+      data: Parameters<typeof couponsApi.updateCoupon>[1];
+    }) => couponsApi.updateCoupon(id, data),
     onSuccess: () => {
       toast.success(t("updateSuccess"));
       queryClient.invalidateQueries({ queryKey: ["admin", "coupons"] });
       closeModal();
     },
-    onError: (err: any) =>
-      toast.error(err?.message || "Failed to update coupon"),
+    onError: (err: unknown) =>
+      toast.error(
+        err instanceof Error ? err.message : "Failed to update coupon",
+      ),
   });
 
   const deleteMutation = useMutation({
@@ -70,8 +80,10 @@ export default function CouponsPage() {
       toast.success(t("deleteSuccess"));
       queryClient.invalidateQueries({ queryKey: ["admin", "coupons"] });
     },
-    onError: (err: any) =>
-      toast.error(err?.message || "Failed to delete coupon"),
+    onError: (err: unknown) =>
+      toast.error(
+        err instanceof Error ? err.message : "Failed to delete coupon",
+      ),
   });
 
   const openCreateModal = () => {
@@ -94,7 +106,7 @@ export default function CouponsPage() {
   const openEditModal = (c: CouponDto) => {
     setEditingCoupon(c);
     setCode(c.code);
-    setType(c.type as any);
+    setType(c.type as "PERCENTAGE" | "FIXED");
     setValue(String(c.value));
     setMinOrderAmount(c.minOrderAmount ? String(c.minOrderAmount) : "");
     setMaxDiscount(c.maxDiscount ? String(c.maxDiscount) : "");
@@ -117,13 +129,13 @@ export default function CouponsPage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const payload: any = {
+    const payload: Parameters<typeof couponsApi.createCoupon>[0] = {
       code: code.trim().toUpperCase(),
       type,
       value: Number(value),
-      minOrderAmount: minOrderAmount ? Number(minOrderAmount) : null,
-      maxDiscount: maxDiscount ? Number(maxDiscount) : null,
-      usageLimit: usageLimit ? Number(usageLimit) : null,
+      minOrderAmount: minOrderAmount ? Number(minOrderAmount) : undefined,
+      maxDiscount: maxDiscount ? Number(maxDiscount) : undefined,
+      usageLimit: usageLimit ? Number(usageLimit) : undefined,
       usageLimitPerUser: usageLimitPerUser ? Number(usageLimitPerUser) : 1,
       startDate: new Date(startDate).toISOString(),
       endDate: new Date(endDate).toISOString(),

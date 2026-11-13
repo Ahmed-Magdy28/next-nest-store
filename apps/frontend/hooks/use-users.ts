@@ -9,7 +9,7 @@ import type {
   UpdateUsernameDto,
   UpdateEmailDto,
 } from "@repo/shared/dtos/users";
-import type { ChangePasswordDto } from "@repo/shared/dtos/auth";
+import type { AuthUserDto, ChangePasswordDto } from "@repo/shared/dtos/auth";
 
 import { queryKeys } from "../lib/api/e-commerce/query-keys";
 import { useAuthStore } from "../lib/stores/auth-store";
@@ -32,7 +32,7 @@ export function useUpdateProfile() {
     onSuccess: (data) => {
       qc.setQueryData(queryKeys.profile, data.user);
       qc.setQueryData(queryKeys.me, data.user);
-      setUser(data.user as any);
+      setUser(data.user as unknown as AuthUserDto);
       if (data.verificationToken) {
         toast.info("Check console for verification token (dev only)");
         console.info("Verification token:", data.verificationToken);

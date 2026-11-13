@@ -38,27 +38,36 @@ export default function OrdersPage() {
   });
 
   const updateStatusMutation = useMutation({
-    mutationFn: ({ id, status }: { id: string; status: any }) =>
+    mutationFn: ({ id, status }: { id: string; status: OrderDto["status"] }) =>
       ordersApi.updateStatus(id, { status }),
     onSuccess: (updated: OrderDto) => {
       toast.success(t("statusUpdated"));
       queryClient.invalidateQueries({ queryKey: ["admin", "orders"] });
       setSelectedOrder(updated);
     },
-    onError: (err: any) =>
-      toast.error(err?.message || "Failed to update status"),
+    onError: (err: unknown) =>
+      toast.error(
+        err instanceof Error ? err.message : "Failed to update status",
+      ),
   });
 
   const updatePaymentMutation = useMutation({
-    mutationFn: ({ id, paymentStatus }: { id: string; paymentStatus: any }) =>
-      ordersApi.updatePaymentStatus(id, { paymentStatus }),
+    mutationFn: ({
+      id,
+      paymentStatus,
+    }: {
+      id: string;
+      paymentStatus: OrderDto["paymentStatus"];
+    }) => ordersApi.updatePaymentStatus(id, { paymentStatus }),
     onSuccess: (updated: OrderDto) => {
       toast.success(t("paymentUpdated"));
       queryClient.invalidateQueries({ queryKey: ["admin", "orders"] });
       setSelectedOrder(updated);
     },
-    onError: (err: any) =>
-      toast.error(err?.message || "Failed to update payment status"),
+    onError: (err: unknown) =>
+      toast.error(
+        err instanceof Error ? err.message : "Failed to update payment status",
+      ),
   });
 
   return (
@@ -149,14 +158,14 @@ export default function OrdersPage() {
           selectedOrder &&
           updateStatusMutation.mutate({
             id: selectedOrder.id,
-            status: newStatus,
+            status: newStatus as OrderDto["status"],
           })
         }
         onUpdatePayment={(newPayment) =>
           selectedOrder &&
           updatePaymentMutation.mutate({
             id: selectedOrder.id,
-            paymentStatus: newPayment,
+            paymentStatus: newPayment as OrderDto["paymentStatus"],
           })
         }
         isUpdatingStatus={updateStatusMutation.isPending}

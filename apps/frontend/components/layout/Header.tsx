@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Link, usePathname } from "../../i18n/routing";
 import { ShopName } from "@repo/shared/constants";
 import { ShoppingBag, Menu } from "lucide-react";
@@ -9,13 +9,9 @@ import HeaderProfile from "../profile/HeaderProfile";
 import MobileNavDrawer from "./MobileNavDrawer";
 
 export function Header() {
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [drawerPathname, setDrawerPathname] = useState<string | null>(null);
   const pathname = usePathname();
-
-  // Close drawer whenever route changes
-  useEffect(() => {
-    setIsDrawerOpen(false);
-  }, [pathname]);
+  const isDrawerOpen = drawerPathname === pathname;
 
   return (
     <header className="sticky top-0 z-40 w-full border-b border-gray-200 bg-white/80 backdrop-blur-md dark:border-gray-800 dark:bg-gray-950/80">
@@ -43,7 +39,7 @@ export function Header() {
           {/* Mobile Menu Hamburger Button */}
           <button
             type="button"
-            onClick={() => setIsDrawerOpen(true)}
+            onClick={() => setDrawerPathname(pathname)}
             aria-label="Open menu"
             className="flex h-9 w-9 items-center justify-center rounded-xl border border-gray-200 text-gray-700 hover:bg-gray-100 md:hidden dark:border-gray-800 dark:text-gray-200 dark:hover:bg-gray-900 transition-colors"
           >
@@ -55,7 +51,7 @@ export function Header() {
       {/* Slide-over Mobile Drawer */}
       <MobileNavDrawer
         isOpen={isDrawerOpen}
-        onClose={() => setIsDrawerOpen(false)}
+        onClose={() => setDrawerPathname(null)}
       />
     </header>
   );

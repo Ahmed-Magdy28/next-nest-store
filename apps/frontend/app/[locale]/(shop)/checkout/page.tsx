@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Link, useRouter } from "../../../../i18n/routing";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { ChevronLeft, MapPin } from "lucide-react";
@@ -54,7 +54,7 @@ export default function CheckoutPage() {
     register,
     handleSubmit,
     setValue,
-    watch,
+    control,
     formState: { errors },
   } = useForm<CreateOrderDto>({
     resolver: zodResolver(createOrderSchema),
@@ -76,7 +76,7 @@ export default function CheckoutPage() {
     },
   });
 
-  const selectedPaymentMethod = watch("paymentMethod");
+  const selectedPaymentMethod = useWatch({ control, name: "paymentMethod" });
 
   // Pre-fill user data when available
   useEffect(() => {
@@ -126,9 +126,9 @@ export default function CheckoutPage() {
             t({ name: "Invalid coupon code", arName: "كود الخصم غير صحيح" }),
         );
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       toast.error(
-        err.message ||
+        (err instanceof Error ? err.message : undefined) ||
           t({ name: "Could not apply coupon", arName: "تعذر تطبيق كود الخصم" }),
       );
     } finally {
@@ -162,9 +162,9 @@ export default function CheckoutPage() {
         }),
       );
       router.push(`/account/orders?success=${newOrder.id}`);
-    } catch (err: any) {
+    } catch (err: unknown) {
       toast.error(
-        err.message ||
+        (err instanceof Error ? err.message : undefined) ||
           t({ name: "Failed to place order", arName: "فشل إتمام الطلب" }),
       );
     }

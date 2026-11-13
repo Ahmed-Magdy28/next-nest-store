@@ -5,12 +5,15 @@ import {
   useContext,
   useState,
   useEffect,
+  useSyncExternalStore,
   type ReactNode,
 } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { authApi, tokenStorage } from "../../lib/api";
 import { useRouter, usePathname } from "../../i18n/routing";
 import type { JwtUser } from "@repo/shared/interfaces";
+
+const emptySubscribe = () => () => {};
 
 interface AuthContextType {
   user: JwtUser | null | undefined;
@@ -31,13 +34,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const queryClient = useQueryClient();
 
-  const [isMounted, setIsMounted] = useState(false);
-  const [token, setToken] = useState<string | null>(null);
-
-  useEffect(() => {
-    setToken(tokenStorage.getAccessToken());
-    setIsMounted(true);
-  }, []);
+  const isMounted = useSyncExternalStore(
+    emptySubscribe,
+    () => true,
+    () => false,
+  );
+  const [loggedOut, setLoggedOut] = useState(false);
+  const token = isMounted && !loggedOut ? tokenStorage.getAccessToken() : null;
 
   const {
     data: user,
@@ -53,7 +56,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const logoutMutation = useMutation({
     mutationFn: () => authApi.logout(),
     onSettled: () => {
-      setToken(null);
+      setLoggedOut(true);
       queryClient.clear();
       router.push("/login");
     },

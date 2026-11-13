@@ -3,19 +3,25 @@
   "ui": "tui",
   "globalEnv": [
     "DEFAULT_LOCALE",
+    "PORT",
     "BACKEND_PORT",
     "ADMIN_PORT",
     "ADMIN_SITE_TITLE",
     "Frontend_PORT",
     "FRONTEND_PORT",
     "DATABASE_URL",
+    "DIRECT_URL",
     "DATABASE_TEST_URL",
     "JWT_SECRET",
     "NODE_ENV",
     "CORS_ORIGIN",
     "NEXT_PUBLIC_API_URL",
     "ADMIN_SECRET",
-    "ENABLE_GUEST_CART"
+    "ENABLE_GUEST_CART",
+    "SHIPPING_COST",
+    "SHIPPING_FREE_THRESHOLD",
+    "TAX_RATE_IN_PERCENTAGE",
+    "TAX_RATE"
   ],
   "tasks": {
     "build": {

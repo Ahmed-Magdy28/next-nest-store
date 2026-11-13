@@ -1,23 +1,25 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useSyncExternalStore } from "react";
 import { useAuth } from "../../../components/providers/auth-provider";
 import { Sidebar } from "../../../components/sidebar";
 import { Header } from "../../../components/header";
 import { Loader2 } from "lucide-react";
+
+const emptySubscribe = () => () => {};
 
 export default function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const [mounted, setMounted] = useState(false);
+  const mounted = useSyncExternalStore(
+    emptySubscribe,
+    () => true,
+    () => false,
+  );
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   const { isLoading, isAuthenticated } = useAuth();
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   if (!mounted || isLoading) {
     return (

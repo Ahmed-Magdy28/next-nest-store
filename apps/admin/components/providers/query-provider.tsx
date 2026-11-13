@@ -6,7 +6,9 @@ import {
   isServer,
 } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import { useState, useEffect, type ReactNode } from "react";
+import { useSyncExternalStore, type ReactNode } from "react";
+
+const emptySubscribe = () => () => {};
 import { ApiClientError } from "../../lib/api/client";
 
 function makeQueryClient() {
@@ -42,11 +44,11 @@ function getQueryClient() {
 
 export function QueryProvider({ children }: { children: ReactNode }) {
   const queryClient = getQueryClient();
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  const mounted = useSyncExternalStore(
+    emptySubscribe,
+    () => true,
+    () => false,
+  );
 
   return (
     <QueryClientProvider client={queryClient}>

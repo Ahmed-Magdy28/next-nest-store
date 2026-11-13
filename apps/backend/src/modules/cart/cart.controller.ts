@@ -218,7 +218,7 @@ export class CartController {
     res.cookie(GUEST_CART_COOKIE_NAME, token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
       path: GUEST_CART_COOKIE_PATH,
       maxAge: GUEST_CART_TTL_MS,
     });

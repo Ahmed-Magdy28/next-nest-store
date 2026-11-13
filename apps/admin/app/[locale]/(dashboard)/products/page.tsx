@@ -55,10 +55,8 @@ export default function ProductsPage() {
 
   // Map categories with parent hierarchy
   const formattedCategories = useMemo(() => {
-    const list = (
-      Array.isArray(categories) ? categories : (categories as any)?.items || []
-    ) as CategoryDto[];
-    if (!list || list.length === 0) return [];
+    const list: CategoryDto[] = Array.isArray(categories) ? categories : [];
+    if (list.length === 0) return [];
     const map = new Map<string, CategoryDto>();
     list.forEach((c: CategoryDto) => map.set(c.id, c));
 
@@ -74,28 +72,38 @@ export default function ProductsPage() {
 
   // Mutations
   const createMutation = useMutation({
-    mutationFn: (data: any) => productsApi.createProduct(data),
+    mutationFn: (data: Parameters<typeof productsApi.createProduct>[0]) =>
+      productsApi.createProduct(data),
     onSuccess: () => {
       toast.success(t("createSuccess"));
       queryClient.invalidateQueries({ queryKey: ["admin", "products"] });
       closeModal();
     },
-    onError: (err: any) =>
+    onError: (err: unknown) =>
       toast.error(
-        err?.message || "Failed to create product. Check that fields are filled."
+        err instanceof Error
+          ? err.message
+          : "Failed to create product. Check that fields are filled.",
       ),
   });
 
   const updateMutation = useMutation({
-    mutationFn: ({ id, data }: { id: string; data: any }) =>
-      productsApi.updateProduct(id, data),
+    mutationFn: ({
+      id,
+      data,
+    }: {
+      id: string;
+      data: Parameters<typeof productsApi.updateProduct>[1];
+    }) => productsApi.updateProduct(id, data),
     onSuccess: () => {
       toast.success(t("updateSuccess"));
       queryClient.invalidateQueries({ queryKey: ["admin", "products"] });
       closeModal();
     },
-    onError: (err: any) =>
-      toast.error(err?.message || "Failed to update product"),
+    onError: (err: unknown) =>
+      toast.error(
+        err instanceof Error ? err.message : "Failed to update product",
+      ),
   });
 
   const deleteMutation = useMutation({
@@ -104,14 +112,14 @@ export default function ProductsPage() {
       toast.success(t("deleteSuccess"));
       queryClient.invalidateQueries({ queryKey: ["admin", "products"] });
     },
-    onError: (err: any) =>
-      toast.error(err?.message || "Failed to delete product"),
+    onError: (err: unknown) =>
+      toast.error(
+        err instanceof Error ? err.message : "Failed to delete product",
+      ),
   });
 
   const openCreateModal = () => {
-    const list = (
-      Array.isArray(categories) ? categories : (categories as any)?.items || []
-    ) as CategoryDto[];
+    const list: CategoryDto[] = Array.isArray(categories) ? categories : [];
     setEditingProduct(null);
     setIsLoadingDetails(false);
     setName("");
@@ -133,7 +141,7 @@ export default function ProductsPage() {
     setIsModalOpen(true);
   };
 
-  const openEditModal = async (p: ProductDto | any) => {
+  const openEditModal = async (p: ProductDto) => {
     setIsModalOpen(true);
     setIsLoadingDetails(true);
 
@@ -150,27 +158,27 @@ export default function ProductsPage() {
     setImageGallery(p.imageGallery ?? []);
     setGalleryInput("");
     setSelectedCategoryIds(
-      p.categories?.map((c: any) => c.categoryId || c.id) || []
+      p.categories?.map((c: { id?: string; categoryId?: string }) => c.categoryId || c.id || "").filter(Boolean) || []
     );
     setIsAvailable(p.isAvailable ?? true);
     setIsActive(p.isActive ?? true);
 
     const initialStock =
       p.variants?.reduce(
-        (sum: number, v: any) => sum + (v.stockQuantity ?? 0),
+        (sum: number, v) => sum + (v.stockQuantity ?? 0),
         0
       ) ?? 10;
     setStockQuantity(String(initialStock));
 
     if (p.variants && p.variants.length > 0) {
       setVariants(
-        p.variants.map((v: any) => ({
+        p.variants.map((v) => ({
           id: v.id || `var-${Math.random()}`,
           name: v.name ?? "",
           arName: v.arName ?? "",
           sku: v.sku ?? "",
           size: v.size ?? "",
-          color: (v.attributes as any)?.color ?? "",
+          color: (v.attributes as Record<string, string> | undefined)?.color ?? "",
           regularPrice: v.regularPrice ? String(v.regularPrice) : "",
           discountPrice: v.discountPrice ? String(v.discountPrice) : "",
           stockQuantity: String(v.stockQuantity ?? 10),
@@ -197,27 +205,27 @@ export default function ProductsPage() {
         setMainImage(full.mainImage ?? "");
         setImageGallery(full.imageGallery ?? []);
         setSelectedCategoryIds(
-          full.categories?.map((c: any) => c.id || c.categoryId) || []
+          full.categories?.map((c: { id?: string; categoryId?: string }) => c.id || c.categoryId || "").filter(Boolean) || []
         );
         setIsAvailable(full.isAvailable ?? true);
         setIsActive(full.isActive ?? true);
 
         if (full.variants && full.variants.length > 0) {
           setVariants(
-            full.variants.map((v: any) => ({
+            full.variants.map((v) => ({
               id: v.id || `var-${Math.random()}`,
               name: v.name ?? "",
               arName: v.arName ?? "",
               sku: v.sku ?? "",
               size: v.size ?? "",
-              color: (v.attributes as any)?.color ?? "",
+              color: (v.attributes as Record<string, string> | undefined)?.color ?? "",
               regularPrice: v.regularPrice ? String(v.regularPrice) : "",
               discountPrice: v.discountPrice ? String(v.discountPrice) : "",
               stockQuantity: String(v.stockQuantity ?? 10),
             }))
           );
           const fullStock = full.variants.reduce(
-            (sum: number, v: any) => sum + (v.stockQuantity ?? 0),
+            (sum: number, v) => sum + (v.stockQuantity ?? 0),
             0
           );
           setStockQuantity(String(fullStock));
@@ -310,7 +318,10 @@ export default function ProductsPage() {
       mainImage.trim() ||
       "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=800";
 
-    const payload: any = {
+    const payload: Parameters<typeof productsApi.createProduct>[0] & {
+      isAvailable?: boolean;
+      isActive?: boolean;
+    } = {
       name: name.trim(),
       arName: arName.trim() || name.trim(),
       slug: cleanSlug || `prod-${Date.now()}`,
@@ -342,7 +353,7 @@ export default function ProductsPage() {
       payload.variants = variants.map((v) => {
         const vReg = v.regularPrice ? Number(v.regularPrice) : regular;
         const vDisc = v.discountPrice ? Number(v.discountPrice) : undefined;
-        const attrs: Record<string, any> = {};
+        const attrs: Record<string, string> = {};
         if (v.size.trim()) attrs.size = v.size.trim();
         if (v.color.trim()) attrs.color = v.color.trim();
 
@@ -358,7 +369,6 @@ export default function ProductsPage() {
             : {}),
           stockQuantity: Number(v.stockQuantity) || 0,
           attributes: attrs,
-          isAvailable: true,
         };
       });
     } else {
@@ -373,7 +383,6 @@ export default function ProductsPage() {
             : {}),
           stockQuantity: Number(stockQuantity) || 10,
           attributes: {},
-          isAvailable: true,
         },
       ];
     }

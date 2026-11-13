@@ -1,5 +1,5 @@
 export default () => ({
-  port: Number(process.env.BACKEND_PORT),
+  port: Number(process.env.PORT || process.env.BACKEND_PORT) || 3001,
   databaseUrl: process.env.DATABASE_URL,
   jwtSecret: process.env.JWT_SECRET,
   nodeEnv: process.env.NODE_ENV,

@@ -23,7 +23,7 @@ interface ProductFormModalProps {
   editingProduct: ProductDto | null;
   isLoadingDetails: boolean;
   isPending: boolean;
-  categories: CategoryDto[];
+  categories: Array<CategoryDto & { label?: string; isSub?: boolean }>;
 
   // Form states and handlers
   name: string;
@@ -271,7 +271,7 @@ export function ProductFormModal({
                   Categories page!
                 </div>
               ) : (
-                categories.map((cat: any) => {
+                categories.map((cat) => {
                   const isSelected = selectedCategoryIds.includes(cat.id);
                   return (
                     <label

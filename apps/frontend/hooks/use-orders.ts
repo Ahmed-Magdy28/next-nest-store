@@ -5,7 +5,6 @@ import { toast } from "sonner";
 import type {
   CreateOrderDto,
   ListOrdersQueryDto,
-  OrderDto,
 } from "@repo/shared/dtos/e-commerce";
 
 import {

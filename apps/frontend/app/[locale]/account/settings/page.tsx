@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import {
   ArrowLeft,
@@ -65,12 +65,9 @@ function SettingsContent() {
   const deleteOtherSessionsMutation = useDeleteOtherSessions();
 
   // Username form state
-  const [username, setUsername] = useState("");
-  useEffect(() => {
-    if (profile?.username) {
-      setUsername(profile.username);
-    }
-  }, [profile?.username]);
+  const [usernameDraft, setUsernameDraft] = useState<string | null>(null);
+  const username = usernameDraft ?? profile?.username ?? "";
+  const setUsername = (value: string) => setUsernameDraft(value);
 
   // Email form state
   const [newEmail, setNewEmail] = useState("");

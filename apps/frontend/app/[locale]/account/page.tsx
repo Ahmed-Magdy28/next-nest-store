@@ -6,7 +6,6 @@ import {
   Package,
   Heart,
   Settings,
-  User,
   MapPin,
   Plus,
   Trash2,
@@ -42,7 +41,7 @@ function AccountContent() {
   const t = useTranslations("Account");
   const locale = useLocale();
 
-  const { data: profile, isLoading: isLoadingProfile } = useProfile();
+  const { data: profile } = useProfile();
   const { data: addresses, isLoading: isLoadingAddresses } = useAddresses();
   const createAddressMutation = useCreateAddress();
   const updateAddressMutation = useUpdateAddress();
@@ -570,7 +569,7 @@ function AccountCard({
   desc,
 }: {
   href: string;
-  icon: any;
+  icon: React.ComponentType<{ className?: string }>;
   label: string;
   desc: string;
 }) {

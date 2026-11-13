@@ -4,7 +4,7 @@
 import { useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 
-import type { JwtUser } from "@repo/shared/interfaces";
+import type { AuthUserDto } from "@repo/shared/dtos/auth";
 
 import { queryKeys } from "../../lib/api/e-commerce/query-keys";
 import { tokenStorage } from "../../lib/api/common/token-storage";
@@ -31,7 +31,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       try {
         const user = await authApi.me();
         if (cancelled) return;
-        setUser(user as any);
+        setUser(user as unknown as AuthUserDto);
         qc.setQueryData(queryKeys.me, user);
       } catch {
         if (cancelled) return;

@@ -33,8 +33,10 @@ export default function LoginPage() {
       queryClient.setQueryData(["auth", "me"], data.user);
       router.push("/");
     },
-    onError: (err: any) => {
-      toast.error(err?.message || t("invalidCredentials"));
+    onError: (err: unknown) => {
+      toast.error(
+        err instanceof Error ? err.message : t("invalidCredentials"),
+      );
     },
   });
 

@@ -37,8 +37,10 @@ export default function ReviewsPage() {
       toast.success(t("moderateSuccess"));
       queryClient.invalidateQueries({ queryKey: ["admin", "reviews"] });
     },
-    onError: (err: any) =>
-      toast.error(err?.message || "Failed to moderate review"),
+    onError: (err: unknown) =>
+      toast.error(
+        err instanceof Error ? err.message : "Failed to moderate review",
+      ),
   });
 
   const deleteMutation = useMutation({
@@ -47,8 +49,10 @@ export default function ReviewsPage() {
       toast.success(t("deleteSuccess"));
       queryClient.invalidateQueries({ queryKey: ["admin", "reviews"] });
     },
-    onError: (err: any) =>
-      toast.error(err?.message || "Failed to delete review"),
+    onError: (err: unknown) =>
+      toast.error(
+        err instanceof Error ? err.message : "Failed to delete review",
+      ),
   });
 
   return (

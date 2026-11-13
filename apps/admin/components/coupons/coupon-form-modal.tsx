@@ -103,7 +103,9 @@ export function CouponFormModal({
               </label>
               <select
                 value={type}
-                onChange={(e) => setType(e.target.value as any)}
+                onChange={(e) =>
+                  setType(e.target.value as "PERCENTAGE" | "FIXED")
+                }
                 className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm text-slate-900 dark:text-white"
               >
                 <option value="PERCENTAGE">{t("percentage")}</option>

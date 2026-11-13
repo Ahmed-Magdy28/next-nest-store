@@ -18,8 +18,7 @@ interface ProductReviewsProps {
 
 export function ProductReviews({ productId }: ProductReviewsProps) {
   const user = useAuthStore((s) => s.user);
-  const { data: summary, isLoading: isLoadingSummary } =
-    useProductRatingSummary(productId);
+  const { data: summary } = useProductRatingSummary(productId);
   const { data: reviewsData, isLoading: isLoadingReviews } =
     useProductReviews(productId);
 

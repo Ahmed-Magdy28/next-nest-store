@@ -1,11 +1,13 @@
 // apps/frontend/components/auth/protected-route.tsx
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useSyncExternalStore } from "react";
 import { useRouter } from "../../i18n/routing";
 
 import { tokenStorage } from "../../lib/api/common/token-storage";
 import { useMe } from "../../hooks/use-auth";
+
+const emptySubscribe = () => () => {};
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -18,12 +20,12 @@ export function ProtectedRoute({
   adminOnly = false,
 }: ProtectedRouteProps) {
   const router = useRouter();
-  const [mounted, setMounted] = useState(false);
+  const mounted = useSyncExternalStore(
+    emptySubscribe,
+    () => true,
+    () => false,
+  );
   const { data: user, isLoading, isError } = useMe();
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   useEffect(() => {
     if (!mounted) return;

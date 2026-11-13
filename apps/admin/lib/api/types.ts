@@ -4,8 +4,8 @@ export interface ApiError {
   error?: string;
 }
 
-export interface ApiRequestOptions extends RequestInit {
-  body?: any;
+export interface ApiRequestOptions extends Omit<RequestInit, "body"> {
+  body?: unknown;
   skipAuth?: boolean;
   skipRefresh?: boolean;
 }

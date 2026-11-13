@@ -14,8 +14,10 @@ export const categoriesApi = {
     if (params?.search) query.set("search", params.search);
     if (params?.parentId) query.set("parentId", params.parentId);
 
-    const res = await apiClient.get<any>(`/categories?${query.toString()}`);
-    return (Array.isArray(res) ? res : res?.items ?? []) as CategoryDto[];
+    const res = await apiClient.get<CategoryDto[] | { items: CategoryDto[] }>(
+      `/categories?${query.toString()}`,
+    );
+    return Array.isArray(res) ? res : (res?.items ?? []);
   },
 
   getCategoryTree() {

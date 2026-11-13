@@ -6,6 +6,7 @@ export const envSchema = z
       .enum(["development", "production", "test"])
       .default("development"),
 
+    PORT: z.coerce.number().optional(),
     BACKEND_PORT: z.coerce.number().default(3001),
 
     DATABASE_URL: z.string().url(),

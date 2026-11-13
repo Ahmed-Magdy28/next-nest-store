@@ -32,10 +32,8 @@ export default function CategoriesPage() {
     queryFn: () => categoriesApi.getCategories(),
   });
 
-  const categoryList = useMemo(() => {
-    return (
-      Array.isArray(categories) ? categories : (categories as any)?.items || []
-    ) as CategoryDto[];
+  const categoryList = useMemo<CategoryDto[]>(() => {
+    return Array.isArray(categories) ? categories : [];
   }, [categories]);
 
   const categoryMap = useMemo(() => {
@@ -61,26 +59,36 @@ export default function CategoriesPage() {
   }, [categoryList, filterType, searchTerm]);
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => categoriesApi.createCategory(data),
+    mutationFn: (data: Parameters<typeof categoriesApi.createCategory>[0]) =>
+      categoriesApi.createCategory(data),
     onSuccess: () => {
       toast.success(t("createSuccess"));
       queryClient.invalidateQueries({ queryKey: ["admin", "categories"] });
       closeModal();
     },
-    onError: (err: any) =>
-      toast.error(err?.message || "Failed to create category"),
+    onError: (err: unknown) =>
+      toast.error(
+        err instanceof Error ? err.message : "Failed to create category",
+      ),
   });
 
   const updateMutation = useMutation({
-    mutationFn: ({ id, data }: { id: string; data: any }) =>
-      categoriesApi.updateCategory(id, data),
+    mutationFn: ({
+      id,
+      data,
+    }: {
+      id: string;
+      data: Parameters<typeof categoriesApi.updateCategory>[1];
+    }) => categoriesApi.updateCategory(id, data),
     onSuccess: () => {
       toast.success(t("updateSuccess"));
       queryClient.invalidateQueries({ queryKey: ["admin", "categories"] });
       closeModal();
     },
-    onError: (err: any) =>
-      toast.error(err?.message || "Failed to update category"),
+    onError: (err: unknown) =>
+      toast.error(
+        err instanceof Error ? err.message : "Failed to update category",
+      ),
   });
 
   const deleteMutation = useMutation({
@@ -89,8 +97,10 @@ export default function CategoriesPage() {
       toast.success(t("deleteSuccess"));
       queryClient.invalidateQueries({ queryKey: ["admin", "categories"] });
     },
-    onError: (err: any) =>
-      toast.error(err?.message || "Failed to delete category"),
+    onError: (err: unknown) =>
+      toast.error(
+        err instanceof Error ? err.message : "Failed to delete category",
+      ),
   });
 
   const openCreateModal = (parent?: CategoryDto) => {
@@ -125,7 +135,7 @@ export default function CategoriesPage() {
       .replace(/[^a-z0-9]+/g, "-")
       .replace(/^-+|-+$/g, "");
 
-    const payload: any = {
+    const payload: Parameters<typeof categoriesApi.createCategory>[0] = {
       name: name.trim(),
       arName: arName.trim() || name.trim(),
       slug: cleanSlug || `cat-${Date.now()}`,
