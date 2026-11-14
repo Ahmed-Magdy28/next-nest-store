@@ -1,8 +1,20 @@
 "use client";
 
 import Image from "next/image";
-import { Product } from "@repo/shared/interfaces/shop";
 import { X, Star, ShoppingBag, Heart, ShieldCheck, Truck } from "lucide-react";
+
+interface Product {
+  image: string;
+  name: string;
+  category: { name: string };
+  SKU: string;
+  rating: number;
+  reviewsCount: number;
+  price: number;
+  originalPrice?: number;
+  description?: string;
+  inStock: boolean;
+}
 
 interface ProductModalProps {
   product: Product | null;

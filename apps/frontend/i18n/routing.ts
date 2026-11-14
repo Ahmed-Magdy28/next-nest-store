@@ -1,6 +1,6 @@
 import { defineRouting } from "next-intl/routing";
 import { createNavigation } from "next-intl/navigation";
-import { defaultLocaleForWebsite } from "@repo/shared/constants/shop.constants";
+import { defaultLocaleForWebsite } from "@repo/shared/constants";
 
 const defaultLocale =
   process.env.DEFAULT_LOCALE === "ar" ||
