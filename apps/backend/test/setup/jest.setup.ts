@@ -16,5 +16,5 @@ beforeEach(async () => {
 });
 
 afterAll(async () => {
-  await testContext.app.close();
+  await testContext.app?.close();
 });

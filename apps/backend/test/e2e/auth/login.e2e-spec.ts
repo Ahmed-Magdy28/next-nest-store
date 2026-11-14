@@ -1,3 +1,4 @@
+import { PASSWORD_LENGTH_MSG } from "@repo/shared/constants";
 import { login, register } from "../../helpers/auth.helper";
 import { makeUser } from "../../factories/user.factory";
 import { AuthResponse } from "../../types/auth.types";
@@ -73,7 +74,7 @@ describe("POST /auth/login", () => {
       const response = await login(user.email, user.password).expect(400);
 
       expect(response.body.message).toEqual(
-        expect.arrayContaining(["Password must be at least 8 characters"]),
+        expect.arrayContaining([PASSWORD_LENGTH_MSG]),
       );
     });
 
@@ -85,7 +86,7 @@ describe("POST /auth/login", () => {
       const response = await login(user.email, user.password).expect(400);
 
       expect(response.body.message).toEqual(
-        expect.arrayContaining(["Password must be at most 64 characters"]),
+        expect.arrayContaining([PASSWORD_LENGTH_MSG]),
       );
     });
   });

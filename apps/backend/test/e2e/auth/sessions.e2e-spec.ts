@@ -1,4 +1,5 @@
 import { INestApplication } from "@nestjs/common";
+import { MAX_ACTIVE_SESSIONS } from "@repo/shared/constants";
 
 import {
   register,
@@ -46,18 +47,26 @@ describe("Auth sessions", () => {
 
     const activeLogins: AuthResponse[] = [];
 
-    for (let index = 0; index < 4; index += 1) {
-      const response = await login(user.email, user.password).expect(200);
+    for (let index = 0; index < MAX_ACTIVE_SESSIONS - 1; index += 1) {
+      const response = await login(
+        user.email,
+        user.password,
+        `device-${index + 1}`,
+      ).expect(200);
       activeLogins.push(response.body as AuthResponse);
     }
 
-    const pendingResponse = await login(user.email, user.password).expect(200);
+    const pendingResponse = await login(
+      user.email,
+      user.password,
+      "device-pending",
+    ).expect(200);
     const pendingBody = pendingResponse.body as AuthResponse;
 
     expect(registerBody.session.status).toBe("ACTIVE");
     expect(registerBody.accessToken).toEqual(expect.any(String));
     expect(registerBody.refreshToken).toEqual(expect.any(String));
-    expect(activeLogins).toHaveLength(4);
+    expect(activeLogins).toHaveLength(MAX_ACTIVE_SESSIONS - 1);
     for (const activeLogin of activeLogins) {
       expect(activeLogin.session.status).toBe("ACTIVE");
       expect(activeLogin.accessToken).toEqual(expect.any(String));
@@ -74,18 +83,18 @@ describe("Auth sessions", () => {
       },
     });
 
-    expect(activeCount).toBe(5);
+    expect(activeCount).toBe(MAX_ACTIVE_SESSIONS);
 
     const sessionsResponse = await sessions(
       expectAccessToken(registerBody),
     ).expect(200);
 
-    expect(sessionsResponse.body).toHaveLength(6);
+    expect(sessionsResponse.body).toHaveLength(MAX_ACTIVE_SESSIONS + 1);
     expect(
       sessionsResponse.body.filter(
         (session: { status: string }) => session.status === "ACTIVE",
       ),
-    ).toHaveLength(5);
+    ).toHaveLength(MAX_ACTIVE_SESSIONS);
     expect(
       sessionsResponse.body.filter(
         (session: { status: string }) => session.status === "PENDING",
@@ -112,7 +121,7 @@ describe("Auth sessions", () => {
       (session: { status: string }) => session.status === "ACTIVE",
     );
 
-    expect(activeAfterRevoke).toHaveLength(5);
+    expect(activeAfterRevoke).toHaveLength(MAX_ACTIVE_SESSIONS);
     expect(
       afterRevoke.body.find(
         (session: { id: string }) => session.id === revokeTarget,
@@ -156,7 +165,7 @@ describe("Auth sessions", () => {
     const registerResponse = await register(user).expect(201);
     const registerBody = registerResponse.body as AuthResponse;
 
-    await login(user.email, user.password).expect(200);
+    await login(user.email, user.password, "device-2").expect(200);
 
     await revokeAllSessions(expectAccessToken(registerBody)).expect(204);
 

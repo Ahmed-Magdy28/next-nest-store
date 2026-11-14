@@ -102,9 +102,11 @@ describe("Users me endpoints", () => {
     const user = makeUser();
 
     const registerResponse = await register(user).expect(201);
-    const secondLoginResponse = await login(user.email, user.password).expect(
-      200,
-    );
+    const secondLoginResponse = await login(
+      user.email,
+      user.password,
+      "device-2",
+    ).expect(200);
     const registerBody = registerResponse.body as AuthResponse;
     const secondLoginBody = secondLoginResponse.body as AuthResponse;
 

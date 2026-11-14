@@ -1,3 +1,4 @@
+import { createHash } from "crypto";
 import { INestApplication } from "@nestjs/common";
 
 import { createTestingApp } from "../../helpers/app.helper";
@@ -48,6 +49,26 @@ describe("Password reset", () => {
     );
   });
 
+  async function issueResetToken(email: string): Promise<string> {
+    await forgotPassword(email).expect(200);
+    const updatedUser = await ctx.prisma.user.findUniqueOrThrow({
+      where: { email },
+    });
+    expect(updatedUser.passwordResetTokenHash).toEqual(expect.any(String));
+
+    const resetToken = `test-reset-token-${Date.now()}-${Math.random()}`;
+    const tokenHash = createHash("sha256").update(resetToken).digest("hex");
+    await ctx.prisma.user.update({
+      where: { email },
+      data: {
+        passwordResetTokenHash: tokenHash,
+        passwordResetTokenExpiresAt: new Date(Date.now() + 15 * 60 * 1000),
+        passwordResetTokenUsedAt: null,
+      },
+    });
+    return resetToken;
+  }
+
   it("should reset a password with a valid token and reject reuse", async () => {
     const user = makeUser();
 
@@ -59,10 +80,7 @@ describe("Password reset", () => {
       },
     });
 
-    const response = await forgotPassword(user.email).expect(200);
-    const resetToken = response.body.resetToken as string;
-
-    expect(resetToken).toEqual(expect.any(String));
+    const resetToken = await issueResetToken(user.email);
 
     await resetPassword(resetToken, "NewPassword123!").expect(200);
 
@@ -85,8 +103,7 @@ describe("Password reset", () => {
 
     await resetPassword("invalid-token", "NewPassword123!").expect(401);
 
-    const response = await forgotPassword(user.email).expect(200);
-    const resetToken = response.body.resetToken as string;
+    const resetToken = await issueResetToken(user.email);
 
     await ctx.prisma.user.update({
       where: { email: user.email },
@@ -109,8 +126,7 @@ describe("Password reset", () => {
       },
     });
 
-    const response = await forgotPassword(user.email).expect(200);
-    const resetToken = response.body.resetToken as string;
+    const resetToken = await issueResetToken(user.email);
 
     await resetPassword(resetToken, "short").expect(400);
   });
@@ -119,13 +135,16 @@ describe("Password reset", () => {
     const user = makeUser();
 
     const registerResponse = await register(user).expect(201);
-    const loginResponse = await login(user.email, user.password).expect(200);
+    const loginResponse = await login(
+      user.email,
+      user.password,
+      "device-2",
+    ).expect(200);
 
     const registerBody = registerResponse.body as AuthResponse;
     const loginBody = loginResponse.body as AuthResponse;
 
-    const resetRequestResponse = await forgotPassword(user.email).expect(200);
-    const resetToken = resetRequestResponse.body.resetToken as string;
+    const resetToken = await issueResetToken(user.email);
 
     await resetPassword(resetToken, "NewPassword123!").expect(200);
 

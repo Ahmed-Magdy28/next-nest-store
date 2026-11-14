@@ -7,8 +7,16 @@ export function register(user: TestUser): Test {
   return api().post("/auth/register").send(user);
 }
 
-export function login(email: string, password: string): Test {
-  return api().post("/auth/login").send({
+export function login(
+  email: string,
+  password: string,
+  userAgent?: string,
+): Test {
+  const req = api().post("/auth/login");
+  if (userAgent) {
+    req.set("User-Agent", userAgent);
+  }
+  return req.send({
     email,
     password,
   });
