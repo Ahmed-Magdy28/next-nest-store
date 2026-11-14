@@ -15,11 +15,15 @@
       "ts-jest",
       {
         "tsconfig": {
-          "module": "commonjs"
+          "module": "commonjs",
+          "allowJs": true
         }
       }
     ]
   },
+  "transformIgnorePatterns": [
+    "node_modules/(?!(\\.pnpm/@faker-js\\+faker|@faker-js/faker))"
+  ],
   "moduleNameMapper": {
     "^@repo/database$": "<rootDir>/../../../packages/database/src/index.ts",
     "^@repo/database/(.*)$": "<rootDir>/../../../packages/database/src/$1",

@@ -2,14 +2,14 @@ import { register } from "../../helpers/auth.helper";
 import { makeUser } from "../../factories/user.factory";
 import { AuthResponse } from "../../types/auth.types";
 import {
-  PASSWORD_DIGIT_MESSAGE,
-  PASSWORD_LENGTH_MESSAGE,
-  PASSWORD_LOWERCASE_MESSAGE,
-  PASSWORD_SPECIAL_CHAR_MESSAGE,
-  PASSWORD_UPPERCASE_MESSAGE,
-  USERNAME_LENGTH_MESSAGE,
-  USERNAME_MESSAGE,
-} from "../../../src/common/constants";
+  PASSWORD_DIGIT_MSG as PASSWORD_DIGIT_MESSAGE,
+  PASSWORD_LENGTH_MSG as PASSWORD_LENGTH_MESSAGE,
+  PASSWORD_LOWERCASE_MSG as PASSWORD_LOWERCASE_MESSAGE,
+  PASSWORD_SPECIAL_CHAR_MSG as PASSWORD_SPECIAL_CHAR_MESSAGE,
+  PASSWORD_UPPERCASE_MSG as PASSWORD_UPPERCASE_MESSAGE,
+  USERNAME_LENGTH_MSG as USERNAME_LENGTH_MESSAGE,
+  USERNAME_MSG as USERNAME_MESSAGE,
+} from "@repo/shared/constants";
 
 describe("POST /auth/register", () => {
   describe("Success", () => {
