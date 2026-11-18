@@ -12,6 +12,7 @@ import {
 } from "../../../../hooks/use-wishlist";
 import { ProductGallery } from "../../../../components/e-commerce/products/product-gallery";
 import { ProductInfo } from "../../../../components/e-commerce/products/product-info";
+import { RelatedProductsSlider } from "../../../../components/e-commerce/products/related-products-slider";
 import { ProductReviews } from "../../../../components/e-commerce/reviews/product-reviews";
 
 interface PageProps {
@@ -107,6 +108,12 @@ export default function ProductDetailsPage({ params }: PageProps) {
 
         {/* Product Reviews */}
         <ProductReviews productId={product.id} />
+
+        {/* Products You May Like */}
+        <RelatedProductsSlider
+          currentProductId={product.id}
+          categoryId={product.categories?.[0]?.id}
+        />
       </div>
     </div>
   );

@@ -1,84 +1,63 @@
 "use client";
 
-import { Search, X } from "lucide-react";
+import { X } from "lucide-react";
 import { useTranslations } from "next-intl";
+
 import { useCategoriesTree } from "../../../hooks/use-categories";
 import { useLocalized } from "../../../i18n/use-localized";
+import { PriceFilterSection } from "./price-filter-section";
 
 interface ProductFiltersProps {
-  search: string;
-  onSearchChange: (value: string) => void;
-
   categoryId?: string;
   onCategoryChange: (value: string | undefined) => void;
-
+  minPrice?: number;
+  maxPrice?: number;
+  onPriceChange: (min?: number, max?: number) => void;
+  isAvailable?: boolean;
+  onIsAvailableChange: (value: boolean | undefined) => void;
   onDiscount?: boolean;
   onOnDiscountChange?: (value: boolean | undefined) => void;
-
   isNew?: boolean;
   onIsNewChange?: (value: boolean | undefined) => void;
-
   hideDiscountFilter?: boolean;
   hideNewArrivalsFilter?: boolean;
-
-  sortBy: "createdAt" | "updatedAt" | "price" | "name";
-  onSortByChange: (value: "createdAt" | "updatedAt" | "price" | "name") => void;
-
-  sortOrder: "asc" | "desc";
-  onSortOrderChange: (value: "asc" | "desc") => void;
-
   onReset: () => void;
 }
 
+/**
+ * Sidebar filter panel supporting category selection, price range presets/inputs,
+ * stock availability, and promotional flags.
+ */
 export function ProductFilters({
-  search,
-  onSearchChange,
   categoryId,
   onCategoryChange,
+  minPrice,
+  maxPrice,
+  onPriceChange,
+  isAvailable,
+  onIsAvailableChange,
   onDiscount,
   onOnDiscountChange,
   isNew,
   onIsNewChange,
   hideDiscountFilter,
   hideNewArrivalsFilter,
-  sortBy,
-  onSortByChange,
-  sortOrder,
-  onSortOrderChange,
   onReset,
 }: ProductFiltersProps) {
   const t = useTranslations("ProductFilters");
   const { data: categories, isLoading } = useCategoriesTree();
   const { t: tLocalized } = useLocalized();
 
-  const showFlagsSection = !hideDiscountFilter || !hideNewArrivalsFilter;
-
   const hasFilters =
-    !!search ||
     !!categoryId ||
+    minPrice !== undefined ||
+    maxPrice !== undefined ||
+    isAvailable === true ||
     (!hideDiscountFilter && onDiscount !== undefined) ||
     (!hideNewArrivalsFilter && isNew !== undefined);
 
   return (
-    <aside className="space-y-6 rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-gray-900">
-      {/* Search */}
-      <div>
-        <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-gray-600 dark:text-gray-300">
-          {t("search")}
-        </label>
-        <div className="relative">
-          <Search className="absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
-          <input
-            type="text"
-            value={search}
-            onChange={(e) => onSearchChange(e.target.value)}
-            placeholder={t("searchPlaceholder")}
-            className="w-full rounded-lg border border-gray-200 bg-gray-50 py-2 ps-9 pe-3 text-sm outline-none focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-500/20 dark:border-gray-800 dark:bg-gray-950 dark:focus:bg-gray-900"
-          />
-        </div>
-      </div>
-
-      {/* Category */}
+    <aside className="space-y-5 rounded-2xl border border-gray-200/80 bg-white p-5 shadow-xs dark:border-gray-800 dark:bg-gray-900">
       <div>
         <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-gray-600 dark:text-gray-300">
           {t("category")}
@@ -87,7 +66,7 @@ export function ProductFilters({
           value={categoryId ?? ""}
           onChange={(e) => onCategoryChange(e.target.value || undefined)}
           disabled={isLoading}
-          className="w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm outline-none focus:border-blue-500 focus:bg-white dark:border-gray-800 dark:bg-gray-950 dark:focus:bg-gray-900"
+          className="w-full rounded-xl border border-gray-200 bg-gray-50 px-3 py-2 text-sm outline-none focus:border-blue-500 focus:bg-white dark:border-gray-800 dark:bg-gray-950 dark:text-white dark:focus:bg-gray-900"
         >
           <option value="">{t("allCategories")}</option>
           {categories?.map((cat) => (
@@ -103,83 +82,64 @@ export function ProductFilters({
         </select>
       </div>
 
-      {/* Flags */}
-      {showFlagsSection && (
-        <div className="space-y-2">
-          <label className="block text-xs font-semibold uppercase tracking-wider text-gray-600 dark:text-gray-300">
-            {t("filters")}
-          </label>
+      <PriceFilterSection
+        key={`${minPrice ?? ""}-${maxPrice ?? ""}`}
+        minPrice={minPrice}
+        maxPrice={maxPrice}
+        onPriceChange={onPriceChange}
+      />
 
-          {!hideDiscountFilter && onOnDiscountChange && (
-            <label className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-200 cursor-pointer">
-              <input
-                type="checkbox"
-                checked={onDiscount === true}
-                onChange={(e) =>
-                  onOnDiscountChange(e.target.checked ? true : undefined)
-                }
-                className="h-4 w-4 rounded border-gray-300 text-blue-600"
-              />
-              {t("onDiscount")}
-            </label>
-          )}
+      <div className="space-y-2.5 border-t border-gray-100 pt-4 dark:border-gray-800">
+        <span className="block text-xs font-semibold uppercase tracking-wider text-gray-600 dark:text-gray-300">
+          {t("filters")}
+        </span>
 
-          {!hideNewArrivalsFilter && onIsNewChange && (
-            <label className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-200 cursor-pointer">
-              <input
-                type="checkbox"
-                checked={isNew === true}
-                onChange={(e) =>
-                  onIsNewChange(e.target.checked ? true : undefined)
-                }
-                className="h-4 w-4 rounded border-gray-300 text-blue-600"
-              />
-              {t("newArrivals")}
-            </label>
-          )}
-        </div>
-      )}
-
-      {/* Sort */}
-      <div className="grid grid-cols-2 gap-2">
-        <div>
-          <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-gray-600 dark:text-gray-300">
-            {t("sortBy")}
-          </label>
-          <select
-            value={sortBy}
-            onChange={(e) => onSortByChange(e.target.value as typeof sortBy)}
-            className="w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm outline-none focus:border-blue-500 dark:border-gray-800 dark:bg-gray-950"
-          >
-            <option value="createdAt">{t("newest")}</option>
-            <option value="updatedAt">{t("recentlyUpdated")}</option>
-            <option value="price">{t("price")}</option>
-            <option value="name">{t("name")}</option>
-          </select>
-        </div>
-        <div>
-          <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-gray-600 dark:text-gray-300">
-            {t("order")}
-          </label>
-          <select
-            value={sortOrder}
+        <label className="flex cursor-pointer items-center gap-2.5 text-sm text-gray-700 dark:text-gray-200">
+          <input
+            type="checkbox"
+            checked={isAvailable === true}
             onChange={(e) =>
-              onSortOrderChange(e.target.value as typeof sortOrder)
+              onIsAvailableChange(e.target.checked ? true : undefined)
             }
-            className="w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm outline-none focus:border-blue-500 dark:border-gray-800 dark:bg-gray-950"
-          >
-            <option value="desc">{t("descending")}</option>
-            <option value="asc">{t("ascending")}</option>
-          </select>
-        </div>
+            className="h-4 w-4 rounded border-gray-300 text-blue-600"
+          />
+          {tLocalized({ name: "In Stock Only", arName: "المتوفر فقط" })}
+        </label>
+
+        {!hideDiscountFilter && onOnDiscountChange && (
+          <label className="flex cursor-pointer items-center gap-2.5 text-sm text-gray-700 dark:text-gray-200">
+            <input
+              type="checkbox"
+              checked={onDiscount === true}
+              onChange={(e) =>
+                onOnDiscountChange(e.target.checked ? true : undefined)
+              }
+              className="h-4 w-4 rounded border-gray-300 text-blue-600"
+            />
+            {t("onDiscount")}
+          </label>
+        )}
+
+        {!hideNewArrivalsFilter && onIsNewChange && (
+          <label className="flex cursor-pointer items-center gap-2.5 text-sm text-gray-700 dark:text-gray-200">
+            <input
+              type="checkbox"
+              checked={isNew === true}
+              onChange={(e) =>
+                onIsNewChange(e.target.checked ? true : undefined)
+              }
+              className="h-4 w-4 rounded border-gray-300 text-blue-600"
+            />
+            {t("newArrivals")}
+          </label>
+        )}
       </div>
 
-      {/* Reset */}
       {hasFilters && (
         <button
           type="button"
           onClick={onReset}
-          className="inline-flex w-full items-center justify-center gap-1.5 rounded-lg border border-gray-200 px-3 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50 dark:border-gray-800 dark:text-gray-200 dark:hover:bg-gray-800 cursor-pointer"
+          className="inline-flex w-full cursor-pointer items-center justify-center gap-1.5 rounded-xl border border-gray-200 px-3 py-2 text-xs font-semibold text-gray-700 transition-colors hover:bg-gray-50 dark:border-gray-800 dark:text-gray-200 dark:hover:bg-gray-800"
         >
           <X className="h-3.5 w-3.5" />
           {t("reset")}

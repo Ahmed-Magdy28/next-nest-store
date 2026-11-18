@@ -3,7 +3,7 @@ import { DiscountType } from "../../prisma/generated";
 import { allProducts } from "./products";
 import { generateFakerProducts } from "./faker-products.generator";
 import type { ProductSeed } from "./helpers";
-import { CreateProductDto } from "../../../shared/dist/dtos/e-commerce/products/product.dto";
+import type { CreateProductDto } from "@repo/shared/dtos/e-commerce";
 
 /**
  * يحوّل الـ ProductSeed + categorySlugs لـ Prisma input
@@ -50,24 +50,35 @@ export async function seedProducts(
   prisma: PrismaClient,
   slugToId: Map<string, string>,
 ) {
-  const fakerProducts = generateFakerProducts();
+  const targetFakerCount = Math.max(0, 600 - allProducts.length);
+  const fakerProducts = generateFakerProducts(targetFakerCount);
   const totalProducts = [...allProducts, ...fakerProducts];
 
-  console.log(`🌱 Seeding ${totalProducts.length} products (${allProducts.length} curated + ${fakerProducts.length} Faker generated)...`);
+  console.log(
+    `🌱 Seeding ${totalProducts.length} products (${allProducts.length} curated + ${fakerProducts.length} Faker generated)...`,
+  );
 
+  const batchSize = 10;
   let created = 0;
 
-  for (const product of totalProducts) {
-    const data = buildProductData(product, slugToId);
+  for (let i = 0; i < totalProducts.length; i += batchSize) {
+    const batch = totalProducts.slice(i, i + batchSize);
+    await Promise.all(
+      batch.map((product) => {
+        const data = buildProductData(product, slugToId);
+        return prisma.product.upsert({
+          where: { slug: product.slug },
+          update: {
+            mainImage: data.mainImage,
+            imageGallery: data.imageGallery,
+          },
+          create: data,
+        });
+      }),
+    );
 
-    await prisma.product.upsert({
-      where: { slug: product.slug },
-      update: {},
-      create: data,
-    });
-
-    created++;
-    if (created % 25 === 0 || created === totalProducts.length) {
+    created += batch.length;
+    if (created % 50 === 0 || created === totalProducts.length) {
       console.log(`  ↳ ${created}/${totalProducts.length}`);
     }
   }

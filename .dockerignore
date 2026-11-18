@@ -3,9 +3,10 @@ node_modules
 .git
 .turbo
 **/.turbo
-apps/frontend/.next
-apps/backend/dist
-packages/database/dist
+**/.next
+**/dist
+**/*.tsbuildinfo
+packages/database/prisma/generated
 coverage
 **/coverage
 .env

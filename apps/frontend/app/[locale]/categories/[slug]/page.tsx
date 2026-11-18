@@ -1,20 +1,27 @@
 "use client";
 
-import { Suspense, use } from "react";
-import Link from "next/link";
-import { ChevronLeft } from "lucide-react";
+import { Suspense, use, useMemo } from "react";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 
-import { useCategoryProducts } from "../../../../hooks/use-categories";
-
+import {
+  useCategoriesTree,
+  useCategoryProducts,
+} from "../../../../hooks/use-categories";
 import { Pagination } from "../../../../components/common/pagination";
 import { useLocalized } from "../../../../i18n/use-localized";
 import { ProductGrid } from "../../../../components/e-commerce/products/product-grid";
+import {
+  CategoryDetailHeader,
+  findCategoryInTree,
+} from "../../../../components/e-commerce/categories/category-detail-header";
 
 interface PageProps {
   params: Promise<{ locale: string; slug: string }>;
 }
 
+/**
+ * Displays products for a category slug along with its header and subcategories.
+ */
 function CategoryContent({ params }: PageProps) {
   const { slug } = use(params);
   const searchParams = useSearchParams();
@@ -23,6 +30,11 @@ function CategoryContent({ params }: PageProps) {
   const { t } = useLocalized();
 
   const page = Number(searchParams.get("page") ?? 1);
+  const { data: tree } = useCategoriesTree();
+  const { current, parent } = useMemo(
+    () => findCategoryInTree(tree, slug),
+    [tree, slug],
+  );
 
   const { data, isLoading, isError, error } = useCategoryProducts(slug, {
     page,
@@ -31,37 +43,21 @@ function CategoryContent({ params }: PageProps) {
   });
 
   const updatePage = (newPage: number) => {
-    const params = new URLSearchParams(searchParams.toString());
-    params.set("page", String(newPage));
-    router.push(`${pathname}?${params.toString()}`);
+    const nextParams = new URLSearchParams(searchParams.toString());
+    nextParams.set("page", String(newPage));
+    router.push(`${pathname}?${nextParams.toString()}`);
   };
 
   return (
     <div className="min-h-screen bg-gray-50 p-4 sm:p-8 dark:bg-gray-950">
       <div className="mx-auto max-w-7xl space-y-8">
-        {/* Breadcrumb */}
-        <Link
-          href="/categories"
-          className="inline-flex items-center gap-1.5 text-sm font-medium text-gray-600 hover:text-blue-600 dark:text-gray-400 dark:hover:text-white"
-        >
-          <ChevronLeft className="h-4 w-4" />
-          {t({ name: "Back to categories", arName: "العودة للأقسام" })}
-        </Link>
+        <CategoryDetailHeader
+          slug={slug}
+          current={current}
+          parent={parent}
+          totalProducts={data?.meta.total}
+        />
 
-        {/* Header */}
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white capitalize">
-            {slug.replace(/-/g, " ")}
-          </h1>
-          {data && (
-            <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-              {data.meta.total}{" "}
-              {t({ name: "product(s) found", arName: "منتج" })}
-            </p>
-          )}
-        </div>
-
-        {/* Loading */}
         {isLoading && (
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {Array.from({ length: 8 }).map((_, i) => (
@@ -73,7 +69,6 @@ function CategoryContent({ params }: PageProps) {
           </div>
         )}
 
-        {/* Error */}
         {isError && (
           <div className="rounded-2xl border border-rose-200 bg-rose-50 p-6 text-rose-700 dark:border-rose-900 dark:bg-rose-950/50 dark:text-rose-300">
             {t({ name: "Failed to load", arName: "فشل التحميل" })}:{" "}
@@ -81,11 +76,9 @@ function CategoryContent({ params }: PageProps) {
           </div>
         )}
 
-        {/* Grid */}
         {data && (
           <>
             <ProductGrid products={data.items} />
-
             <Pagination
               page={data.meta.page}
               totalPages={data.meta.totalPages}
@@ -98,26 +91,17 @@ function CategoryContent({ params }: PageProps) {
   );
 }
 
-export default function CategoryPage(props: PageProps) {
+/**
+ * Category detail route wrapper with Suspense boundary for search params.
+ */
+export default function CategorySlugPage({ params }: PageProps) {
   return (
     <Suspense
       fallback={
-        <div className="min-h-screen bg-gray-50 p-4 sm:p-8 dark:bg-gray-950">
-          <div className="mx-auto max-w-7xl animate-pulse space-y-8">
-            <div className="h-8 w-48 rounded-lg bg-gray-200 dark:bg-gray-800" />
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-              {Array.from({ length: 8 }).map((_, i) => (
-                <div
-                  key={i}
-                  className="aspect-square rounded-2xl bg-gray-200 dark:bg-gray-800"
-                />
-              ))}
-            </div>
-          </div>
-        </div>
+        <div className="min-h-screen animate-pulse bg-gray-50 p-8 dark:bg-gray-950" />
       }
     >
-      <CategoryContent {...props} />
+      <CategoryContent params={params} />
     </Suspense>
   );
 }

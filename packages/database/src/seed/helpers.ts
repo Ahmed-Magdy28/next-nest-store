@@ -1,11 +1,26 @@
-/**
- * صور منتجات بجودة ثابتة من picsum.photos
- * استخدام seed ثابت عشان الصورة متتغيرش كل مرة.
- */
-export function productImage(seed: string, size = 800): string {
-  return `https://picsum.photos/seed/${encodeURIComponent(seed)}/${size}/${size}`;
+import { CATEGORY_IMAGE_MAP, PRODUCT_IMAGE_POOL } from "./image-maps";
+
+function hashSeed(seed: string): number {
+  let hash = 0;
+  for (let i = 0; i < seed.length; i++) {
+    hash = (hash * 31 + seed.charCodeAt(i)) >>> 0;
+  }
+  return hash;
 }
 
+/**
+ * Returns a deterministic Unsplash product image URL for a given seed.
+ */
+export function productImage(seed: string, size = 800): string {
+  const url =
+    PRODUCT_IMAGE_POOL[hashSeed(seed) % PRODUCT_IMAGE_POOL.length] ??
+    PRODUCT_IMAGE_POOL[0];
+  return `${url}?auto=format&fit=crop&w=${size}&h=${size}&q=80`;
+}
+
+/**
+ * Returns a list of deterministic product gallery URLs for a given seed.
+ */
 export function productGallery(seed: string, count = 3, size = 800): string[] {
   return Array.from({ length: count }, (_, i) =>
     productImage(`${seed}-${i + 1}`, size),
@@ -13,14 +28,17 @@ export function productGallery(seed: string, count = 3, size = 800): string[] {
 }
 
 /**
- * صور الفئات من picsum (مش هتحتاج صور حقيقية دلوقتي).
+ * Returns a verified Unsplash category image URL for a given `imageSeed`.
  */
 export function categoryImage(seed: string, size = 400): string {
-  return `https://picsum.photos/seed/cat-${encodeURIComponent(seed)}/${size}/${size}`;
+  const baseUrl =
+    CATEGORY_IMAGE_MAP[seed] ??
+    "https://images.unsplash.com/photo-1498049794561-7780e7231661";
+  return `${baseUrl}?auto=format&fit=crop&w=${size}&h=${size}&q=80`;
 }
 
 /**
- * slugify بسيط (بيدعم الإنجليزي والعربي).
+ * Converts a string into a URL-safe slug (supports English and Arabic).
  */
 export function slugify(text: string): string {
   return text
@@ -34,18 +52,19 @@ export function slugify(text: string): string {
 }
 
 /**
- * SKU generator
+ * Generates a padded SKU string from a prefix and numeric index.
  */
 export function makeSku(prefix: string, index: number): string {
   return `${prefix}-${String(index).padStart(4, "0")}`;
 }
 
+/** Variant payload used when seeding products. */
 export interface ProductVariantSeed {
   sku: string;
   name: string;
   arName?: string;
   size?: string;
-  attributes?: Record<string, any>;
+  attributes?: Record<string, unknown>;
   regularPrice?: number;
   discountPrice?: number;
   stockQuantity?: number;
@@ -53,6 +72,7 @@ export interface ProductVariantSeed {
   imageGallery?: string[];
 }
 
+/** Product payload used when seeding products. */
 export interface ProductSeed {
   name: string;
   arName: string;
@@ -68,7 +88,7 @@ export interface ProductSeed {
   description?: string;
   arDescription?: string;
   weight?: number;
-  dimensions?: Record<string, any>;
+  dimensions?: Record<string, unknown>;
   mainImage: string;
   imageGallery?: string[];
   categorySlugs?: string[];
